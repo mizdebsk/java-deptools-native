@@ -92,4 +92,13 @@ public class RpmArchiveInputStreamTest {
 		}
 	}
 
+	@Test
+	public void testLZMA() throws Exception {
+		Path path = getResource("foo-1-1.fc21.x86_64.rpm");
+
+		ArchiveInputStream ais = new RpmArchiveInputStream(path);
+		assertNull(ais.getNextEntry());
+		ais.close();
+	}
+
 }
