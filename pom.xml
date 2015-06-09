@@ -16,9 +16,9 @@
  `-->
 <project>
   <name>java-deptools</name>
-  <version>0</version>
+  <version>1.0.0-SNAPSHOT</version>
   <groupId>org.fedoraproject.javadeptools</groupId>
-  <artifactId>java-deptools</artifactId>
+  <artifactId>java-deptools-native</artifactId>
   <modelVersion>4.0.0</modelVersion>
 
   <properties>
