@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="US-ASCII"?>
 <!--
- ! Copyright (c) 2012 Red Hat, Inc.
+ ! Copyright (c) 2012-2015 Red Hat, Inc.
  !
  ! Licensed under the Apache License, Version 2.0 (the "License");
  ! you may not use this file except in compliance with the License.
@@ -14,7 +14,8 @@
  ! See the License for the specific language governing permissions and
  ! limitations under the License.
  `-->
-<project>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <name>java-deptools</name>
   <version>1.0.0-SNAPSHOT</version>
   <groupId>org.fedoraproject.javadeptools</groupId>
@@ -26,11 +27,10 @@
   </properties>
 
   <dependencies>
-    <!-- apache-commons-compress -->
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-compress</artifactId>
-      <version>1.4.1</version>
+      <version>1.9</version>
     </dependency>
   </dependencies>
 </project>
