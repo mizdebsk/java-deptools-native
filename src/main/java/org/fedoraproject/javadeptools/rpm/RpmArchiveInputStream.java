@@ -53,6 +53,7 @@ import org.apache.commons.compress.archivers.cpio.CpioArchiveInputStream;
 import org.apache.commons.compress.compressors.CompressorInputStream;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
+import org.apache.commons.compress.compressors.lzma.LZMACompressorInputStream;
 import org.apache.commons.compress.compressors.xz.XZCompressorInputStream;
 
 import com.sun.jna.Memory;
@@ -144,6 +145,9 @@ public class RpmArchiveInputStream extends ArchiveInputStream {
 			break;
 		case "xz":
 			cis = new XZCompressorInputStream(fis);
+			break;
+		case "lzma":
+			cis = new LZMACompressorInputStream(fis);
 			break;
 		default:
 			fis.close();
