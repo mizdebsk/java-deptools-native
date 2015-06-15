@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata xmlns="http://linux.duke.edu/metadata/common" xmlns:rpm="http://linux.duke.edu/metadata/rpm" packages="8">
+<package type="rpm">
+  <name>fedora-release</name>
+  <arch>noarch</arch>
+  <version epoch="0" ver="23" rel="0.13"/>
+  <checksum type="sha256" pkgid="YES">042f8c5aef73343a9e394c6f04e2898a4bcd7e23845ff7b50a89b09837ad035b</checksum>
+  <summary>Fedora release files</summary>
+  <description>Fedora release files such as various /etc/ files that define the release.</description>
+  <packager>Fedora Project</packager>
+  <url>http://fedoraproject.org</url>
+  <time file="1432296085" build="1432139983"/>
+  <size package="14392" installed="7657" archive="10332"/>
+  <location href="fedora-release-23-0.13.noarch.rpm"/>
+  <format>
+    <rpm:license>MIT</rpm:license>
+    <rpm:vendor>Fedora Project</rpm:vendor>
+    <rpm:group>System Environment/Base</rpm:group>
+    <rpm:buildhost>arm04-builder01.arm.fedoraproject.org</rpm:buildhost>
+    <rpm:sourcerpm>fedora-release-23-0.13.src.rpm</rpm:sourcerpm>
+    <rpm:header-range start="4392" end="10808"/>
+    <rpm:provides>
+      <rpm:entry name="config(fedora-release)" flags="EQ" epoch="0" ver="23" rel="0.13"/>
+      <rpm:entry name="fedora-release" flags="EQ" epoch="0" ver="23" rel="0.13"/>
+      <rpm:entry name="fedora-release-nonproduct" flags="EQ" epoch="0" ver="23"/>
+      <rpm:entry name="fedora-release-standard" flags="EQ" epoch="0" ver="22" rel="0.8"/>
+      <rpm:entry name="redhat-release"/>
+      <rpm:entry name="system-release"/>
+      <rpm:entry name="system-release(23)"/>
+    </rpm:provides>
+    <rpm:requires>
+      <rpm:entry name="fedora-repos(23)"/>
+    </rpm:requires>
+    <rpm:obsoletes>
+      <rpm:entry name="fedora-release-nonproduct" flags="LE" epoch="0" ver="23" rel="0.3"/>
+      <rpm:entry name="fedora-release-standard" flags="LT" epoch="0" ver="22" rel="0.8"/>
+      <rpm:entry name="redhat-release"/>
+    </rpm:obsoletes>
+    <file>/etc/fedora-release</file>
+    <file>/etc/issue</file>
+    <file>/etc/issue.net</file>
+    <file>/etc/os-release</file>
+    <file>/etc/redhat-release</file>
+    <file>/etc/system-release</file>
+    <file>/etc/system-release-cpe</file>
+  </format>
+</package>
+<package type="rpm">
+  <name>fedora-release-cloud</name>
+  <arch>noarch</arch>
+  <version epoch="0" ver="23" rel="0.13"/>
+  <checksum type="sha256" pkgid="YES">a9977854f522b5b23664a742c9a5060691eab4c4143b9d47848dd788e17bdeb4</checksum>
+  <summary>Base package for Fedora Cloud-specific default configurations</summary>
+  <description>Provides a base package for Fedora Cloud-specific configuration files to
+depend on.</description>
+  <packager>Fedora Project</packager>
+  <url>http://fedoraproject.org</url>
+  <time file="1432296084" build="1432139983"/>
+  <size package="10576" installed="1567" archive="2156"/>
+  <location href="fedora-release-cloud-23-0.13.noarch.rpm"/>
+  <format>
+    <rpm:license>MIT</rpm:license>
+    <rpm:vendor>Fedora Project</rpm:vendor>
+    <rpm:group>System Environment/Base</rpm:group>
+    <rpm:buildhost>arm04-builder01.arm.fedoraproject.org</rpm:buildhost>
+    <rpm:sourcerpm>fedora-release-23-0.13.src.rpm</rpm:sourcerpm>
+    <rpm:header-range start="4392" end="9440"/>
+    <rpm:provides>
+      <rpm:entry name="config(fedora-release-cloud)" flags="EQ" epoch="0" ver="23" rel="0.13"/>
+      <rpm:entry name="fedora-release-cloud" flags="EQ" epoch="0" ver="23" rel="0.13"/>
+      <rpm:entry name="system-release-cloud"/>
+      <rpm:entry name="system-release-cloud(23)"/>
+      <rpm:entry name="system-release-product"/>
+    </rpm:provides>
+    <rpm:requires>
+      <rpm:entry name="/bin/sh" pre="1"/>
+      <rpm:entry name="/bin/sh"/>
+      <rpm:entry name="fedora-release" flags="EQ" epoch="0" ver="23" rel="0.13"/>
+    </rpm:requires>
+  </format>
+</package>
+<package type="rpm">
+  <name>fedora-release-server</name>
+  <arch>noarch</arch>
+  <version epoch="0" ver="23" rel="0.13"/>
+  <checksum type="sha256" pkgid="YES">bb179d6a255f2b2fb6c9b905e7eac351dac12cd5b13b0ac12048cea2bcc3f12e</checksum>
+  <summary>Base package for Fedora Server-specific default configurations</summary>
+  <description>Provides a base package for Fedora Server-specific configuration files to
+depend on.</description>
+  <packager>Fedora Project</packager>
+  <url>http://fedoraproject.org</url>
+  <time file="1432296083" build="1432139983"/>
+  <size package="11256" installed="1732" archive="2492"/>
+  <location href="fedora-release-server-23-0.13.noarch.rpm"/>
+  <format>
+    <rpm:license>MIT</rpm:license>
+    <rpm:vendor>Fedora Project</rpm:vendor>
+    <rpm:group>System Environment/Base</rpm:group>
+    <rpm:buildhost>arm04-builder01.arm.fedoraproject.org</rpm:buildhost>
+    <rpm:sourcerpm>fedora-release-23-0.13.src.rpm</rpm:sourcerpm>
+    <rpm:header-range start="4392" end="9996"/>
+    <rpm:provides>
+      <rpm:entry name="config(fedora-release-server)" flags="EQ" epoch="0" ver="23" rel="0.13"/>
+      <rpm:entry name="fedora-release-server" flags="EQ" epoch="0" ver="23" rel="0.13"/>
+      <rpm:entry name="system-release-product"/>
+      <rpm:entry name="system-release-server"/>
+      <rpm:entry name="system-release-server(23)"/>
+    </rpm:provides>
+    <rpm:requires>
+      <rpm:entry name="/bin/sh" pre="1"/>
+      <rpm:entry name="/bin/sh"/>
+      <rpm:entry name="cockpit"/>
+      <rpm:entry name="fedora-release" flags="EQ" epoch="0" ver="23" rel="0.13"/>
+      <rpm:entry name="rolekit"/>
+      <rpm:entry name="sed" pre="1"/>
+      <rpm:entry name="systemd"/>
+      <rpm:entry name="systemd" pre="1"/>
+    </rpm:requires>
+  </format>
+</package>
+<package type="rpm">
+  <name>fedora-release-workstation</name>
+  <arch>noarch</arch>
+  <version epoch="0" ver="23" rel="0.13"/>
+  <checksum type="sha256" pkgid="YES">3e6eee9af757210f41bd02fdb9d791e1fe89ea39633f3e5fcd07c6bcdb4d3882</checksum>
+  <summary>Base package for Fedora Workstation-specific default configurations</summary>
+  <description>Provides a base package for Fedora Workstation-specific configuration files to
+depend on.</description>
+  <packager>Fedora Project</packager>
+  <url>http://fedoraproject.org</url>
+  <time file="1432296086" build="1432139983"/>
+  <size package="11820" installed="1830" archive="2780"/>
+  <location href="fedora-release-workstation-23-0.13.noarch.rpm"/>
+  <format>
+    <rpm:license>MIT</rpm:license>
+    <rpm:vendor>Fedora Project</rpm:vendor>
+    <rpm:group>System Environment/Base</rpm:group>
+    <rpm:buildhost>arm04-builder01.arm.fedoraproject.org</rpm:buildhost>
+    <rpm:sourcerpm>fedora-release-23-0.13.src.rpm</rpm:sourcerpm>
+    <rpm:header-range start="4392" end="10500"/>
+    <rpm:provides>
+      <rpm:entry name="config(fedora-release-workstation)" flags="EQ" epoch="0" ver="23" rel="0.13"/>
+      <rpm:entry name="fedora-release-workstation" flags="EQ" epoch="0" ver="23" rel="0.13"/>
+      <rpm:entry name="system-release-product"/>
+      <rpm:entry name="system-release-workstation"/>
+      <rpm:entry name="system-release-workstation(23)"/>
+    </rpm:provides>
+    <rpm:requires>
+      <rpm:entry name="/bin/sh"/>
+      <rpm:entry name="/bin/sh" pre="1"/>
+      <rpm:entry name="/bin/sh"/>
+      <rpm:entry name="/usr/bin/glib-compile-schemas" pre="1"/>
+      <rpm:entry name="/usr/bin/glib-compile-schemas"/>
+      <rpm:entry name="NetworkManager-config-connectivity-fedora"/>
+      <rpm:entry name="fedora-release" flags="EQ" epoch="0" ver="23" rel="0.13"/>
+    </rpm:requires>
+  </format>
+</package>
+<package type="rpm">
+  <name>fedora-repos</name>
+  <arch>noarch</arch>
+  <version epoch="0" ver="23" rel="0.2"/>
+  <checksum type="sha256" pkgid="YES">dfd11771237135bfc300aa7297a7202e94c1fc15dfa74fccc692d1e6038ee30d</checksum>
+  <summary>Fedora package repositories</summary>
+  <description>Fedora package repository files for yum and dnf along with gpg public keys</description>
+  <packager>Fedora Project</packager>
+  <url>https://git.fedorahosted.org/cgit/fedora-repos.git/</url>
+  <time file="1432296091" build="1424271001"/>
+  <size package="13080" installed="8670" archive="11528"/>
+  <location href="fedora-repos-23-0.2.noarch.rpm"/>
+  <format>
+    <rpm:license>MIT</rpm:license>
+    <rpm:vendor>Fedora Project</rpm:vendor>
+    <rpm:group>System Environment/Base</rpm:group>
+    <rpm:buildhost>buildvm-12.phx2.fedoraproject.org</rpm:buildhost>
+    <rpm:sourcerpm>fedora-repos-23-0.2.src.rpm</rpm:sourcerpm>
+    <rpm:header-range start="4392" end="8468"/>
+    <rpm:provides>
+      <rpm:entry name="config(fedora-repos)" flags="EQ" epoch="0" ver="23" rel="0.2"/>
+      <rpm:entry name="fedora-repos" flags="EQ" epoch="0" ver="23" rel="0.2"/>
+      <rpm:entry name="fedora-repos(23)"/>
+    </rpm:provides>
+    <rpm:requires>
+      <rpm:entry name="fedora-repos-rawhide" flags="EQ" epoch="0" ver="23" rel="0.2"/>
+      <rpm:entry name="system-release(23)"/>
+    </rpm:requires>
+    <rpm:obsoletes>
+      <rpm:entry name="fedora-repos-anaconda" flags="LT" epoch="0" ver="22" rel="0.3"/>
+    </rpm:obsoletes>
+    <file type="dir">/etc/pki/rpm-gpg</file>
+    <file>/etc/pki/rpm-gpg/RPM-GPG-KEY-23-fedora</file>
+    <file>/etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-23-aarch64</file>
+    <file>/etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-23-armhfp</file>
+    <file>/etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-23-i386</file>
+    <file>/etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-23-ppc64</file>
+    <file>/etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-23-ppc64le</file>
+    <file>/etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-23-primary</file>
+    <file>/etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-23-s390</file>
+    <file>/etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-23-s390x</file>
+    <file>/etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-23-secondary</file>
+    <file>/etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-23-x86_64</file>
+    <file type="dir">/etc/yum.repos.d</file>
+    <file>/etc/yum.repos.d/fedora-updates-testing.repo</file>
+    <file>/etc/yum.repos.d/fedora-updates.repo</file>
+    <file>/etc/yum.repos.d/fedora.repo</file>
+  </format>
+</package>
+<package type="rpm">
+  <name>fedora-repos-rawhide</name>
+  <arch>noarch</arch>
+  <version epoch="0" ver="23" rel="0.2"/>
+  <checksum type="sha256" pkgid="YES">33c8b16fbd09c5f717f4e66e5bfff8a9e8d86d31d9d5f90fa92b9143c259c0ab</checksum>
+  <summary>Rawhide repo definitions</summary>
+  <description>This package provides the rawhide repo definitions.</description>
+  <packager>Fedora Project</packager>
+  <url>https://git.fedorahosted.org/cgit/fedora-repos.git/</url>
+  <time file="1432296090" build="1424271001"/>
+  <size package="7500" installed="2149" archive="2424"/>
+  <location href="fedora-repos-rawhide-23-0.2.noarch.rpm"/>
+  <format>
+    <rpm:license>MIT</rpm:license>
+    <rpm:vendor>Fedora Project</rpm:vendor>
+    <rpm:group>System Environment/Base</rpm:group>
+    <rpm:buildhost>buildvm-12.phx2.fedoraproject.org</rpm:buildhost>
+    <rpm:sourcerpm>fedora-repos-23-0.2.src.rpm</rpm:sourcerpm>
+    <rpm:header-range start="4392" end="6568"/>
+    <rpm:provides>
+      <rpm:entry name="config(fedora-repos-rawhide)" flags="EQ" epoch="0" ver="23" rel="0.2"/>
+      <rpm:entry name="fedora-repos-rawhide" flags="EQ" epoch="0" ver="23" rel="0.2"/>
+    </rpm:provides>
+    <rpm:requires>
+      <rpm:entry name="fedora-repos" flags="EQ" epoch="0" ver="23" rel="0.2"/>
+    </rpm:requires>
+    <rpm:obsoletes>
+      <rpm:entry name="fedora-release-rawhide" flags="LE" epoch="0" ver="22" rel="0.3"/>
+    </rpm:obsoletes>
+    <file>/etc/yum.repos.d/fedora-rawhide.repo</file>
+  </format>
+</package>
+<package type="rpm">
+  <name>filesystem</name>
+  <arch>x86_64</arch>
+  <version epoch="0" ver="3.2" rel="32.fc23"/>
+  <checksum type="sha256" pkgid="YES">77dbae0465d25ed2b036930e7c0ba8a6d2b12ce2f0554c768158265a25dad8db</checksum>
+  <summary>The basic directory layout for a Linux system</summary>
+  <description>The filesystem package is one of the basic packages that is installed
+on a Linux system. Filesystem contains the basic directory layout
+for a Linux operating system, including the correct permissions for
+the directories.</description>
+  <packager>Fedora Project</packager>
+  <url>https://fedorahosted.org/filesystem</url>
+  <time file="1432296072" build="1424735941"/>
+  <size package="1157792" installed="0" archive="196964"/>
+  <location href="filesystem-3.2-32.fc23.x86_64.rpm"/>
+  <format>
+    <rpm:license>Public Domain</rpm:license>
+    <rpm:vendor>Fedora Project</rpm:vendor>
+    <rpm:group>System Environment/Base</rpm:group>
+    <rpm:buildhost>buildvm-02.phx2.fedoraproject.org</rpm:buildhost>
+    <rpm:sourcerpm>filesystem-3.2-32.fc23.src.rpm</rpm:sourcerpm>
+    <rpm:header-range start="4392" end="1150684"/>
+    <rpm:provides>
+      <rpm:entry name="filesystem" flags="EQ" epoch="0" ver="3.2" rel="32.fc23"/>
+      <rpm:entry name="filesystem(x86-64)" flags="EQ" epoch="0" ver="3.2" rel="32.fc23"/>
+    </rpm:provides>
+    <rpm:requires>
+      <rpm:entry name="/bin/sh"/>
+      <rpm:entry name="setup" pre="1"/>
+    </rpm:requires>
+    <file type="dir">/etc/X11</file>
+    <file type="dir">/etc/X11/applnk</file>
+    <file type="dir">/etc/X11/fontpath.d</file>
+    <file type="dir">/etc/bash_completion.d</file>
+    <file type="dir">/etc/opt</file>
+    <file type="dir">/etc/pki</file>
+    <file type="dir">/etc/pm</file>
+    <file type="dir">/etc/pm/config.d</file>
+    <file type="dir">/etc/pm/power.d</file>
+    <file type="dir">/etc/pm/sleep.d</file>
+    <file type="dir">/etc/skel</file>
+    <file type="dir">/etc/sysconfig</file>
+    <file type="dir">/etc/xdg</file>
+    <file type="dir">/etc/xdg/autostart</file>
+    <file type="dir">/etc/xinetd.d</file>
+    <file type="dir">/usr/share/locale/bin/LC_MESSAGES</file>
+    <file type="dir">/usr/share/man/bin/man0p</file>
+    <file type="dir">/usr/share/man/bin/man1</file>
+    <file type="dir">/usr/share/man/bin/man1p</file>
+    <file type="dir">/usr/share/man/bin/man1x</file>
+    <file type="dir">/usr/share/man/bin/man2</file>
+    <file type="dir">/usr/share/man/bin/man2x</file>
+    <file type="dir">/usr/share/man/bin/man3</file>
+    <file type="dir">/usr/share/man/bin/man3p</file>
+    <file type="dir">/usr/share/man/bin/man3x</file>
+    <file type="dir">/usr/share/man/bin/man4</file>
+    <file type="dir">/usr/share/man/bin/man4x</file>
+    <file type="dir">/usr/share/man/bin/man5</file>
+    <file type="dir">/usr/share/man/bin/man5x</file>
+    <file type="dir">/usr/share/man/bin/man6</file>
+    <file type="dir">/usr/share/man/bin/man6x</file>
+    <file type="dir">/usr/share/man/bin/man7</file>
+    <file type="dir">/usr/share/man/bin/man7x</file>
+    <file type="dir">/usr/share/man/bin/man8</file>
+    <file type="dir">/usr/share/man/bin/man8x</file>
+    <file type="dir">/usr/share/man/bin/man9</file>
+    <file type="dir">/usr/share/man/bin/man9x</file>
+    <file type="dir">/usr/share/man/bin/mann</file>
+  </format>
+</package>
+<package type="rpm">
+  <name>setup</name>
+  <arch>noarch</arch>
+  <version epoch="0" ver="2.9.8" rel="1.fc23"/>
+  <checksum type="sha256" pkgid="YES">00a1ebdddf6e1dff230940095626c593f6079f0d68f352c23b04b9761a8a53a8</checksum>
+  <summary>A set of system configuration and setup files</summary>
+  <description>The setup package contains a set of important system configuration and
+setup files, such as passwd, group, and profile.</description>
+  <packager>Fedora Project</packager>
+  <url>https://fedorahosted.org/setup/</url>
+  <time file="1432296078" build="1431503942"/>
+  <size package="174888" installed="707917" archive="711396"/>
+  <location href="setup-2.9.8-1.fc23.noarch.rpm"/>
+  <format>
+    <rpm:license>Public Domain</rpm:license>
+    <rpm:vendor>Fedora Project</rpm:vendor>
+    <rpm:group>System Environment/Base</rpm:group>
+    <rpm:buildhost>buildvm-14.phx2.fedoraproject.org</rpm:buildhost>
+    <rpm:sourcerpm>setup-2.9.8-1.fc23.src.rpm</rpm:sourcerpm>
+    <rpm:header-range start="4392" end="42068"/>
+    <rpm:provides>
+      <rpm:entry name="config(setup)" flags="EQ" epoch="0" ver="2.9.8" rel="1.fc23"/>
+      <rpm:entry name="setup" flags="EQ" epoch="0" ver="2.9.8" rel="1.fc23"/>
+    </rpm:provides>
+    <rpm:requires>
+      <rpm:entry name="system-release"/>
+    </rpm:requires>
+    <rpm:conflicts>
+      <rpm:entry name="bash" flags="LE" epoch="0" ver="2.0.4" rel="21"/>
+      <rpm:entry name="filesystem" flags="LT" epoch="0" ver="3"/>
+      <rpm:entry name="initscripts" flags="LT" epoch="0" ver="4.26"/>
+    </rpm:conflicts>
+    <file>/etc/aliases</file>
+    <file>/etc/bashrc</file>
+    <file>/etc/csh.cshrc</file>
+    <file>/etc/csh.login</file>
+    <file>/etc/environment</file>
+    <file>/etc/exports</file>
+    <file>/etc/filesystems</file>
+    <file type="ghost">/etc/fstab</file>
+    <file>/etc/group</file>
+    <file>/etc/gshadow</file>
+    <file>/etc/host.conf</file>
+    <file>/etc/hosts</file>
+    <file>/etc/hosts.allow</file>
+    <file>/etc/hosts.deny</file>
+    <file>/etc/inputrc</file>
+    <file>/etc/motd</file>
+    <file>/etc/passwd</file>
+    <file>/etc/printcap</file>
+    <file>/etc/profile</file>
+    <file type="dir">/etc/profile.d</file>
+    <file>/etc/protocols</file>
+    <file>/etc/services</file>
+    <file>/etc/shadow</file>
+    <file>/etc/shells</file>
+  </format>
+</package>
+</metadata>
