@@ -34,71 +34,71 @@ import org.junit.Test;
  */
 public class RpmArchiveInputStreamTest {
 
-	private Path getResource(String name) {
-		return Paths.get("src/test/resources/rpm").resolve(name);
-	}
+    private Path getResource(String name) {
+        return Paths.get("src/test/resources/rpm").resolve(name);
+    }
 
-	@Test
-	public void testSRPM() throws Exception {
-		Path path = getResource("foo-1-1.fc21.src.rpm");
+    @Test
+    public void testSRPM() throws Exception {
+        Path path = getResource("foo-1-1.fc21.src.rpm");
 
-		ArchiveInputStream ais = new RpmArchiveInputStream(path);
+        ArchiveInputStream ais = new RpmArchiveInputStream(path);
 
-		ArchiveEntry entry = ais.getNextEntry();
-		assertNotNull(entry);
-		assertEquals("foo.spec", entry.getName());
-		assertEquals(296, entry.getSize());
+        ArchiveEntry entry = ais.getNextEntry();
+        assertNotNull(entry);
+        assertEquals("foo.spec", entry.getName());
+        assertEquals(296, entry.getSize());
 
-		ArchiveEntry entry2 = ais.getNextEntry();
-		assertNotNull(entry2);
-		assertEquals("some-file", entry2.getName());
-		assertEquals(5, entry2.getSize());
+        ArchiveEntry entry2 = ais.getNextEntry();
+        assertNotNull(entry2);
+        assertEquals("some-file", entry2.getName());
+        assertEquals(5, entry2.getSize());
 
-		byte[] buf = new byte[6];
-		int rc = ais.read(buf);
-		assertEquals(5, rc);
-		assertEquals("test\n\0", new String(buf));
+        byte[] buf = new byte[6];
+        int rc = ais.read(buf);
+        assertEquals(5, rc);
+        assertEquals("test\n\0", new String(buf));
 
-		assertNull(ais.getNextEntry());
+        assertNull(ais.getNextEntry());
 
-		ais.close();
-	}
+        ais.close();
+    }
 
-	@SuppressWarnings("resource")
-	@Test
-	public void testInvalidRPM() throws Exception {
-		Path path = getResource("invalid.rpm");
+    @SuppressWarnings("resource")
+    @Test
+    public void testInvalidRPM() throws Exception {
+        Path path = getResource("invalid.rpm");
 
-		try {
-			new RpmArchiveInputStream(path);
-			fail();
-		} catch (IOException e) {
-			assertTrue(e.getMessage().startsWith("Unable to open "));
-			assertTrue(e.getMessage().endsWith(": Not a RPM file"));
-		}
-	}
+        try {
+            new RpmArchiveInputStream(path);
+            fail();
+        } catch (IOException e) {
+            assertTrue(e.getMessage().startsWith("Unable to open "));
+            assertTrue(e.getMessage().endsWith(": Not a RPM file"));
+        }
+    }
 
-	@SuppressWarnings("resource")
-	@Test
-	public void testNonexistentRPM() throws Exception {
-		Path path = Paths.get("/some/non-existent/path");
+    @SuppressWarnings("resource")
+    @Test
+    public void testNonexistentRPM() throws Exception {
+        Path path = Paths.get("/some/non-existent/path");
 
-		try {
-			new RpmArchiveInputStream(path);
-			fail();
-		} catch (IOException e) {
-			assertTrue(e.getMessage().startsWith("Unable to open "));
-			assertTrue(e.getMessage().endsWith(": No such file or directory"));
-		}
-	}
+        try {
+            new RpmArchiveInputStream(path);
+            fail();
+        } catch (IOException e) {
+            assertTrue(e.getMessage().startsWith("Unable to open "));
+            assertTrue(e.getMessage().endsWith(": No such file or directory"));
+        }
+    }
 
-	@Test
-	public void testLZMA() throws Exception {
-		Path path = getResource("foo-1-1.fc21.x86_64.rpm");
+    @Test
+    public void testLZMA() throws Exception {
+        Path path = getResource("foo-1-1.fc21.x86_64.rpm");
 
-		ArchiveInputStream ais = new RpmArchiveInputStream(path);
-		assertNull(ais.getNextEntry());
-		ais.close();
-	}
+        ArchiveInputStream ais = new RpmArchiveInputStream(path);
+        assertNull(ais.getNextEntry());
+        ais.close();
+    }
 
 }

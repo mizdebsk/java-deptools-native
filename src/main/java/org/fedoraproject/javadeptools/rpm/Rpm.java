@@ -24,110 +24,110 @@ import com.sun.jna.Pointer;
  */
 final class Rpm {
 
-	static final int RPMRC_OK = 0;
-	static final int RPMRC_NOTFOUND = 1;
-	static final int RPMRC_FAIL = 2;
-	static final int RPMRC_NOTTRUSTED = 3;
-	static final int RPMRC_NOKEY = 4;
+    static final int RPMRC_OK = 0;
+    static final int RPMRC_NOTFOUND = 1;
+    static final int RPMRC_FAIL = 2;
+    static final int RPMRC_NOTTRUSTED = 3;
+    static final int RPMRC_NOKEY = 4;
 
-	static final int RPMVSF_NOHDRCHK = 1 << 0;
-	static final int RPMVSF_NOSHA1HEADER = 1 << 8;
-	static final int RPMVSF_NOMD5HEADER = 1 << 9;
-	static final int RPMVSF_NODSAHEADER = 1 << 10;
-	static final int RPMVSF_NORSAHEADER = 1 << 11;
-	static final int RPMVSF_NOSHA1 = 1 << 16;
-	static final int RPMVSF_NOMD5 = 1 << 17;
-	static final int RPMVSF_NODSA = 1 << 18;
-	static final int RPMVSF_NORSA = 1 << 19;
+    static final int RPMVSF_NOHDRCHK = 1 << 0;
+    static final int RPMVSF_NOSHA1HEADER = 1 << 8;
+    static final int RPMVSF_NOMD5HEADER = 1 << 9;
+    static final int RPMVSF_NODSAHEADER = 1 << 10;
+    static final int RPMVSF_NORSAHEADER = 1 << 11;
+    static final int RPMVSF_NOSHA1 = 1 << 16;
+    static final int RPMVSF_NOMD5 = 1 << 17;
+    static final int RPMVSF_NODSA = 1 << 18;
+    static final int RPMVSF_NORSA = 1 << 19;
 
-	static final int RPMTAG_PAYLOADCOMPRESSOR = 1125;
-	static final int RPMTAG_PAYLOADFORMAT = 1124;
+    static final int RPMTAG_PAYLOADCOMPRESSOR = 1125;
+    static final int RPMTAG_PAYLOADFORMAT = 1124;
 
-	private static interface RpmLib extends Library {
+    private static interface RpmLib extends Library {
 
-		Pointer rpmtsCreate();
+        Pointer rpmtsCreate();
 
-		void rpmtsFree(Pointer ts);
+        void rpmtsFree(Pointer ts);
 
-		void rpmtsSetVSFlags(Pointer ts, int vsflags);
+        void rpmtsSetVSFlags(Pointer ts, int vsflags);
 
-		int rpmReadPackageFile(Pointer ts, Pointer fd, Pointer fn, Pointer hdrp);
+        int rpmReadPackageFile(Pointer ts, Pointer fd, Pointer fn, Pointer hdrp);
 
-		void headerFree(Pointer h);
+        void headerFree(Pointer h);
 
-		String headerGetString(Pointer h, int tag);
+        String headerGetString(Pointer h, int tag);
 
-		long headerGetNumber(Pointer h, int tag);
+        long headerGetNumber(Pointer h, int tag);
 
-	}
+    }
 
-	private static interface RpmIO extends Library {
+    private static interface RpmIO extends Library {
 
-		Pointer Fopen(String path, String mode);
+        Pointer Fopen(String path, String mode);
 
-		void Fclose(Pointer fd);
+        void Fclose(Pointer fd);
 
-		long Ftell(Pointer fd);
+        long Ftell(Pointer fd);
 
-		boolean Ferror(Pointer fd);
+        boolean Ferror(Pointer fd);
 
-		String Fstrerror(Pointer fd);
+        String Fstrerror(Pointer fd);
 
-	}
+    }
 
-	private static class Lazy {
-		static final RpmLib RPM = (RpmLib) Native.loadLibrary("rpm", RpmLib.class);
-	}
+    private static class Lazy {
+        static final RpmLib RPM = (RpmLib) Native.loadLibrary("rpm", RpmLib.class);
+    }
 
-	private static class LazyIO {
-		static final RpmIO RPMIO = (RpmIO) Native.loadLibrary("rpmio", RpmIO.class);
-	}
+    private static class LazyIO {
+        static final RpmIO RPMIO = (RpmIO) Native.loadLibrary("rpmio", RpmIO.class);
+    }
 
-	static final Pointer Fopen(String path, String mode) {
-		return LazyIO.RPMIO.Fopen(path, mode);
-	}
+    static final Pointer Fopen(String path, String mode) {
+        return LazyIO.RPMIO.Fopen(path, mode);
+    }
 
-	static final void Fclose(Pointer fd) {
-		LazyIO.RPMIO.Fclose(fd);
-	}
+    static final void Fclose(Pointer fd) {
+        LazyIO.RPMIO.Fclose(fd);
+    }
 
-	static final long Ftell(Pointer fd) {
-		return LazyIO.RPMIO.Ftell(fd);
-	}
+    static final long Ftell(Pointer fd) {
+        return LazyIO.RPMIO.Ftell(fd);
+    }
 
-	static final boolean Ferror(Pointer fd) {
-		return LazyIO.RPMIO.Ferror(fd);
-	}
+    static final boolean Ferror(Pointer fd) {
+        return LazyIO.RPMIO.Ferror(fd);
+    }
 
-	static final String Fstrerror(Pointer fd) {
-		return LazyIO.RPMIO.Fstrerror(fd);
-	}
+    static final String Fstrerror(Pointer fd) {
+        return LazyIO.RPMIO.Fstrerror(fd);
+    }
 
-	static final Pointer rpmtsCreate() {
-		return Lazy.RPM.rpmtsCreate();
-	}
+    static final Pointer rpmtsCreate() {
+        return Lazy.RPM.rpmtsCreate();
+    }
 
-	static final void rpmtsFree(Pointer ts) {
-		Lazy.RPM.rpmtsFree(ts);
-	}
+    static final void rpmtsFree(Pointer ts) {
+        Lazy.RPM.rpmtsFree(ts);
+    }
 
-	static final void rpmtsSetVSFlags(Pointer ts, int vsflags) {
-		Lazy.RPM.rpmtsSetVSFlags(ts, vsflags);
-	}
+    static final void rpmtsSetVSFlags(Pointer ts, int vsflags) {
+        Lazy.RPM.rpmtsSetVSFlags(ts, vsflags);
+    }
 
-	static final int rpmReadPackageFile(Pointer ts, Pointer fd, Pointer fn, Pointer hdrp) {
-		return Lazy.RPM.rpmReadPackageFile(ts, fd, fn, hdrp);
-	}
+    static final int rpmReadPackageFile(Pointer ts, Pointer fd, Pointer fn, Pointer hdrp) {
+        return Lazy.RPM.rpmReadPackageFile(ts, fd, fn, hdrp);
+    }
 
-	static final void headerFree(Pointer h) {
-		Lazy.RPM.headerFree(h);
-	}
+    static final void headerFree(Pointer h) {
+        Lazy.RPM.headerFree(h);
+    }
 
-	static final String headerGetString(Pointer h, int tag) {
-		return Lazy.RPM.headerGetString(h, tag);
-	}
+    static final String headerGetString(Pointer h, int tag) {
+        return Lazy.RPM.headerGetString(h, tag);
+    }
 
-	static final long headerGetNumber(Pointer h, int tag) {
-		return Lazy.RPM.headerGetNumber(h, tag);
-	}
+    static final long headerGetNumber(Pointer h, int tag) {
+        return Lazy.RPM.headerGetNumber(h, tag);
+    }
 }

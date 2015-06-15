@@ -61,112 +61,112 @@ import com.sun.jna.Pointer;
 
 /**
  * A class for reading RPM package as an archive.
- *
+ * 
  * @author Mikolaj Izdebski
  */
 public class RpmArchiveInputStream extends ArchiveInputStream {
-	private final ArchiveInputStream delegate;
+    private final ArchiveInputStream delegate;
 
-	public RpmArchiveInputStream(Path path) throws IOException {
-		this.delegate = wrapFile(path);
-	}
+    public RpmArchiveInputStream(Path path) throws IOException {
+        this.delegate = wrapFile(path);
+    }
 
-	@Override
-	public void close() throws IOException {
-		delegate.close();
-	}
+    @Override
+    public void close() throws IOException {
+        delegate.close();
+    }
 
-	@Override
-	public ArchiveEntry getNextEntry() throws IOException {
-		return delegate.getNextEntry();
-	}
+    @Override
+    public ArchiveEntry getNextEntry() throws IOException {
+        return delegate.getNextEntry();
+    }
 
-	@Override
-	public int read() throws IOException {
-		return delegate.read();
-	}
+    @Override
+    public int read() throws IOException {
+        return delegate.read();
+    }
 
-	@Override
-	public int read(byte[] buf) throws IOException {
-		return delegate.read(buf);
-	}
+    @Override
+    public int read(byte[] buf) throws IOException {
+        return delegate.read(buf);
+    }
 
-	@Override
-	public int read(byte[] buf, int off, int len) throws IOException {
-		return delegate.read(buf, off, len);
-	}
+    @Override
+    public int read(byte[] buf, int off, int len) throws IOException {
+        return delegate.read(buf, off, len);
+    }
 
-	private static IOException error(Path path, String message) throws IOException {
-		throw new IOException("Unable to open RPM file " + path + ": " + message);
-	}
+    private static IOException error(Path path, String message) throws IOException {
+        throw new IOException("Unable to open RPM file " + path + ": " + message);
+    }
 
-	private static ArchiveInputStream wrapFile(Path path) throws IOException {
-		String archiveFormat;
-		String compressionMethod;
-		long offset;
-		Pointer ts = rpmtsCreate();
-		Pointer fd = Fopen(path.toString(), "r");
-		try {
-			if (Ferror(fd))
-				throw error(path, Fstrerror(fd));
-			rpmtsSetVSFlags(ts, RPMVSF_NOHDRCHK | RPMVSF_NOSHA1HEADER | RPMVSF_NOMD5HEADER | RPMVSF_NODSAHEADER
-					| RPMVSF_NORSAHEADER | RPMVSF_NOSHA1 | RPMVSF_NOMD5 | RPMVSF_NODSA | RPMVSF_NORSA);
-			Pointer ph = new Memory(Pointer.SIZE);
-			int rc = rpmReadPackageFile(ts, fd, null, ph);
-			if (rc == RPMRC_NOTFOUND)
-				throw error(path, "Not a RPM file");
-			if (rc != RPMRC_OK && rc != RPMRC_NOTTRUSTED && rc != RPMRC_NOKEY)
-				throw error(path, "Failed to parse RPM header");
-			Pointer h = ph.getPointer(0);
-			try {
-				archiveFormat = headerGetString(h, RPMTAG_PAYLOADFORMAT);
-				compressionMethod = headerGetString(h, RPMTAG_PAYLOADCOMPRESSOR);
-			} finally {
-				headerFree(h);
-			}
-			offset = Ftell(fd);
-		} finally {
-			Fclose(fd);
-			rpmtsFree(ts);
-		}
+    private static ArchiveInputStream wrapFile(Path path) throws IOException {
+        String archiveFormat;
+        String compressionMethod;
+        long offset;
+        Pointer ts = rpmtsCreate();
+        Pointer fd = Fopen(path.toString(), "r");
+        try {
+            if (Ferror(fd))
+                throw error(path, Fstrerror(fd));
+            rpmtsSetVSFlags(ts, RPMVSF_NOHDRCHK | RPMVSF_NOSHA1HEADER | RPMVSF_NOMD5HEADER | RPMVSF_NODSAHEADER
+                    | RPMVSF_NORSAHEADER | RPMVSF_NOSHA1 | RPMVSF_NOMD5 | RPMVSF_NODSA | RPMVSF_NORSA);
+            Pointer ph = new Memory(Pointer.SIZE);
+            int rc = rpmReadPackageFile(ts, fd, null, ph);
+            if (rc == RPMRC_NOTFOUND)
+                throw error(path, "Not a RPM file");
+            if (rc != RPMRC_OK && rc != RPMRC_NOTTRUSTED && rc != RPMRC_NOKEY)
+                throw error(path, "Failed to parse RPM header");
+            Pointer h = ph.getPointer(0);
+            try {
+                archiveFormat = headerGetString(h, RPMTAG_PAYLOADFORMAT);
+                compressionMethod = headerGetString(h, RPMTAG_PAYLOADCOMPRESSOR);
+            } finally {
+                headerFree(h);
+            }
+            offset = Ftell(fd);
+        } finally {
+            Fclose(fd);
+            rpmtsFree(ts);
+        }
 
-		InputStream fis = Files.newInputStream(path);
-		fis.skip(offset);
+        InputStream fis = Files.newInputStream(path);
+        fis.skip(offset);
 
-		CompressorInputStream cis;
-		if (compressionMethod == null)
-			compressionMethod = "gzip";
-		switch (compressionMethod) {
-		case "gzip":
-			cis = new GzipCompressorInputStream(fis);
-			break;
-		case "bzip2":
-			cis = new BZip2CompressorInputStream(fis);
-			break;
-		case "xz":
-			cis = new XZCompressorInputStream(fis);
-			break;
-		case "lzma":
-			cis = new LZMACompressorInputStream(fis);
-			break;
-		default:
-			fis.close();
-			throw error(path, "Unsupported compression method: " + compressionMethod);
-		}
+        CompressorInputStream cis;
+        if (compressionMethod == null)
+            compressionMethod = "gzip";
+        switch (compressionMethod) {
+        case "gzip":
+            cis = new GzipCompressorInputStream(fis);
+            break;
+        case "bzip2":
+            cis = new BZip2CompressorInputStream(fis);
+            break;
+        case "xz":
+            cis = new XZCompressorInputStream(fis);
+            break;
+        case "lzma":
+            cis = new LZMACompressorInputStream(fis);
+            break;
+        default:
+            fis.close();
+            throw error(path, "Unsupported compression method: " + compressionMethod);
+        }
 
-		ArchiveInputStream ais;
-		if (archiveFormat == null)
-			archiveFormat = "cpio";
-		switch (archiveFormat) {
-		case "cpio":
-			ais = new CpioArchiveInputStream(cis);
-			break;
-		default:
-			cis.close();
-			throw error(path, "Unsupported archive format: " + archiveFormat);
-		}
+        ArchiveInputStream ais;
+        if (archiveFormat == null)
+            archiveFormat = "cpio";
+        switch (archiveFormat) {
+        case "cpio":
+            ais = new CpioArchiveInputStream(cis);
+            break;
+        default:
+            cis.close();
+            throw error(path, "Unsupported archive format: " + archiveFormat);
+        }
 
-		return ais;
-	}
+        return ais;
+    }
 
 }
