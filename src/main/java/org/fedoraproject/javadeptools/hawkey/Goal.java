@@ -16,6 +16,7 @@
 package org.fedoraproject.javadeptools.hawkey;
 
 import static org.fedoraproject.javadeptools.hawkey.Hawkey.HY_EQ;
+import static org.fedoraproject.javadeptools.hawkey.Hawkey.HY_IGNORE_WEAK_DEPS;
 import static org.fedoraproject.javadeptools.hawkey.Hawkey.HY_PKG_NAME;
 import static org.fedoraproject.javadeptools.hawkey.Hawkey.hy_goal_count_problems;
 import static org.fedoraproject.javadeptools.hawkey.Hawkey.hy_goal_create;
@@ -23,7 +24,7 @@ import static org.fedoraproject.javadeptools.hawkey.Hawkey.hy_goal_describe_prob
 import static org.fedoraproject.javadeptools.hawkey.Hawkey.hy_goal_free;
 import static org.fedoraproject.javadeptools.hawkey.Hawkey.hy_goal_install_selector;
 import static org.fedoraproject.javadeptools.hawkey.Hawkey.hy_goal_list_installs;
-import static org.fedoraproject.javadeptools.hawkey.Hawkey.hy_goal_run;
+import static org.fedoraproject.javadeptools.hawkey.Hawkey.hy_goal_run_flags;
 import static org.fedoraproject.javadeptools.hawkey.Hawkey.hy_selector_create;
 import static org.fedoraproject.javadeptools.hawkey.Hawkey.hy_selector_free;
 import static org.fedoraproject.javadeptools.hawkey.Hawkey.hy_selector_set;
@@ -50,6 +51,7 @@ import com.sun.jna.Pointer;
 public class Goal extends AbstractHawkeyType {
 
     private final Sack sack;
+    private boolean ignoreWeakDeps;
 
     /**
      * Create new goal from specified sack.
@@ -61,6 +63,27 @@ public class Goal extends AbstractHawkeyType {
     public Goal(Sack sack) throws HawkeyException {
         super(hy_goal_create(sack.self()));
         this.sack = sack;
+    }
+
+    /**
+     * Determine whether weak dependencies will be ignored when running this
+     * goal.
+     * 
+     * @return whether weak dependencies should be ignored
+     */
+    public boolean isIgnoreWeakDeps() {
+        return ignoreWeakDeps;
+    }
+
+    /**
+     * Set whether weak dependencies should be ignored when running this goal.
+     * Setting this to {@code true} requires hawkey 0.6.0 or newer.
+     * 
+     * @param ignoreWeakDeps
+     *            whether weak dependencies should be ignored
+     */
+    public void setIgnoreWeakDeps(boolean ignoreWeakDeps) {
+        this.ignoreWeakDeps = ignoreWeakDeps;
     }
 
     @Override
@@ -102,7 +125,10 @@ public class Goal extends AbstractHawkeyType {
      */
     public boolean run() throws HawkeyException {
         ensureSackNotClosed();
-        return hy_goal_run(self()) == 0;
+        int flags = 0;
+        if (ignoreWeakDeps)
+            flags |= HY_IGNORE_WEAK_DEPS;
+        return hy_goal_run_flags(self(), flags) == 0;
     }
 
     /**

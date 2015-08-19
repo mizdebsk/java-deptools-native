@@ -41,7 +41,7 @@ final class Hawkey {
 
         Pointer hy_goal_list_installs(Pointer goal);
 
-        int hy_goal_run(Pointer goal);
+        int hy_goal_run_flags(Pointer goal, int flags);
 
         void hy_package_free(Pointer pkg);
 
@@ -122,6 +122,8 @@ final class Hawkey {
     static final int HY_PKG_FILE = 7;
     static final int HY_PKG_NAME = 8;
 
+    static final int HY_IGNORE_WEAK_DEPS = 1 << 3;
+
     static final Pointer hy_free(Pointer ptr) {
         return Lazy.HY.hy_free(ptr);
     }
@@ -154,8 +156,8 @@ final class Hawkey {
         return Lazy.HY.hy_goal_list_installs(goal);
     }
 
-    static final int hy_goal_run(Pointer goal) {
-        return Lazy.HY.hy_goal_run(goal);
+    static final int hy_goal_run_flags(Pointer goal, int flags) {
+        return Lazy.HY.hy_goal_run_flags(goal, flags);
     }
 
     static final void hy_package_free(Pointer pkg) {
