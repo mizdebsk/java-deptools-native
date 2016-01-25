@@ -101,4 +101,14 @@ public class RpmArchiveInputStreamTest {
         ais.close();
     }
 
+    @Test
+    public void testNoCompression() throws Exception {
+        Path path = getResource("bar-1.0.0-1.fc23.noarch.rpm");
+
+        ArchiveInputStream ais = new RpmArchiveInputStream(path);
+        assertNotNull(ais.getNextEntry());
+        assertNull(ais.getNextEntry());
+        ais.close();
+    }
+
 }
