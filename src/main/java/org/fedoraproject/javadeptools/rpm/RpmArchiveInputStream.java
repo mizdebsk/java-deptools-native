@@ -42,6 +42,7 @@ import static org.fedoraproject.javadeptools.rpm.Rpm.rpmtsCreate;
 import static org.fedoraproject.javadeptools.rpm.Rpm.rpmtsFree;
 import static org.fedoraproject.javadeptools.rpm.Rpm.rpmtsSetVSFlags;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -50,7 +51,6 @@ import java.nio.file.Path;
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.ArchiveInputStream;
 import org.apache.commons.compress.archivers.cpio.CpioArchiveInputStream;
-import org.apache.commons.compress.compressors.CompressorInputStream;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
 import org.apache.commons.compress.compressors.lzma.LZMACompressorInputStream;
@@ -100,6 +100,15 @@ public class RpmArchiveInputStream extends ArchiveInputStream {
         throw new IOException("Unable to open RPM file " + path + ": " + message);
     }
 
+    private static boolean hasGzipMagic(InputStream fis) throws IOException {
+        try {
+            fis.mark(2);
+            return fis.read() == 31 && fis.read() == 139;
+        } finally {
+            fis.reset();
+        }
+    }
+
     private static ArchiveInputStream wrapFile(Path path) throws IOException {
         String archiveFormat;
         String compressionMethod;
@@ -130,15 +139,18 @@ public class RpmArchiveInputStream extends ArchiveInputStream {
             rpmtsFree(ts);
         }
 
-        InputStream fis = Files.newInputStream(path);
+        InputStream fis = new BufferedInputStream(Files.newInputStream(path));
         fis.skip(offset);
 
-        CompressorInputStream cis;
+        InputStream cis;
         if (compressionMethod == null)
             compressionMethod = "gzip";
         switch (compressionMethod) {
         case "gzip":
-            cis = new GzipCompressorInputStream(fis);
+            if (hasGzipMagic(fis))
+                cis = new GzipCompressorInputStream(fis, true);
+            else
+                cis = fis;
             break;
         case "bzip2":
             cis = new BZip2CompressorInputStream(fis);
