@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 2012-2015 Red Hat, Inc.
+ * Copyright (c) 2012-2016 Red Hat, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,16 +40,33 @@ final class Rpm {
     static final int RPMVSF_NODSA = 1 << 18;
     static final int RPMVSF_NORSA = 1 << 19;
 
+    static final int RPMTAG_NAME = 1000;
+    static final int RPMTAG_VERSION = 1001;
+    static final int RPMTAG_RELEASE = 1002;
+    static final int RPMTAG_EPOCH = 1003;
+    static final int RPMTAG_ARCH = 1022;
     static final int RPMTAG_PAYLOADCOMPRESSOR = 1125;
     static final int RPMTAG_PAYLOADFORMAT = 1124;
 
+    static final int RPMDBI_INSTFILENAMES = 5040;
+
     private static interface RpmLib extends Library {
+
+        int rpmReadConfigFiles(String file, String target);
 
         Pointer rpmtsCreate();
 
         void rpmtsFree(Pointer ts);
 
+        int rpmtsSetRootDir(Pointer ts, String rootDir);
+
+        Pointer rpmtsInitIterator(Pointer ts, int rpmtag, String keyp, long keylen);
+
         void rpmtsSetVSFlags(Pointer ts, int vsflags);
+
+        Pointer rpmdbNextIterator(Pointer mi);
+
+        void rpmdbFreeIterator(Pointer mi);
 
         int rpmReadPackageFile(Pointer ts, Pointer fd, Pointer fn, Pointer hdrp);
 
@@ -103,6 +120,10 @@ final class Rpm {
         return LazyIO.RPMIO.Fstrerror(fd);
     }
 
+    static final int rpmReadConfigFiles(String file, String target) {
+        return Lazy.RPM.rpmReadConfigFiles(file, target);
+    }
+
     static final Pointer rpmtsCreate() {
         return Lazy.RPM.rpmtsCreate();
     }
@@ -111,8 +132,24 @@ final class Rpm {
         Lazy.RPM.rpmtsFree(ts);
     }
 
+    static final int rpmtsSetRootDir(Pointer ts, String rootDir) {
+        return Lazy.RPM.rpmtsSetRootDir(ts, rootDir);
+    }
+
+    static final Pointer rpmtsInitIterator(Pointer ts, int rpmtag, String keyp, long keylen) {
+        return Lazy.RPM.rpmtsInitIterator(ts, rpmtag, keyp, keylen);
+    }
+
     static final void rpmtsSetVSFlags(Pointer ts, int vsflags) {
         Lazy.RPM.rpmtsSetVSFlags(ts, vsflags);
+    }
+
+    static final Pointer rpmdbNextIterator(Pointer mi) {
+        return Lazy.RPM.rpmdbNextIterator(mi);
+    }
+
+    static final void rpmdbFreeIterator(Pointer mi) {
+        Lazy.RPM.rpmdbFreeIterator(mi);
     }
 
     static final int rpmReadPackageFile(Pointer ts, Pointer fd, Pointer fn, Pointer hdrp) {
