@@ -25,7 +25,6 @@ import static org.fedoraproject.javadeptools.rpm.Rpm.rpmtsInitIterator;
 import static org.fedoraproject.javadeptools.rpm.Rpm.rpmtsSetRootDir;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -66,13 +65,6 @@ public class RpmQuery {
             }
         } finally {
             rpmtsFree(ts);
-        }
-    }
-
-    public static void main(String[] args) {
-        List<NEVRA> providers = RpmQuery.byFile(Paths.get("/usr/bin/bash"), Paths.get("/tmp/tr1"));
-        for (NEVRA prov : providers) {
-            System.out.println(prov.getName());
         }
     }
 
