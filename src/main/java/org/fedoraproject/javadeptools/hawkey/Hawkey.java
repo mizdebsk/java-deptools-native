@@ -67,6 +67,8 @@ final class Hawkey {
 
         Pointer hy_package_get_version(Pointer pkg);
 
+        Pointer hy_package_get_requires(Pointer pkg);
+
         boolean hy_package_identical(Pointer pkg1, Pointer pkg2);
 
         int hy_packagelist_count(Pointer plist);
@@ -75,9 +77,13 @@ final class Hawkey {
 
         Pointer hy_packagelist_get(Pointer plist, int index);
 
+        void hy_reldeplist_free(Pointer reldeplist);
+
         Pointer hy_query_create(Pointer sack);
 
         int hy_query_filter(Pointer q, int keyname, int cmp_type, String match);
+
+        int hy_query_filter_reldep_in(Pointer q, int keyname, Pointer reldeplist);
 
         void hy_query_free(Pointer q);
 
@@ -121,6 +127,7 @@ final class Hawkey {
 
     static final int HY_PKG_FILE = 7;
     static final int HY_PKG_NAME = 8;
+    static final int HY_PKG_PROVIDES = 11;
 
     static final int HY_IGNORE_WEAK_DEPS = 1 << 3;
 
@@ -208,6 +215,10 @@ final class Hawkey {
         return Lazy.HY.hy_package_get_version(pkg);
     }
 
+    static final Pointer hy_package_get_requires(Pointer pkg) {
+        return Lazy.HY.hy_package_get_requires(pkg);
+    }
+
     static final boolean hy_package_identical(Pointer pkg1, Pointer pkg2) {
         return Lazy.HY.hy_package_identical(pkg1, pkg2);
     }
@@ -224,12 +235,20 @@ final class Hawkey {
         return Lazy.HY.hy_packagelist_get(plist, index);
     }
 
+    static final void hy_reldeplist_free(Pointer reldeplist) {
+        Lazy.HY.hy_reldeplist_free(reldeplist);
+    }
+
     static final Pointer hy_query_create(Pointer sack) {
         return Lazy.HY.hy_query_create(sack);
     }
 
     static final int hy_query_filter(Pointer q, int keyname, int cmp_type, String match) {
         return Lazy.HY.hy_query_filter(q, keyname, cmp_type, match);
+    }
+
+    static final int hy_query_filter_reldep_in(Pointer q, int keyname, Pointer reldeplist) {
+        return Lazy.HY.hy_query_filter_reldep_in(q, keyname, reldeplist);
     }
 
     static final void hy_query_free(Pointer q) {

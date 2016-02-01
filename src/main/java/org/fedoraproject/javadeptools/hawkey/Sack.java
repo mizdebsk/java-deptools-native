@@ -15,16 +15,25 @@
  */
 package org.fedoraproject.javadeptools.hawkey;
 
+import static org.fedoraproject.javadeptools.hawkey.Hawkey.HY_EQ;
 import static org.fedoraproject.javadeptools.hawkey.Hawkey.HY_GLOB;
 import static org.fedoraproject.javadeptools.hawkey.Hawkey.HY_LOAD_FILELISTS;
 import static org.fedoraproject.javadeptools.hawkey.Hawkey.HY_PKG_FILE;
+import static org.fedoraproject.javadeptools.hawkey.Hawkey.HY_PKG_NAME;
+import static org.fedoraproject.javadeptools.hawkey.Hawkey.HY_PKG_PROVIDES;
 import static org.fedoraproject.javadeptools.hawkey.Hawkey.HY_REPO_FILELISTS_FN;
 import static org.fedoraproject.javadeptools.hawkey.Hawkey.HY_REPO_MD_FN;
 import static org.fedoraproject.javadeptools.hawkey.Hawkey.HY_REPO_PRIMARY_FN;
+import static org.fedoraproject.javadeptools.hawkey.Hawkey.hy_package_get_requires;
+import static org.fedoraproject.javadeptools.hawkey.Hawkey.hy_packagelist_count;
+import static org.fedoraproject.javadeptools.hawkey.Hawkey.hy_packagelist_free;
+import static org.fedoraproject.javadeptools.hawkey.Hawkey.hy_packagelist_get;
 import static org.fedoraproject.javadeptools.hawkey.Hawkey.hy_query_create;
 import static org.fedoraproject.javadeptools.hawkey.Hawkey.hy_query_filter;
+import static org.fedoraproject.javadeptools.hawkey.Hawkey.hy_query_filter_reldep_in;
 import static org.fedoraproject.javadeptools.hawkey.Hawkey.hy_query_free;
 import static org.fedoraproject.javadeptools.hawkey.Hawkey.hy_query_run;
+import static org.fedoraproject.javadeptools.hawkey.Hawkey.hy_reldeplist_free;
 import static org.fedoraproject.javadeptools.hawkey.Hawkey.hy_repo_create;
 import static org.fedoraproject.javadeptools.hawkey.Hawkey.hy_repo_free;
 import static org.fedoraproject.javadeptools.hawkey.Hawkey.hy_repo_set_string;
@@ -113,6 +122,48 @@ public class Sack extends AbstractHawkeyType {
         } finally {
             hy_query_free(query);
         }
+    }
 
+    /**
+     * List packages required by package of given names. Dependencies must
+     * already be resolved.
+     * 
+     * @param name
+     *            name of package to resolve dependencies of
+     * @return list of packages required by specified package
+     * @throws HawkeyException
+     */
+    public List<PackageInfo> resolveRequires(String name) throws HawkeyException {
+        Pointer q1 = hy_query_create(self());
+        assumeNotNull(q1);
+
+        try {
+            hy_query_filter(q1, HY_PKG_NAME, HY_EQ, name);
+
+            Pointer plist = hy_query_run(q1);
+            assumeNotNull(plist);
+            try {
+                int n = hy_packagelist_count(plist);
+                if (n != 1)
+                    return null;
+                Pointer pkg = hy_packagelist_get(plist, 0);
+
+                Pointer q2 = hy_query_create(self());
+                assumeNotNull(q2);
+                try {
+                    Pointer rl = hy_package_get_requires(pkg);
+                    assumeNotNull(rl);
+                    hy_query_filter_reldep_in(q2, HY_PKG_PROVIDES, rl);
+                    hy_reldeplist_free(rl);
+                    return pkgList(hy_query_run(q2));
+                } finally {
+                    hy_query_free(q2);
+                }
+            } finally {
+                hy_packagelist_free(plist);
+            }
+        } finally {
+            hy_query_free(q1);
+        }
     }
 }

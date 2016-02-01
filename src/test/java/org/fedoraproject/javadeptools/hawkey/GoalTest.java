@@ -22,6 +22,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.nio.file.Path;
+import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
@@ -128,6 +129,19 @@ public class GoalTest extends AbstractHawkeyTest {
             boolean ok = goal.run();
             assertFalse(ok);
             assertEquals(1, goal.getProblems().size());
+        }
+    }
+
+    @Test
+    public void testResolveRequires() throws Exception {
+        addRepo("setup");
+
+        try (Goal goal = new Goal(sack)) {
+            goal.install("setup");
+            boolean ok = goal.run();
+            assertTrue(ok);
+            List<PackageInfo> requires = sack.resolveRequires("fedora-repos");
+            assertEquals(2, requires.size());
         }
     }
 }
