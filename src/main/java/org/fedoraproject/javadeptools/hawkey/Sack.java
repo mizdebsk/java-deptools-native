@@ -18,6 +18,7 @@ package org.fedoraproject.javadeptools.hawkey;
 import static org.fedoraproject.javadeptools.hawkey.Hawkey.HY_EQ;
 import static org.fedoraproject.javadeptools.hawkey.Hawkey.HY_GLOB;
 import static org.fedoraproject.javadeptools.hawkey.Hawkey.HY_LOAD_FILELISTS;
+import static org.fedoraproject.javadeptools.hawkey.Hawkey.HY_PKG_ARCH;
 import static org.fedoraproject.javadeptools.hawkey.Hawkey.HY_PKG_FILE;
 import static org.fedoraproject.javadeptools.hawkey.Hawkey.HY_PKG_NAME;
 import static org.fedoraproject.javadeptools.hawkey.Hawkey.HY_PKG_PROVIDES;
@@ -130,15 +131,18 @@ public class Sack extends AbstractHawkeyType {
      * 
      * @param name
      *            name of package to resolve dependencies of
+     * @param arch
+     *            arch of package to resolve dependencies of
      * @return list of packages required by specified package
      * @throws HawkeyException
      */
-    public List<PackageInfo> resolveRequires(String name) throws HawkeyException {
+    public List<PackageInfo> resolveRequires(String name, String arch) throws HawkeyException {
         Pointer q1 = hy_query_create(self());
         assumeNotNull(q1);
 
         try {
             hy_query_filter(q1, HY_PKG_NAME, HY_EQ, name);
+            hy_query_filter(q1, HY_PKG_ARCH, HY_EQ, arch);
 
             Pointer plist = hy_query_run(q1);
             assumeNotNull(plist);

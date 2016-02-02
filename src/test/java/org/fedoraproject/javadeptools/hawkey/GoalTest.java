@@ -140,7 +140,7 @@ public class GoalTest extends AbstractHawkeyTest {
             goal.install("setup");
             boolean ok = goal.run();
             assertTrue(ok);
-            List<PackageInfo> requires = sack.resolveRequires("fedora-repos");
+            List<PackageInfo> requires = sack.resolveRequires("fedora-repos", "noarch");
             assertEquals(2, requires.size());
         }
     }

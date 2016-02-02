@@ -125,6 +125,7 @@ final class Hawkey {
     static final int HY_EQ = 1 << 8;
     static final int HY_GLOB = 1 << 12;
 
+    static final int HY_PKG_ARCH = 2;
     static final int HY_PKG_FILE = 7;
     static final int HY_PKG_NAME = 8;
     static final int HY_PKG_PROVIDES = 11;
