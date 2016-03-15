@@ -60,7 +60,7 @@ public class YumRepo {
             lr_handle_setopt(handle, null, LRO_REPOTYPE, LR_YUMREPO);
             lr_handle_setopt(handle, null, LRO_YUMDLIST, new String[] { "primary", "filelists" });
 
-            if (!lr_handle_perform(handle, result))
+            if (!lr_handle_perform(handle, result, null))
                 throw new IOException();
         } finally {
             lr_result_free(result);

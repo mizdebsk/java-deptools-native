@@ -30,7 +30,7 @@ class Librepo {
 
         void lr_handle_setopt(Pointer handle, Pointer err, Object... option);
 
-        boolean lr_handle_perform(Pointer handle, Pointer result);
+        boolean lr_handle_perform(Pointer handle, Pointer result, Pointer err);
 
         Pointer lr_result_init();
 
@@ -60,8 +60,8 @@ class Librepo {
         Lazy.LR.lr_handle_setopt(handle, err, option);
     }
 
-    static final boolean lr_handle_perform(Pointer handle, Pointer result) {
-        return Lazy.LR.lr_handle_perform(handle, result);
+    static final boolean lr_handle_perform(Pointer handle, Pointer result, Pointer err) {
+        return Lazy.LR.lr_handle_perform(handle, result, err);
     }
 
     static final Pointer lr_result_init() {
