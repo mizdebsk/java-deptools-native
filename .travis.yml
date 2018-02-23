@@ -3,6 +3,6 @@ jdk:
   - openjdk7
 before_install:
   - sudo apt-get update -qq
-  - sudo apt-get install -y librpm2 librpmio2
+  - sudo apt-get install -y rpm-common librpmio2
 install: true
 script: mvn -B clean package
