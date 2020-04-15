@@ -28,6 +28,7 @@ import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
 import org.apache.commons.compress.compressors.lzma.LZMACompressorInputStream;
 import org.apache.commons.compress.compressors.xz.XZCompressorInputStream;
+import org.apache.commons.compress.compressors.zstandard.ZstdCompressorInputStream;
 
 /**
  * A class for reading RPM package as an archive.
@@ -100,6 +101,9 @@ public class RpmArchiveInputStream extends ArchiveInputStream {
             break;
         case "lzma":
             cis = new LZMACompressorInputStream(fis);
+            break;
+        case "zstd":
+            cis = new ZstdCompressorInputStream(fis);
             break;
         default:
             fis.close();
