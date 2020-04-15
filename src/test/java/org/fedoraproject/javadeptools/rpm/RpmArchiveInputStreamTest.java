@@ -102,6 +102,15 @@ public class RpmArchiveInputStreamTest {
     }
 
     @Test
+    public void testZSTD() throws Exception {
+        Path path = getResource("testrpm-1-1.fc31.x86_64.rpm");
+
+        ArchiveInputStream ais = new RpmArchiveInputStream(path);
+        assertNull(ais.getNextEntry());
+        ais.close();
+    }
+
+    @Test
     public void testNoCompression() throws Exception {
         Path path = getResource("bar-1.0.0-1.fc23.noarch.rpm");
 
