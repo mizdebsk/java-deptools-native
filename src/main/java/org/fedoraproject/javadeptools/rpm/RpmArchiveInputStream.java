@@ -15,33 +15,6 @@
  */
 package org.fedoraproject.javadeptools.rpm;
 
-import static org.fedoraproject.javadeptools.rpm.Rpm.Fclose;
-import static org.fedoraproject.javadeptools.rpm.Rpm.Ferror;
-import static org.fedoraproject.javadeptools.rpm.Rpm.Fopen;
-import static org.fedoraproject.javadeptools.rpm.Rpm.Fstrerror;
-import static org.fedoraproject.javadeptools.rpm.Rpm.Ftell;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMRC_NOKEY;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMRC_NOTFOUND;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMRC_NOTTRUSTED;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMRC_OK;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMTAG_PAYLOADCOMPRESSOR;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMTAG_PAYLOADFORMAT;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMVSF_NODSA;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMVSF_NODSAHEADER;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMVSF_NOHDRCHK;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMVSF_NOMD5;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMVSF_NOMD5HEADER;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMVSF_NORSA;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMVSF_NORSAHEADER;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMVSF_NOSHA1;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMVSF_NOSHA1HEADER;
-import static org.fedoraproject.javadeptools.rpm.Rpm.headerFree;
-import static org.fedoraproject.javadeptools.rpm.Rpm.headerGetString;
-import static org.fedoraproject.javadeptools.rpm.Rpm.rpmReadPackageFile;
-import static org.fedoraproject.javadeptools.rpm.Rpm.rpmtsCreate;
-import static org.fedoraproject.javadeptools.rpm.Rpm.rpmtsFree;
-import static org.fedoraproject.javadeptools.rpm.Rpm.rpmtsSetVSFlags;
-
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -55,9 +28,6 @@ import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
 import org.apache.commons.compress.compressors.lzma.LZMACompressorInputStream;
 import org.apache.commons.compress.compressors.xz.XZCompressorInputStream;
-
-import com.sun.jna.Memory;
-import com.sun.jna.Pointer;
 
 /**
  * A class for reading RPM package as an archive.
@@ -110,42 +80,12 @@ public class RpmArchiveInputStream extends ArchiveInputStream {
     }
 
     private static ArchiveInputStream wrapFile(Path path) throws IOException {
-        String archiveFormat;
-        String compressionMethod;
-        long offset;
-        Pointer ts = rpmtsCreate();
-        Pointer fd = Fopen(path.toString(), "r");
-        try {
-            if (Ferror(fd))
-                throw error(path, Fstrerror(fd));
-            rpmtsSetVSFlags(ts, RPMVSF_NOHDRCHK | RPMVSF_NOSHA1HEADER | RPMVSF_NOMD5HEADER | RPMVSF_NODSAHEADER
-                    | RPMVSF_NORSAHEADER | RPMVSF_NOSHA1 | RPMVSF_NOMD5 | RPMVSF_NODSA | RPMVSF_NORSA);
-            Pointer ph = new Memory(Pointer.SIZE);
-            int rc = rpmReadPackageFile(ts, fd, null, ph);
-            if (rc == RPMRC_NOTFOUND)
-                throw error(path, "Not a RPM file");
-            if (rc != RPMRC_OK && rc != RPMRC_NOTTRUSTED && rc != RPMRC_NOKEY)
-                throw error(path, "Failed to parse RPM header");
-            Pointer h = ph.getPointer(0);
-            try {
-                archiveFormat = headerGetString(h, RPMTAG_PAYLOADFORMAT);
-                compressionMethod = headerGetString(h, RPMTAG_PAYLOADCOMPRESSOR);
-            } finally {
-                headerFree(h);
-            }
-            offset = Ftell(fd);
-        } finally {
-            Fclose(fd);
-            rpmtsFree(ts);
-        }
-
+        RpmInfo info = new RpmInfo(path);
         InputStream fis = new BufferedInputStream(Files.newInputStream(path));
-        fis.skip(offset);
+        fis.skip(info.getHeaderSize());
 
         InputStream cis;
-        if (compressionMethod == null)
-            compressionMethod = "gzip";
-        switch (compressionMethod) {
+        switch (info.getCompressionMethod()) {
         case "gzip":
             if (hasGzipMagic(fis))
                 cis = new GzipCompressorInputStream(fis, true);
@@ -163,19 +103,17 @@ public class RpmArchiveInputStream extends ArchiveInputStream {
             break;
         default:
             fis.close();
-            throw error(path, "Unsupported compression method: " + compressionMethod);
+            throw error(path, "Unsupported compression method: " + info.getCompressionMethod());
         }
 
         ArchiveInputStream ais;
-        if (archiveFormat == null)
-            archiveFormat = "cpio";
-        switch (archiveFormat) {
+        switch (info.getArchiveFormat()) {
         case "cpio":
             ais = new CpioArchiveInputStream(cis);
             break;
         default:
             cis.close();
-            throw error(path, "Unsupported archive format: " + archiveFormat);
+            throw error(path, "Unsupported archive format: " + info.getArchiveFormat());
         }
 
         return ais;
