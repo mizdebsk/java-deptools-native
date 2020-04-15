@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 2012-2015 Red Hat, Inc.
+ * Copyright (c) 2012-2020 Red Hat, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,8 +21,8 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.ArchiveInputStream;
+import org.apache.commons.compress.archivers.cpio.CpioArchiveEntry;
 import org.apache.commons.compress.archivers.cpio.CpioArchiveInputStream;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
@@ -35,7 +35,7 @@ import org.apache.commons.compress.compressors.xz.XZCompressorInputStream;
  * @author Mikolaj Izdebski
  */
 public class RpmArchiveInputStream extends ArchiveInputStream {
-    private final ArchiveInputStream delegate;
+    private final CpioArchiveInputStream delegate;
 
     public RpmArchiveInputStream(Path path) throws IOException {
         this.delegate = wrapFile(path);
@@ -47,8 +47,8 @@ public class RpmArchiveInputStream extends ArchiveInputStream {
     }
 
     @Override
-    public ArchiveEntry getNextEntry() throws IOException {
-        return delegate.getNextEntry();
+    public CpioArchiveEntry getNextEntry() throws IOException {
+        return delegate.getNextCPIOEntry();
     }
 
     @Override
@@ -79,7 +79,7 @@ public class RpmArchiveInputStream extends ArchiveInputStream {
         }
     }
 
-    private static ArchiveInputStream wrapFile(Path path) throws IOException {
+    private static CpioArchiveInputStream wrapFile(Path path) throws IOException {
         RpmInfo info = new RpmInfo(path);
         InputStream fis = new BufferedInputStream(Files.newInputStream(path));
         fis.skip(info.getHeaderSize());
@@ -106,17 +106,12 @@ public class RpmArchiveInputStream extends ArchiveInputStream {
             throw error(path, "Unsupported compression method: " + info.getCompressionMethod());
         }
 
-        ArchiveInputStream ais;
-        switch (info.getArchiveFormat()) {
-        case "cpio":
-            ais = new CpioArchiveInputStream(cis);
-            break;
-        default:
+        if (!info.getArchiveFormat().equals("cpio")) {
             cis.close();
             throw error(path, "Unsupported archive format: " + info.getArchiveFormat());
         }
 
-        return ais;
+        return new CpioArchiveInputStream(cis);
     }
 
 }
