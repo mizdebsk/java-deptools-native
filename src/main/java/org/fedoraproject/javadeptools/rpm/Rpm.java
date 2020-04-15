@@ -45,8 +45,12 @@ final class Rpm {
     static final int RPMTAG_RELEASE = 1002;
     static final int RPMTAG_EPOCH = 1003;
     static final int RPMTAG_ARCH = 1022;
+    static final int RPMTAG_PROVIDENAME = 1047;
+    static final int RPMTAG_REQUIRENAME = 1049;
     static final int RPMTAG_PAYLOADCOMPRESSOR = 1125;
     static final int RPMTAG_PAYLOADFORMAT = 1124;
+
+    static final int HEADERGET_MINMEM = 1 << 0;
 
     static final int RPMDBI_INSTFILENAMES = 5040;
 
@@ -72,10 +76,19 @@ final class Rpm {
 
         void headerFree(Pointer h);
 
+        boolean headerGet(Pointer h, int tag, Pointer td, int flags);
+
         String headerGetString(Pointer h, int tag);
 
         long headerGetNumber(Pointer h, int tag);
 
+        int rpmtdCount(Pointer td);
+
+        int rpmtdNext(Pointer td);
+
+        String rpmtdGetString(Pointer td);
+
+        void rpmtdFreeData(Pointer td);
     }
 
     private static interface RpmIO extends Library {
@@ -160,11 +173,31 @@ final class Rpm {
         Lazy.RPM.headerFree(h);
     }
 
+    static final boolean headerGet(Pointer h, int tag, Pointer td, int flags) {
+        return Lazy.RPM.headerGet(h, tag, td, flags);
+    }
+
     static final String headerGetString(Pointer h, int tag) {
         return Lazy.RPM.headerGetString(h, tag);
     }
 
     static final long headerGetNumber(Pointer h, int tag) {
         return Lazy.RPM.headerGetNumber(h, tag);
+    }
+
+    static final int rpmtdCount(Pointer td) {
+        return Lazy.RPM.rpmtdCount(td);
+    }
+
+    static final int rpmtdNext(Pointer td) {
+        return Lazy.RPM.rpmtdNext(td);
+    }
+
+    static final String rpmtdGetString(Pointer td) {
+        return Lazy.RPM.rpmtdGetString(td);
+    }
+
+    static final void rpmtdFreeData(Pointer td) {
+        Lazy.RPM.rpmtdFreeData(td);
     }
 }
