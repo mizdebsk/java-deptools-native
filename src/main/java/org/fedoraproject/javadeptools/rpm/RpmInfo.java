@@ -38,7 +38,7 @@ import static org.fedoraproject.javadeptools.rpm.Rpm.RPMVSF_NOMD5HEADER;
 import static org.fedoraproject.javadeptools.rpm.Rpm.RPMVSF_NORSA;
 import static org.fedoraproject.javadeptools.rpm.Rpm.RPMVSF_NORSAHEADER;
 import static org.fedoraproject.javadeptools.rpm.Rpm.RPMVSF_NOSHA1;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMVSF_NOSHA1HEADER;
+import static org.fedoraproject.javadeptools.rpm.Rpm.*;
 import static org.fedoraproject.javadeptools.rpm.Rpm.headerFree;
 import static org.fedoraproject.javadeptools.rpm.Rpm.headerGet;
 import static org.fedoraproject.javadeptools.rpm.Rpm.headerGetNumber;
@@ -102,8 +102,15 @@ public class RpmInfo {
             Pointer h = ph.getPointer(0);
             try {
                 nevra = new NEVRA(h);
-                requires = headerGetList(h, RPMTAG_REQUIRENAME);
                 provides = headerGetList(h, RPMTAG_PROVIDENAME);
+                requires = headerGetList(h, RPMTAG_REQUIRENAME);
+                conflicts = headerGetList(h, RPMTAG_CONFLICTNAME);
+                obsoletes = headerGetList(h, RPMTAG_OBSOLETENAME);
+                recommends = headerGetList(h, RPMTAG_RECOMMENDNAME);
+                suggests = headerGetList(h, RPMTAG_SUGGESTNAME);
+                supplements = headerGetList(h, RPMTAG_SUPPLEMENTNAME);
+                enhances = headerGetList(h, RPMTAG_ENHANCENAME);
+                orderWithRequires = headerGetList(h, RPMTAG_ORDERNAME);
                 archiveFormat = headerGetString(h, RPMTAG_PAYLOADFORMAT);
                 compressionMethod = headerGetString(h, RPMTAG_PAYLOADCOMPRESSOR);
                 sourcePackage = headerGetNumber(h, RPMTAG_SOURCEPACKAGE) != 0;
@@ -119,8 +126,15 @@ public class RpmInfo {
 
     private final NEVRA nevra;
     private final boolean sourcePackage;
-    private final List<String> requires;
     private final List<String> provides;
+    private final List<String> requires;
+    private final List<String> conflicts;
+    private final List<String> obsoletes;
+    private final List<String> recommends;
+    private final List<String> suggests;
+    private final List<String> supplements;
+    private final List<String> enhances;
+    private final List<String> orderWithRequires;
     private final String archiveFormat;
     private final String compressionMethod;
     private final long headerSize;
@@ -153,12 +167,40 @@ public class RpmInfo {
         return sourcePackage;
     }
 
+    public List<String> getProvides() {
+        return provides;
+    }
+
     public List<String> getRequires() {
         return requires;
     }
 
-    public List<String> getProvides() {
-        return provides;
+    public List<String> getConflicts() {
+        return conflicts;
+    }
+
+    public List<String> getObsoletes() {
+        return obsoletes;
+    }
+
+    public List<String> getRecommends() {
+        return recommends;
+    }
+
+    public List<String> getSuggests() {
+        return suggests;
+    }
+
+    public List<String> getSupplements() {
+        return supplements;
+    }
+
+    public List<String> getEnhances() {
+        return enhances;
+    }
+
+    public List<String> getOrderWithRequires() {
+        return orderWithRequires;
     }
 
     public String getArchiveFormat() {

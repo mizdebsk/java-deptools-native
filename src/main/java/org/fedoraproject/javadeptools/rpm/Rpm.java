@@ -44,12 +44,19 @@ final class Rpm {
     static final int RPMTAG_VERSION = 1001;
     static final int RPMTAG_RELEASE = 1002;
     static final int RPMTAG_EPOCH = 1003;
-    static final int RPMTAG_SOURCEPACKAGE = 1106;
     static final int RPMTAG_ARCH = 1022;
     static final int RPMTAG_PROVIDENAME = 1047;
     static final int RPMTAG_REQUIRENAME = 1049;
+    static final int RPMTAG_CONFLICTNAME = 1054;
+    static final int RPMTAG_OBSOLETENAME = 1090;
+    static final int RPMTAG_SOURCEPACKAGE = 1106;
     static final int RPMTAG_PAYLOADCOMPRESSOR = 1125;
     static final int RPMTAG_PAYLOADFORMAT = 1124;
+    static final int RPMTAG_ORDERNAME = 5035;
+    static final int RPMTAG_RECOMMENDNAME = 5046;
+    static final int RPMTAG_SUGGESTNAME = 5049;
+    static final int RPMTAG_SUPPLEMENTNAME = 5052;
+    static final int RPMTAG_ENHANCENAME = 5055;
 
     static final int HEADERGET_MINMEM = 1 << 0;
 
