@@ -17,6 +17,7 @@ package org.fedoraproject.javadeptools.rpm;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -30,10 +31,11 @@ import org.junit.Test;
  */
 public class RpmInfoTest {
     @Test
-    public void testFileLookup() throws Exception {
+    public void testBinaryPackage() throws Exception {
         Path path = Paths.get("src/test/resources/rpm/foo-1-1.fc21.x86_64.rpm");
         RpmInfo info = new RpmInfo(path);
 
+        assertFalse(info.isSourcePackage());
         assertEquals("foo", info.getName());
         assertEquals(0, info.getEpoch());
         assertEquals("1", info.getVersion());
@@ -47,5 +49,24 @@ public class RpmInfoTest {
 
         List<String> req = info.getRequires();
         assertEquals(4, req.size());
+    }
+
+    @Test
+    public void testSourcePackage() throws Exception {
+        Path path = Paths.get("src/test/resources/rpm/foo-1-1.fc21.src.rpm");
+        RpmInfo info = new RpmInfo(path);
+
+        assertTrue(info.isSourcePackage());
+        assertEquals("foo", info.getName());
+        assertEquals(0, info.getEpoch());
+        assertEquals("1", info.getVersion());
+        assertEquals("1.fc21", info.getRelease());
+        assertEquals("x86_64", info.getArch());
+
+        Iterator<String> prov = info.getProvides().iterator();
+        assertFalse(prov.hasNext());
+
+        List<String> req = info.getRequires();
+        assertEquals(2, req.size());
     }
 }

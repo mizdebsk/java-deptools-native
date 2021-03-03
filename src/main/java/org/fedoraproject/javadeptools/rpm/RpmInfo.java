@@ -29,6 +29,7 @@ import static org.fedoraproject.javadeptools.rpm.Rpm.RPMTAG_PAYLOADCOMPRESSOR;
 import static org.fedoraproject.javadeptools.rpm.Rpm.RPMTAG_PAYLOADFORMAT;
 import static org.fedoraproject.javadeptools.rpm.Rpm.RPMTAG_PROVIDENAME;
 import static org.fedoraproject.javadeptools.rpm.Rpm.RPMTAG_REQUIRENAME;
+import static org.fedoraproject.javadeptools.rpm.Rpm.RPMTAG_SOURCEPACKAGE;
 import static org.fedoraproject.javadeptools.rpm.Rpm.RPMVSF_NODSA;
 import static org.fedoraproject.javadeptools.rpm.Rpm.RPMVSF_NODSAHEADER;
 import static org.fedoraproject.javadeptools.rpm.Rpm.RPMVSF_NOHDRCHK;
@@ -40,6 +41,7 @@ import static org.fedoraproject.javadeptools.rpm.Rpm.RPMVSF_NOSHA1;
 import static org.fedoraproject.javadeptools.rpm.Rpm.RPMVSF_NOSHA1HEADER;
 import static org.fedoraproject.javadeptools.rpm.Rpm.headerFree;
 import static org.fedoraproject.javadeptools.rpm.Rpm.headerGet;
+import static org.fedoraproject.javadeptools.rpm.Rpm.headerGetNumber;
 import static org.fedoraproject.javadeptools.rpm.Rpm.headerGetString;
 import static org.fedoraproject.javadeptools.rpm.Rpm.rpmReadPackageFile;
 import static org.fedoraproject.javadeptools.rpm.Rpm.rpmtdCount;
@@ -104,6 +106,7 @@ public class RpmInfo {
                 provides = headerGetList(h, RPMTAG_PROVIDENAME);
                 archiveFormat = headerGetString(h, RPMTAG_PAYLOADFORMAT);
                 compressionMethod = headerGetString(h, RPMTAG_PAYLOADCOMPRESSOR);
+                sourcePackage = headerGetNumber(h, RPMTAG_SOURCEPACKAGE) != 0;
             } finally {
                 headerFree(h);
             }
@@ -115,6 +118,7 @@ public class RpmInfo {
     }
 
     private final NEVRA nevra;
+    private final boolean sourcePackage;
     private final List<String> requires;
     private final List<String> provides;
     private final String archiveFormat;
@@ -143,6 +147,10 @@ public class RpmInfo {
 
     public String getArch() {
         return nevra.getArch();
+    }
+
+    public boolean isSourcePackage() {
+        return sourcePackage;
     }
 
     public List<String> getRequires() {
