@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.sun.jna.Pointer;
+import jdk.incubator.foreign.MemoryAddress;
 
 /**
  * @author Mikolaj Izdebski
@@ -45,18 +45,18 @@ public class RpmQuery {
     }
 
     public static List<NEVRA> byFile(Path path, Path root) {
-        Pointer ts = rpmtsCreate();
+        MemoryAddress ts = rpmtsCreate();
         try {
             if (path != null) {
                 if (rpmtsSetRootDir(ts, root.toString()) != 0) {
                     return Collections.emptyList();
                 }
             }
-            Pointer mi = rpmtsInitIterator(ts, RPMDBI_INSTFILENAMES, path.toAbsolutePath().toString(), 0);
+            MemoryAddress mi = rpmtsInitIterator(ts, RPMDBI_INSTFILENAMES, path.toAbsolutePath().toString(), 0);
             try {
                 List<NEVRA> providers = new ArrayList<>();
-                Pointer h;
-                while ((h = rpmdbNextIterator(mi)) != null) {
+                MemoryAddress h;
+                while (!(h = rpmdbNextIterator(mi)).equals(MemoryAddress.NULL)) {
                     providers.add(new NEVRA(h));
                 }
                 return Collections.unmodifiableList(providers);
