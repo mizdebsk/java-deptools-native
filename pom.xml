@@ -47,7 +47,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
     <dependency>
       <groupId>net.java.dev.jna</groupId>
       <artifactId>jna</artifactId>
-      <version>4.1.0</version>
+      <version>5.12.1</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

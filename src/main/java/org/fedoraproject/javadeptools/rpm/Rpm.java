@@ -112,11 +112,11 @@ final class Rpm {
     }
 
     private static class Lazy {
-        static final RpmLib RPM = (RpmLib) Native.loadLibrary("rpm", RpmLib.class);
+        static final RpmLib RPM = (RpmLib) Native.load("rpm", RpmLib.class);
     }
 
     private static class LazyIO {
-        static final RpmIO RPMIO = (RpmIO) Native.loadLibrary("rpmio", RpmIO.class);
+        static final RpmIO RPMIO = (RpmIO) Native.load("rpmio", RpmIO.class);
     }
 
     static final Pointer Fopen(String path, String mode) {
