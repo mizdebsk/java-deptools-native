@@ -50,6 +50,7 @@ final class Rpm {
     static final int RPMTAG_RELEASE = 1002;
     static final int RPMTAG_EPOCH = 1003;
     static final int RPMTAG_ARCH = 1022;
+    static final int RPMTAG_BUILDARCHS = 1089;
     static final int RPMTAG_EXCLUSIVEARCH = 1061;
     static final int RPMTAG_PROVIDENAME = 1047;
     static final int RPMTAG_REQUIRENAME = 1049;
