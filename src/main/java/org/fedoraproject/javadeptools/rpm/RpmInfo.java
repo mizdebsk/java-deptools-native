@@ -27,6 +27,7 @@ import static org.fedoraproject.javadeptools.rpm.Rpm.RPMRC_NOTTRUSTED;
 import static org.fedoraproject.javadeptools.rpm.Rpm.RPMRC_OK;
 import static org.fedoraproject.javadeptools.rpm.Rpm.RPMTAG_CONFLICTNAME;
 import static org.fedoraproject.javadeptools.rpm.Rpm.RPMTAG_ENHANCENAME;
+import static org.fedoraproject.javadeptools.rpm.Rpm.RPMTAG_EXCLUSIVEARCH;
 import static org.fedoraproject.javadeptools.rpm.Rpm.RPMTAG_OBSOLETENAME;
 import static org.fedoraproject.javadeptools.rpm.Rpm.RPMTAG_ORDERNAME;
 import static org.fedoraproject.javadeptools.rpm.Rpm.RPMTAG_PAYLOADCOMPRESSOR;
@@ -114,6 +115,7 @@ public class RpmInfo {
             MemoryAddress h = MemoryAddress.ofLong(ph.toLongArray()[0]);
             try {
                 nevra = new NEVRA(h);
+                exclusiveArch = headerGetList(h, RPMTAG_EXCLUSIVEARCH);
                 provides = headerGetList(h, RPMTAG_PROVIDENAME);
                 requires = headerGetList(h, RPMTAG_REQUIRENAME);
                 conflicts = headerGetList(h, RPMTAG_CONFLICTNAME);
@@ -140,6 +142,7 @@ public class RpmInfo {
 
     private final NEVRA nevra;
     private final boolean sourcePackage;
+    private final List<String> exclusiveArch;
     private final List<String> provides;
     private final List<String> requires;
     private final List<String> conflicts;
@@ -179,6 +182,10 @@ public class RpmInfo {
 
     public boolean isSourcePackage() {
         return sourcePackage;
+    }
+
+    public List<String> getExclusiveArch() {
+        return exclusiveArch;
     }
 
     public List<String> getProvides() {
