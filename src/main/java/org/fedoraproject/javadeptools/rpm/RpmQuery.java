@@ -40,11 +40,11 @@ public class RpmQuery {
         rpmReadConfigFiles(null, null);
     }
 
-    public static List<NEVRA> byFile(Path path) {
+    public static List<? extends NEVRA> byFile(Path path) {
         return byFile(path, null);
     }
 
-    public static List<NEVRA> byFile(Path path, Path root) {
+    public static List<? extends NEVRA> byFile(Path path, Path root) {
         MemoryAddress ts = rpmtsCreate();
         try {
             if (path != null) {
@@ -54,10 +54,10 @@ public class RpmQuery {
             }
             MemoryAddress mi = rpmtsInitIterator(ts, RPMDBI_INSTFILENAMES, path.toAbsolutePath().toString(), 0);
             try {
-                List<NEVRA> providers = new ArrayList<>();
+                List<NEVRAImpl> providers = new ArrayList<>();
                 MemoryAddress h;
                 while (!(h = rpmdbNextIterator(mi)).equals(MemoryAddress.NULL)) {
-                    providers.add(new NEVRA(h));
+                    providers.add(NEVRAImpl.from(h));
                 }
                 return Collections.unmodifiableList(providers);
             } finally {

@@ -75,7 +75,7 @@ import jdk.incubator.foreign.ResourceScope;
 /**
  * @author Mikolaj Izdebski
  */
-public class RpmInfo {
+public class RpmInfo implements NEVRA {
     private static IOException error(Path path, String message) throws IOException {
         throw new IOException("Unable to open RPM file " + path + ": " + message);
     }
@@ -116,7 +116,7 @@ public class RpmInfo {
 
             MemoryAddress h = MemoryAddress.ofLong(ph.toLongArray()[0]);
             try {
-                nevra = new NEVRA(h);
+                nevra = NEVRAImpl.from(h);
                 buildArchs = headerGetList(h, RPMTAG_BUILDARCHS);
                 exclusiveArch = headerGetList(h, RPMTAG_EXCLUSIVEARCH);
                 provides = headerGetList(h, RPMTAG_PROVIDENAME);
@@ -144,7 +144,7 @@ public class RpmInfo {
         }
     }
 
-    private final NEVRA nevra;
+    private final NEVRAImpl nevra;
     private final boolean sourcePackage;
     private final List<String> buildArchs;
     private final List<String> exclusiveArch;
@@ -162,26 +162,27 @@ public class RpmInfo {
     private final String sourceRPM;
     private final long headerSize;
 
-    public NEVRA getNEVRA() {
-        return nevra;
-    }
-
+    @Override
     public String getName() {
         return nevra.getName();
     }
 
+    @Override
     public int getEpoch() {
         return nevra.getEpoch();
     }
 
+    @Override
     public String getVersion() {
         return nevra.getVersion();
     }
 
+    @Override
     public String getRelease() {
         return nevra.getRelease();
     }
 
+    @Override
     public String getArch() {
         return nevra.getArch();
     }

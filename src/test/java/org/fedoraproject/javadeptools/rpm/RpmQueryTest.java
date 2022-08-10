@@ -35,7 +35,7 @@ public class RpmQueryTest {
 
     @Test
     public void testFileLookup() throws Exception {
-        List<NEVRA> providers = RpmQuery.byFile(Paths.get("/usr/bin/bash"), getResource("root1"));
+        List<? extends NEVRA> providers = RpmQuery.byFile(Paths.get("/usr/bin/bash"), getResource("root1"));
         assertNotNull(providers);
         assertEquals(1, providers.size());
         NEVRA nevra = providers.iterator().next();
