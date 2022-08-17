@@ -191,6 +191,22 @@ public class RpmInfo implements NEVRA {
         return sourceRPM;
     }
 
+    public String getPackageName() {
+        if (isSourcePackage()) {
+            return getName();
+        } else {
+            String result = getSourceRPM();
+            result = result.substring(0, result.lastIndexOf('-'));
+            result = result.substring(0, result.lastIndexOf('-'));
+
+            if (result.isEmpty()) {
+                throw new RuntimeException("Could not read package name for source RPM: " + getSourceRPM());
+            }
+
+            return result;
+        }
+    }
+
     public boolean isSourcePackage() {
         return sourcePackage;
     }
