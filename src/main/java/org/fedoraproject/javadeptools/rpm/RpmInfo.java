@@ -62,6 +62,7 @@ import static org.fedoraproject.javadeptools.rpm.Rpm.rpmtsFree;
 import static org.fedoraproject.javadeptools.rpm.Rpm.rpmtsSetVSFlags;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collections;
@@ -141,6 +142,19 @@ public class RpmInfo implements NEVRA {
         } finally {
             Fclose(fd);
             rpmtsFree(ts);
+        }
+    }
+
+    /**
+     * Constructor which does not throw checked exceptions.
+     * @param path Path to .rpm file.
+     * @return The constructed RpmInfo.
+     */
+    static RpmInfo create(Path path) {
+        try {
+            return new RpmInfo(path);
+        } catch (IOException ex) {
+            throw new UncheckedIOException(ex);
         }
     }
 
