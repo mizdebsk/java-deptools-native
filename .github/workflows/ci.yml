@@ -8,10 +8,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: registry.access.redhat.com/ubi9-minimal
+    container: quay.io/mizdebsk/maven:latest
     steps:
-      - name: Install dependencies
-        run: microdnf -y install maven rpm tar
       - name: Checkout sources
         uses: actions/checkout@v3
       - name: Maven build
