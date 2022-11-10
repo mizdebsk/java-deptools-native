@@ -18,7 +18,7 @@ package org.fedoraproject.javadeptools.rpm;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
+import java.net.URL;
 import java.nio.file.Path;
 
 import org.apache.commons.compress.archivers.ArchiveInputStream;
@@ -32,14 +32,18 @@ import org.apache.commons.compress.compressors.zstandard.ZstdCompressorInputStre
 
 /**
  * A class for reading RPM package as an archive.
- * 
+ *
  * @author Mikolaj Izdebski
  */
 public class RpmArchiveInputStream extends ArchiveInputStream {
     private final CpioArchiveInputStream delegate;
 
     public RpmArchiveInputStream(Path path) throws IOException {
-        this.delegate = wrapFile(path);
+        this.delegate = wrapFile(path.toUri().toURL());
+    }
+
+    public RpmArchiveInputStream(URL url) throws IOException {
+        this.delegate = wrapFile(url);
     }
 
     @Override
@@ -67,8 +71,8 @@ public class RpmArchiveInputStream extends ArchiveInputStream {
         return delegate.read(buf, off, len);
     }
 
-    private static IOException error(Path path, String message) throws IOException {
-        throw new IOException("Unable to open RPM file " + path + ": " + message);
+    private static IOException error(URL url, String message) throws IOException {
+        throw new IOException("Unable to open RPM file " + url + ": " + message);
     }
 
     private static boolean hasGzipMagic(InputStream fis) throws IOException {
@@ -80,9 +84,9 @@ public class RpmArchiveInputStream extends ArchiveInputStream {
         }
     }
 
-    private static CpioArchiveInputStream wrapFile(Path path) throws IOException {
-        RpmInfo info = new RpmInfo(path);
-        InputStream fis = new BufferedInputStream(Files.newInputStream(path));
+    private static CpioArchiveInputStream wrapFile(URL url) throws IOException {
+        RpmInfo info = new RpmInfo(url);
+        InputStream fis = new BufferedInputStream(url.openStream());
         fis.skip(info.getHeaderSize());
 
         InputStream cis;
@@ -107,12 +111,12 @@ public class RpmArchiveInputStream extends ArchiveInputStream {
             break;
         default:
             fis.close();
-            throw error(path, "Unsupported compression method: " + info.getCompressionMethod());
+            throw error(url, "Unsupported compression method: " + info.getCompressionMethod());
         }
 
         if (!info.getArchiveFormat().equals("cpio")) {
             cis.close();
-            throw error(path, "Unsupported archive format: " + info.getArchiveFormat());
+            throw error(url, "Unsupported archive format: " + info.getArchiveFormat());
         }
 
         return new CpioArchiveInputStream(cis);

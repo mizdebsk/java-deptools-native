@@ -15,19 +15,14 @@
  */
 package org.fedoraproject.javadeptools.rpm;
 
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMDBI_INSTFILENAMES;
-import static org.fedoraproject.javadeptools.rpm.Rpm.rpmReadConfigFiles;
-import static org.fedoraproject.javadeptools.rpm.Rpm.rpmdbFreeIterator;
-import static org.fedoraproject.javadeptools.rpm.Rpm.rpmdbNextIterator;
-import static org.fedoraproject.javadeptools.rpm.Rpm.rpmtsCreate;
-import static org.fedoraproject.javadeptools.rpm.Rpm.rpmtsFree;
-import static org.fedoraproject.javadeptools.rpm.Rpm.rpmtsInitIterator;
-import static org.fedoraproject.javadeptools.rpm.Rpm.rpmtsSetRootDir;
+import static org.fedoraproject.javadeptools.ffi.Rpm.RPMDBI_INSTFILENAMES;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import org.fedoraproject.javadeptools.ffi.Rpmlib;
 
 import jdk.incubator.foreign.MemoryAddress;
 
@@ -37,7 +32,7 @@ import jdk.incubator.foreign.MemoryAddress;
 public class RpmQuery {
 
     static {
-        rpmReadConfigFiles(null, null);
+        Rpmlib.rpmReadConfigFiles(null, null);
     }
 
     public static List<? extends NEVRA> byFile(Path path) {
@@ -45,26 +40,26 @@ public class RpmQuery {
     }
 
     public static List<? extends NEVRA> byFile(Path path, Path root) {
-        MemoryAddress ts = rpmtsCreate();
+        MemoryAddress ts = Rpmlib.rpmtsCreate();
         try {
             if (path != null) {
-                if (rpmtsSetRootDir(ts, root.toString()) != 0) {
+                if (Rpmlib.rpmtsSetRootDir(ts, root.toString()) != 0) {
                     return Collections.emptyList();
                 }
             }
-            MemoryAddress mi = rpmtsInitIterator(ts, RPMDBI_INSTFILENAMES, path.toAbsolutePath().toString(), 0);
+            MemoryAddress mi = Rpmlib.rpmtsInitIterator(ts, RPMDBI_INSTFILENAMES, path.toAbsolutePath().toString(), 0);
             try {
                 List<NEVRAImpl> providers = new ArrayList<>();
                 MemoryAddress h;
-                while (!(h = rpmdbNextIterator(mi)).equals(MemoryAddress.NULL)) {
+                while (!(h = Rpmlib.rpmdbNextIterator(mi)).equals(MemoryAddress.NULL)) {
                     providers.add(NEVRAImpl.from(h));
                 }
                 return Collections.unmodifiableList(providers);
             } finally {
-                rpmdbFreeIterator(mi);
+                Rpmlib.rpmdbFreeIterator(mi);
             }
         } finally {
-            rpmtsFree(ts);
+            Rpmlib.rpmtsFree(ts);
         }
     }
 

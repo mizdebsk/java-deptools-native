@@ -15,13 +15,13 @@
  */
 package org.fedoraproject.javadeptools.rpm;
 
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMTAG_ARCH;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMTAG_EPOCH;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMTAG_NAME;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMTAG_RELEASE;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMTAG_VERSION;
-import static org.fedoraproject.javadeptools.rpm.Rpm.headerGetNumber;
-import static org.fedoraproject.javadeptools.rpm.Rpm.headerGetString;
+import static org.fedoraproject.javadeptools.ffi.Rpm.RPMTAG_ARCH;
+import static org.fedoraproject.javadeptools.ffi.Rpm.RPMTAG_EPOCH;
+import static org.fedoraproject.javadeptools.ffi.Rpm.RPMTAG_NAME;
+import static org.fedoraproject.javadeptools.ffi.Rpm.RPMTAG_RELEASE;
+import static org.fedoraproject.javadeptools.ffi.Rpm.RPMTAG_VERSION;
+
+import org.fedoraproject.javadeptools.ffi.Rpmlib;
 
 import jdk.incubator.foreign.MemoryAddress;
 
@@ -53,11 +53,11 @@ public class NEVRAImpl implements NEVRA {
     }
 
     static NEVRAImpl from(MemoryAddress h) {
-        String name = headerGetString(h, RPMTAG_NAME);
-        int epoch = (int) headerGetNumber(h, RPMTAG_EPOCH);
-        String version = headerGetString(h, RPMTAG_VERSION);
-        String release = headerGetString(h, RPMTAG_RELEASE);
-        String arch = headerGetString(h, RPMTAG_ARCH);
+        String name = Rpmlib.headerGetString(h, RPMTAG_NAME);
+        int epoch = (int) Rpmlib.headerGetNumber(h, RPMTAG_EPOCH);
+        String version = Rpmlib.headerGetString(h, RPMTAG_VERSION);
+        String release = Rpmlib.headerGetString(h, RPMTAG_RELEASE);
+        String arch = Rpmlib.headerGetString(h, RPMTAG_ARCH);
         return new NEVRAImpl(name, epoch, version, release, arch);
     }
 

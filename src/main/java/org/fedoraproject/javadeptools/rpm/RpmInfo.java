@@ -15,58 +15,64 @@
  */
 package org.fedoraproject.javadeptools.rpm;
 
-import static org.fedoraproject.javadeptools.rpm.Rpm.Fclose;
-import static org.fedoraproject.javadeptools.rpm.Rpm.Ferror;
-import static org.fedoraproject.javadeptools.rpm.Rpm.Fopen;
-import static org.fedoraproject.javadeptools.rpm.Rpm.Fstrerror;
-import static org.fedoraproject.javadeptools.rpm.Rpm.Ftell;
-import static org.fedoraproject.javadeptools.rpm.Rpm.HEADERGET_MINMEM;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMRC_NOKEY;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMRC_NOTFOUND;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMRC_NOTTRUSTED;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMRC_OK;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMTAG_BUILDARCHS;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMTAG_CONFLICTNAME;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMTAG_ENHANCENAME;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMTAG_EXCLUSIVEARCH;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMTAG_OBSOLETENAME;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMTAG_ORDERNAME;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMTAG_PAYLOADCOMPRESSOR;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMTAG_PAYLOADFORMAT;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMTAG_PROVIDENAME;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMTAG_RECOMMENDNAME;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMTAG_REQUIRENAME;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMTAG_SOURCEPACKAGE;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMTAG_SOURCERPM;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMTAG_SUGGESTNAME;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMTAG_SUPPLEMENTNAME;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMVSF_NODSA;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMVSF_NODSAHEADER;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMVSF_NOHDRCHK;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMVSF_NOMD5;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMVSF_NORSA;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMVSF_NORSAHEADER;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMVSF_NOSHA1HEADER;
-import static org.fedoraproject.javadeptools.rpm.Rpm.headerFree;
-import static org.fedoraproject.javadeptools.rpm.Rpm.headerGet;
-import static org.fedoraproject.javadeptools.rpm.Rpm.headerGetNumber;
-import static org.fedoraproject.javadeptools.rpm.Rpm.headerGetString;
-import static org.fedoraproject.javadeptools.rpm.Rpm.rpmReadPackageFile;
-import static org.fedoraproject.javadeptools.rpm.Rpm.rpmtdCount;
-import static org.fedoraproject.javadeptools.rpm.Rpm.rpmtdFree;
-import static org.fedoraproject.javadeptools.rpm.Rpm.rpmtdFreeData;
-import static org.fedoraproject.javadeptools.rpm.Rpm.rpmtdGetString;
-import static org.fedoraproject.javadeptools.rpm.Rpm.rpmtdNext;
-import static org.fedoraproject.javadeptools.rpm.Rpm.rpmtsCreate;
-import static org.fedoraproject.javadeptools.rpm.Rpm.rpmtsFree;
-import static org.fedoraproject.javadeptools.rpm.Rpm.rpmtsSetVSFlags;
+import static org.fedoraproject.javadeptools.ffi.Rpm.HEADERGET_MINMEM;
+import static org.fedoraproject.javadeptools.ffi.Rpm.RPMRC_NOKEY;
+import static org.fedoraproject.javadeptools.ffi.Rpm.RPMRC_NOTFOUND;
+import static org.fedoraproject.javadeptools.ffi.Rpm.RPMRC_NOTTRUSTED;
+import static org.fedoraproject.javadeptools.ffi.Rpm.RPMRC_OK;
+import static org.fedoraproject.javadeptools.ffi.Rpm.RPMTAG_BUILDARCHS;
+import static org.fedoraproject.javadeptools.ffi.Rpm.RPMTAG_CONFLICTNAME;
+import static org.fedoraproject.javadeptools.ffi.Rpm.RPMTAG_ENHANCENAME;
+import static org.fedoraproject.javadeptools.ffi.Rpm.RPMTAG_EXCLUSIVEARCH;
+import static org.fedoraproject.javadeptools.ffi.Rpm.RPMTAG_OBSOLETENAME;
+import static org.fedoraproject.javadeptools.ffi.Rpm.RPMTAG_ORDERNAME;
+import static org.fedoraproject.javadeptools.ffi.Rpm.RPMTAG_PAYLOADCOMPRESSOR;
+import static org.fedoraproject.javadeptools.ffi.Rpm.RPMTAG_PAYLOADFORMAT;
+import static org.fedoraproject.javadeptools.ffi.Rpm.RPMTAG_PROVIDENAME;
+import static org.fedoraproject.javadeptools.ffi.Rpm.RPMTAG_RECOMMENDNAME;
+import static org.fedoraproject.javadeptools.ffi.Rpm.RPMTAG_REQUIRENAME;
+import static org.fedoraproject.javadeptools.ffi.Rpm.RPMTAG_SOURCEPACKAGE;
+import static org.fedoraproject.javadeptools.ffi.Rpm.RPMTAG_SOURCERPM;
+import static org.fedoraproject.javadeptools.ffi.Rpm.RPMTAG_SUGGESTNAME;
+import static org.fedoraproject.javadeptools.ffi.Rpm.RPMTAG_SUPPLEMENTNAME;
+import static org.fedoraproject.javadeptools.ffi.Rpm.RPMVSF_NODSA;
+import static org.fedoraproject.javadeptools.ffi.Rpm.RPMVSF_NODSAHEADER;
+import static org.fedoraproject.javadeptools.ffi.Rpm.RPMVSF_NOHDRCHK;
+import static org.fedoraproject.javadeptools.ffi.Rpm.RPMVSF_NOMD5;
+import static org.fedoraproject.javadeptools.ffi.Rpm.RPMVSF_NORSA;
+import static org.fedoraproject.javadeptools.ffi.Rpm.RPMVSF_NORSAHEADER;
+import static org.fedoraproject.javadeptools.ffi.Rpm.RPMVSF_NOSHA1HEADER;
+import static org.fedoraproject.javadeptools.ffi.Rpmio.Fclose;
+import static org.fedoraproject.javadeptools.ffi.Rpmio.Ferror;
+import static org.fedoraproject.javadeptools.ffi.Rpmio.Fopen;
+import static org.fedoraproject.javadeptools.ffi.Rpmio.Fstrerror;
+import static org.fedoraproject.javadeptools.ffi.Rpmio.Ftell;
+import static org.fedoraproject.javadeptools.ffi.Rpmio.fdDup;
+import static org.fedoraproject.javadeptools.ffi.Rpmlib.headerFree;
+import static org.fedoraproject.javadeptools.ffi.Rpmlib.headerGet;
+import static org.fedoraproject.javadeptools.ffi.Rpmlib.headerGetNumber;
+import static org.fedoraproject.javadeptools.ffi.Rpmlib.headerGetString;
+import static org.fedoraproject.javadeptools.ffi.Rpmlib.rpmReadPackageFile;
+import static org.fedoraproject.javadeptools.ffi.Rpmlib.rpmtdCount;
+import static org.fedoraproject.javadeptools.ffi.Rpmlib.rpmtdFree;
+import static org.fedoraproject.javadeptools.ffi.Rpmlib.rpmtdFreeData;
+import static org.fedoraproject.javadeptools.ffi.Rpmlib.rpmtdGetString;
+import static org.fedoraproject.javadeptools.ffi.Rpmlib.rpmtdNew;
+import static org.fedoraproject.javadeptools.ffi.Rpmlib.rpmtdNext;
+import static org.fedoraproject.javadeptools.ffi.Rpmlib.rpmtsCreate;
+import static org.fedoraproject.javadeptools.ffi.Rpmlib.rpmtsFree;
+import static org.fedoraproject.javadeptools.ffi.Rpmlib.rpmtsSetVSFlags;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.net.URL;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import org.fedoraproject.javadeptools.ffi.Mman;
+import org.fedoraproject.javadeptools.ffi.Unistd;
 
 import jdk.incubator.foreign.CLinker;
 import jdk.incubator.foreign.MemoryAddress;
@@ -77,12 +83,12 @@ import jdk.incubator.foreign.ResourceScope;
  * @author Mikolaj Izdebski
  */
 public class RpmInfo implements NEVRA {
-    private static IOException error(Path path, String message) throws IOException {
-        throw new IOException("Unable to open RPM file " + path + ": " + message);
+    private static IOException error(URL url, String message) throws IOException {
+        throw new IOException("Unable to open RPM file " + url + ": " + message);
     }
 
     private static List<String> headerGetList(MemoryAddress h, int tag) {
-        var td = Rpm.rpmtdNew();
+        var td = rpmtdNew();
         try {
             headerGet(h, tag, td, HEADERGET_MINMEM);
             int size = rpmtdCount(td);
@@ -99,11 +105,30 @@ public class RpmInfo implements NEVRA {
     }
 
     public RpmInfo(Path path) throws IOException {
+        this(path.toUri().toURL());
+    }
+
+    public RpmInfo(URL url) throws IOException {
+        MemoryAddress fd;
+        Runnable destructor = () -> {};
+        if (url.getProtocol().equals("file")) {
+            fd = Fopen(url.getPath(), "r");
+        } else {
+            byte[] bytes;
+            try (var is = url.openStream()) {
+                bytes = is.readAllBytes();
+            }
+            var intFD = Mman.memfd_create(url.getPath(), 0);
+            destructor = () -> Unistd.close(intFD);
+            fd = fdDup(intFD);
+            Unistd.write(intFD, bytes);
+            Unistd.lseek(intFD, 0, Unistd.SEEK_SET);
+        }
+
         var ts = rpmtsCreate();
-        var fd = Fopen(path.toString(), "r");
         try {
             if (Ferror(fd) != 0) {
-                throw error(path, Fstrerror(fd));
+                throw error(url, Fstrerror(fd));
             }
             rpmtsSetVSFlags(ts, RPMVSF_NOHDRCHK | RPMVSF_NOSHA1HEADER | RPMVSF_NODSAHEADER
                     | RPMVSF_NORSAHEADER | RPMVSF_NOMD5 | RPMVSF_NODSA | RPMVSF_NORSA);
@@ -112,10 +137,10 @@ public class RpmInfo implements NEVRA {
                 MemorySegment ph = MemorySegment.allocateNative(CLinker.C_POINTER, headerScope);
                 int rc = rpmReadPackageFile(ts, fd, MemoryAddress.NULL, ph.address());
                 if (rc == RPMRC_NOTFOUND) {
-                    throw error(path, "Not a RPM file");
+                    throw error(url, "Not a RPM file");
                 }
                 if (rc != RPMRC_OK && rc != RPMRC_NOTTRUSTED && rc != RPMRC_NOKEY) {
-                    throw error(path, "Failed to parse RPM header");
+                    throw error(url, "Failed to parse RPM header");
                 }
 
                 MemoryAddress h = MemoryAddress.ofLong(ph.toLongArray()[0]);
@@ -144,6 +169,7 @@ public class RpmInfo implements NEVRA {
         } finally {
             Fclose(fd);
             rpmtsFree(ts);
+            destructor.run();
         }
     }
 
@@ -152,9 +178,9 @@ public class RpmInfo implements NEVRA {
      * @param path Path to .rpm file.
      * @return The constructed RpmInfo.
      */
-    static RpmInfo create(Path path) {
+    static RpmInfo create(URL url) {
         try {
-            return new RpmInfo(path);
+            return new RpmInfo(url);
         } catch (IOException ex) {
             throw new UncheckedIOException(ex);
         }
@@ -296,5 +322,11 @@ public class RpmInfo implements NEVRA {
     @Override
     public boolean equals(Object obj) {
         return obj instanceof RpmInfo && ((RpmInfo) obj).nevra.equals(nevra);
+    }
+
+    public static void main(String[] args) throws Exception {
+        var url = new URL("https://kojipkgs.fedoraproject.org//packages/lucene/9.2.0/3.fc36/noarch/lucene-analysis-common-9.2.0-3.fc36.noarch.rpm");
+        var rpmi = new RpmInfo(url);
+        System.out.println(rpmi.getRequires());
     }
 }
