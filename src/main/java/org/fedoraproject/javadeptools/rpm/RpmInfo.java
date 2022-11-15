@@ -15,26 +15,16 @@
  */
 package org.fedoraproject.javadeptools.rpm;
 
-import static org.fedoraproject.javadeptools.ffi.Rpm.HEADERGET_MINMEM;
 import static org.fedoraproject.javadeptools.ffi.Rpm.RPMRC_NOKEY;
 import static org.fedoraproject.javadeptools.ffi.Rpm.RPMRC_NOTFOUND;
 import static org.fedoraproject.javadeptools.ffi.Rpm.RPMRC_NOTTRUSTED;
 import static org.fedoraproject.javadeptools.ffi.Rpm.RPMRC_OK;
 import static org.fedoraproject.javadeptools.ffi.Rpm.RPMTAG_BUILDARCHS;
-import static org.fedoraproject.javadeptools.ffi.Rpm.RPMTAG_CONFLICTNAME;
-import static org.fedoraproject.javadeptools.ffi.Rpm.RPMTAG_ENHANCENAME;
 import static org.fedoraproject.javadeptools.ffi.Rpm.RPMTAG_EXCLUSIVEARCH;
-import static org.fedoraproject.javadeptools.ffi.Rpm.RPMTAG_OBSOLETENAME;
-import static org.fedoraproject.javadeptools.ffi.Rpm.RPMTAG_ORDERNAME;
 import static org.fedoraproject.javadeptools.ffi.Rpm.RPMTAG_PAYLOADCOMPRESSOR;
 import static org.fedoraproject.javadeptools.ffi.Rpm.RPMTAG_PAYLOADFORMAT;
-import static org.fedoraproject.javadeptools.ffi.Rpm.RPMTAG_PROVIDENAME;
-import static org.fedoraproject.javadeptools.ffi.Rpm.RPMTAG_RECOMMENDNAME;
-import static org.fedoraproject.javadeptools.ffi.Rpm.RPMTAG_REQUIRENAME;
 import static org.fedoraproject.javadeptools.ffi.Rpm.RPMTAG_SOURCEPACKAGE;
 import static org.fedoraproject.javadeptools.ffi.Rpm.RPMTAG_SOURCERPM;
-import static org.fedoraproject.javadeptools.ffi.Rpm.RPMTAG_SUGGESTNAME;
-import static org.fedoraproject.javadeptools.ffi.Rpm.RPMTAG_SUPPLEMENTNAME;
 import static org.fedoraproject.javadeptools.ffi.Rpm.RPMVSF_NODSA;
 import static org.fedoraproject.javadeptools.ffi.Rpm.RPMVSF_NODSAHEADER;
 import static org.fedoraproject.javadeptools.ffi.Rpm.RPMVSF_NOHDRCHK;
@@ -49,16 +39,9 @@ import static org.fedoraproject.javadeptools.ffi.Rpmio.Fstrerror;
 import static org.fedoraproject.javadeptools.ffi.Rpmio.Ftell;
 import static org.fedoraproject.javadeptools.ffi.Rpmio.fdDup;
 import static org.fedoraproject.javadeptools.ffi.Rpmlib.headerFree;
-import static org.fedoraproject.javadeptools.ffi.Rpmlib.headerGet;
 import static org.fedoraproject.javadeptools.ffi.Rpmlib.headerGetNumber;
 import static org.fedoraproject.javadeptools.ffi.Rpmlib.headerGetString;
 import static org.fedoraproject.javadeptools.ffi.Rpmlib.rpmReadPackageFile;
-import static org.fedoraproject.javadeptools.ffi.Rpmlib.rpmtdCount;
-import static org.fedoraproject.javadeptools.ffi.Rpmlib.rpmtdFree;
-import static org.fedoraproject.javadeptools.ffi.Rpmlib.rpmtdFreeData;
-import static org.fedoraproject.javadeptools.ffi.Rpmlib.rpmtdGetString;
-import static org.fedoraproject.javadeptools.ffi.Rpmlib.rpmtdNew;
-import static org.fedoraproject.javadeptools.ffi.Rpmlib.rpmtdNext;
 import static org.fedoraproject.javadeptools.ffi.Rpmlib.rpmtsCreate;
 import static org.fedoraproject.javadeptools.ffi.Rpmlib.rpmtsFree;
 import static org.fedoraproject.javadeptools.ffi.Rpmlib.rpmtsSetVSFlags;
@@ -67,11 +50,14 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.URL;
 import java.nio.file.Path;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 
 import org.fedoraproject.javadeptools.ffi.Mman;
+import org.fedoraproject.javadeptools.ffi.Rpm;
+import org.fedoraproject.javadeptools.ffi.Rpmlib;
 import org.fedoraproject.javadeptools.ffi.Unistd;
 
 import jdk.incubator.foreign.CLinker;
@@ -87,21 +73,57 @@ public class RpmInfo implements NEVRA {
         throw new IOException("Unable to open RPM file " + url + ": " + message);
     }
 
-    private static List<String> headerGetList(MemoryAddress h, int tag) {
-        var td = rpmtdNew();
+    private static <T> List<T> headerGetList(MemoryAddress h, int tag, Function<MemoryAddress, T> getter) {
+        var td = Rpmlib.rpmtdNew();
         try {
-            headerGet(h, tag, td, HEADERGET_MINMEM);
-            int size = rpmtdCount(td);
-            String[] list = new String[size];
+            Rpmlib.headerGet(h, tag, td, Rpm.HEADERGET_MINMEM);
+            int size = Rpmlib.rpmtdCount(td);
+            var result = new ArrayList<T>(size);
             for (int i = 0; i < size; i++) {
-                rpmtdNext(td);
-                list[i] = rpmtdGetString(td);
+                Rpmlib.rpmtdNext(td);
+                result.add(getter.apply(td));
             }
-            return Collections.unmodifiableList(Arrays.asList(list));
+            return Collections.unmodifiableList(result);
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
         } finally {
-            rpmtdFreeData(td);
-            rpmtdFree(td);
+            Rpmlib.rpmtdFreeData(td);
+            Rpmlib.rpmtdFree(td);
         }
+    }
+
+    private static List<String> headerGetListString(MemoryAddress h, int tag) {
+        return headerGetList(h, tag, (td) -> Rpmlib.rpmtdGetString(td));
+    }
+
+    private static List<Long> headerGetListLong(MemoryAddress h, int tag) {
+        return headerGetList(h, tag, (td) -> Rpmlib.rpmtdGetUint64(td));
+    }
+
+    private static List<Integer> headerGetListInt(MemoryAddress h, int tag) {
+        return headerGetList(h, tag, (td) -> Rpmlib.rpmtdGetUint32(td));
+    }
+
+    private static List<Short> headerGetListShort(MemoryAddress h, int tag) {
+        return headerGetList(h, tag, (td) -> Rpmlib.rpmtdGetUint16(td));
+    }
+
+    private static List<Character> headerGetListChar(MemoryAddress h, int tag) {
+        return headerGetList(h, tag, (td) -> Rpmlib.rpmtdGetChar(td));
+    }
+
+    private static List<Reldep> headerGetListReldep(MemoryAddress h, int nameTag, int flagsTag, int versionTag) {
+        var names = headerGetListString(h, nameTag);
+        var flagIt = headerGetListInt(h, flagsTag).iterator();
+        var versionIt = headerGetListString(h, versionTag).iterator();
+
+        var result = new ArrayList<Reldep>(names.size());
+
+        for (var nameIt = names.iterator(); nameIt.hasNext();) {
+            result.add(new Reldep(nameIt.next(), flagIt.next(), versionIt.next()));
+        }
+
+        return result;
     }
 
     public RpmInfo(Path path) throws IOException {
@@ -146,17 +168,17 @@ public class RpmInfo implements NEVRA {
                 MemoryAddress h = MemoryAddress.ofLong(ph.toLongArray()[0]);
                 try {
                     nevra = NEVRAImpl.from(h);
-                    buildArchs = headerGetList(h, RPMTAG_BUILDARCHS);
-                    exclusiveArch = headerGetList(h, RPMTAG_EXCLUSIVEARCH);
-                    provides = headerGetList(h, RPMTAG_PROVIDENAME);
-                    requires = headerGetList(h, RPMTAG_REQUIRENAME);
-                    conflicts = headerGetList(h, RPMTAG_CONFLICTNAME);
-                    obsoletes = headerGetList(h, RPMTAG_OBSOLETENAME);
-                    recommends = headerGetList(h, RPMTAG_RECOMMENDNAME);
-                    suggests = headerGetList(h, RPMTAG_SUGGESTNAME);
-                    supplements = headerGetList(h, RPMTAG_SUPPLEMENTNAME);
-                    enhances = headerGetList(h, RPMTAG_ENHANCENAME);
-                    orderWithRequires = headerGetList(h, RPMTAG_ORDERNAME);
+                    buildArchs = headerGetListString(h, RPMTAG_BUILDARCHS);
+                    exclusiveArch = headerGetListString(h, RPMTAG_EXCLUSIVEARCH);
+                    provides = headerGetListReldep(h, Rpm.RPMTAG_PROVIDENAME, Rpm.RPMTAG_PROVIDEFLAGS, Rpm.RPMTAG_PROVIDEVERSION);
+                    requires = headerGetListReldep(h, Rpm.RPMTAG_REQUIRENAME, Rpm.RPMTAG_REQUIREFLAGS, Rpm.RPMTAG_REQUIREVERSION);
+                    conflicts = headerGetListReldep(h, Rpm.RPMTAG_CONFLICTNAME, Rpm.RPMTAG_CONFLICTFLAGS, Rpm.RPMTAG_CONFLICTVERSION);
+                    obsoletes = headerGetListReldep(h, Rpm.RPMTAG_OBSOLETENAME, Rpm.RPMTAG_OBSOLETEFLAGS, Rpm.RPMTAG_OBSOLETEVERSION);
+                    recommends = headerGetListReldep(h, Rpm.RPMTAG_RECOMMENDNAME, Rpm.RPMTAG_RECOMMENDFLAGS, Rpm.RPMTAG_RECOMMENDVERSION);
+                    suggests = headerGetListReldep(h, Rpm.RPMTAG_SUGGESTNAME, Rpm.RPMTAG_SUGGESTFLAGS, Rpm.RPMTAG_SUGGESTVERSION);
+                    supplements = headerGetListReldep(h, Rpm.RPMTAG_SUPPLEMENTNAME, Rpm.RPMTAG_SUPPLEMENTFLAGS, Rpm.RPMTAG_SUPPLEMENTVERSION);
+                    enhances = headerGetListReldep(h, Rpm.RPMTAG_ENHANCENAME, Rpm.RPMTAG_ENHANCEFLAGS, Rpm.RPMTAG_ENHANCEVERSION);
+                    orderWithRequires = headerGetListReldep(h, Rpm.RPMTAG_ORDERNAME, Rpm.RPMTAG_ORDERFLAGS, Rpm.RPMTAG_ORDERVERSION);
                     archiveFormat = headerGetString(h, RPMTAG_PAYLOADFORMAT);
                     compressionMethod = headerGetString(h, RPMTAG_PAYLOADCOMPRESSOR);
                     sourceRPM = headerGetString(h, RPMTAG_SOURCERPM);
@@ -190,15 +212,15 @@ public class RpmInfo implements NEVRA {
     private final boolean sourcePackage;
     private final List<String> buildArchs;
     private final List<String> exclusiveArch;
-    private final List<String> provides;
-    private final List<String> requires;
-    private final List<String> conflicts;
-    private final List<String> obsoletes;
-    private final List<String> recommends;
-    private final List<String> suggests;
-    private final List<String> supplements;
-    private final List<String> enhances;
-    private final List<String> orderWithRequires;
+    private final List<Reldep> provides;
+    private final List<Reldep> requires;
+    private final List<Reldep> conflicts;
+    private final List<Reldep> obsoletes;
+    private final List<Reldep> recommends;
+    private final List<Reldep> suggests;
+    private final List<Reldep> supplements;
+    private final List<Reldep> enhances;
+    private final List<Reldep> orderWithRequires;
     private final String archiveFormat;
     private final String compressionMethod;
     private final String sourceRPM;
@@ -261,39 +283,39 @@ public class RpmInfo implements NEVRA {
         return exclusiveArch;
     }
 
-    public List<String> getProvides() {
+    public List<Reldep> getProvides() {
         return provides;
     }
 
-    public List<String> getRequires() {
+    public List<Reldep> getRequires() {
         return requires;
     }
 
-    public List<String> getConflicts() {
+    public List<Reldep> getConflicts() {
         return conflicts;
     }
 
-    public List<String> getObsoletes() {
+    public List<Reldep> getObsoletes() {
         return obsoletes;
     }
 
-    public List<String> getRecommends() {
+    public List<Reldep> getRecommends() {
         return recommends;
     }
 
-    public List<String> getSuggests() {
+    public List<Reldep> getSuggests() {
         return suggests;
     }
 
-    public List<String> getSupplements() {
+    public List<Reldep> getSupplements() {
         return supplements;
     }
 
-    public List<String> getEnhances() {
+    public List<Reldep> getEnhances() {
         return enhances;
     }
 
-    public List<String> getOrderWithRequires() {
+    public List<Reldep> getOrderWithRequires() {
         return orderWithRequires;
     }
 

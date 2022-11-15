@@ -71,6 +71,18 @@ public class Rpmlib extends CLibrary {
     private final MethodHandle rpmtdNext = downcallHandle("rpmtdNext",
             MethodType.methodType(int.class, MemoryAddress.class),
             FunctionDescriptor.of(CLinker.C_INT, CLinker.C_POINTER));
+    private final MethodHandle rpmtdGetChar = downcallHandle("rpmtdGetChar",
+            MethodType.methodType(MemoryAddress.class, MemoryAddress.class),
+            FunctionDescriptor.of(CLinker.C_POINTER, CLinker.C_POINTER));
+    private final MethodHandle rpmtdGetUint16 = downcallHandle("rpmtdGetUint16",
+            MethodType.methodType(MemoryAddress.class, MemoryAddress.class),
+            FunctionDescriptor.of(CLinker.C_POINTER, CLinker.C_POINTER));
+    private final MethodHandle rpmtdGetUint32 = downcallHandle("rpmtdGetUint32",
+            MethodType.methodType(MemoryAddress.class, MemoryAddress.class),
+            FunctionDescriptor.of(CLinker.C_POINTER, CLinker.C_POINTER));
+    private final MethodHandle rpmtdGetUint64 = downcallHandle("rpmtdGetUint64",
+            MethodType.methodType(MemoryAddress.class, MemoryAddress.class),
+            FunctionDescriptor.of(CLinker.C_POINTER, CLinker.C_POINTER));
     private final MethodHandle rpmtdGetString = downcallHandle("rpmtdGetString",
             MethodType.methodType(MemoryAddress.class, MemoryAddress.class),
             FunctionDescriptor.of(CLinker.C_POINTER, CLinker.C_POINTER));
@@ -228,6 +240,38 @@ public class Rpmlib extends CLibrary {
     public static final int rpmtdNext(MemoryAddress td) {
         try {
             return (int) Lazy.INSTANCE.rpmtdNext.invokeExact(td);
+        } catch (Throwable thr) {
+            throw new RuntimeException(thr);
+        }
+    }
+
+    public static final char rpmtdGetChar(MemoryAddress td) {
+        try {
+            return ((MemoryAddress) Lazy.INSTANCE.rpmtdGetChar.invokeExact(td)).asSegment(1, ResourceScope.globalScope()).toCharArray()[0];
+        } catch (Throwable thr) {
+            throw new RuntimeException(thr);
+        }
+    }
+
+    public static final short rpmtdGetUint16(MemoryAddress td) {
+        try {
+            return ((MemoryAddress) Lazy.INSTANCE.rpmtdGetUint16.invokeExact(td)).asSegment(CLinker.C_SHORT.bitSize() / CLinker.C_CHAR.bitSize(), ResourceScope.globalScope()).toShortArray()[0];
+        } catch (Throwable thr) {
+            throw new RuntimeException(thr);
+        }
+    }
+
+    public static final int rpmtdGetUint32(MemoryAddress td) {
+        try {
+            return ((MemoryAddress) Lazy.INSTANCE.rpmtdGetUint32.invokeExact(td)).asSegment(Layouts.int32_t.bitSize() / CLinker.C_CHAR.bitSize(), ResourceScope.globalScope()).toIntArray()[0];
+        } catch (Throwable thr) {
+            throw new RuntimeException(thr);
+        }
+    }
+
+    public static final long rpmtdGetUint64(MemoryAddress td) {
+        try {
+            return ((MemoryAddress) Lazy.INSTANCE.rpmtdGetUint64.invokeExact(td)).asSegment(Layouts.int64_t.bitSize() / CLinker.C_CHAR.bitSize(), ResourceScope.globalScope()).toLongArray()[0];
         } catch (Throwable thr) {
             throw new RuntimeException(thr);
         }
