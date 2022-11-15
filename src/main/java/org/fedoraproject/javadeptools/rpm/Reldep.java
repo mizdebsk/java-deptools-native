@@ -2,6 +2,9 @@ package org.fedoraproject.javadeptools.rpm;
 
 import java.util.Objects;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
+
 public class Reldep {
     private String name;
     private int flags;
@@ -42,7 +45,7 @@ public class Reldep {
         null,
     };
 
-    public Relation getRelation() {
+    public @Nullable Relation getRelation() {
         int index = 5;
         if ((flags & RPMSENSE_LESS) != 0) {
             index -= 4;
@@ -66,7 +69,7 @@ public class Reldep {
         }
     }
 
-    public String getName() {
+    public @NonNull String getName() {
         return name;
     }
 
@@ -74,7 +77,7 @@ public class Reldep {
         return flags;
     }
 
-    public String getVersion() {
+    public @Nullable String getVersion() {
         return version;
     }
 
