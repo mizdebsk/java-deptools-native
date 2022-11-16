@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.javadeptools.ffi;
+package org.fedoraproject.javadeptools.rpm;
 
 /**
  * @author Mikolaj Izdebski

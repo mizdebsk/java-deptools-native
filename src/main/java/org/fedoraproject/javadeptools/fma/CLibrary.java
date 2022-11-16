@@ -1,4 +1,4 @@
-package org.fedoraproject.javadeptools.ffi;
+package org.fedoraproject.javadeptools.fma;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;

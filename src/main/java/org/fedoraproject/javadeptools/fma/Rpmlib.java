@@ -1,4 +1,4 @@
-package org.fedoraproject.javadeptools.ffi;
+package org.fedoraproject.javadeptools.fma;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodType;

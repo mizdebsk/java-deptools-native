@@ -15,14 +15,12 @@
  */
 package org.fedoraproject.javadeptools.rpm;
 
-import static org.fedoraproject.javadeptools.ffi.Rpm.RPMDBI_INSTFILENAMES;
-
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.fedoraproject.javadeptools.ffi.Rpmlib;
+import org.fedoraproject.javadeptools.fma.Rpmlib;
 
 import jdk.incubator.foreign.MemoryAddress;
 
@@ -47,7 +45,7 @@ public class RpmQuery {
                     return Collections.emptyList();
                 }
             }
-            MemoryAddress mi = Rpmlib.rpmtsInitIterator(ts, RPMDBI_INSTFILENAMES, path.toAbsolutePath().toString(), 0);
+            MemoryAddress mi = Rpmlib.rpmtsInitIterator(ts, Rpm.RPMDBI_INSTFILENAMES, path.toAbsolutePath().toString(), 0);
             try {
                 List<NEVRAImpl> providers = new ArrayList<>();
                 MemoryAddress h;

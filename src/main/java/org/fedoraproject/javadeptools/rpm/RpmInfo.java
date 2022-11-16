@@ -15,37 +15,6 @@
  */
 package org.fedoraproject.javadeptools.rpm;
 
-import static org.fedoraproject.javadeptools.ffi.Rpm.RPMRC_NOKEY;
-import static org.fedoraproject.javadeptools.ffi.Rpm.RPMRC_NOTFOUND;
-import static org.fedoraproject.javadeptools.ffi.Rpm.RPMRC_NOTTRUSTED;
-import static org.fedoraproject.javadeptools.ffi.Rpm.RPMRC_OK;
-import static org.fedoraproject.javadeptools.ffi.Rpm.RPMTAG_BUILDARCHS;
-import static org.fedoraproject.javadeptools.ffi.Rpm.RPMTAG_EXCLUSIVEARCH;
-import static org.fedoraproject.javadeptools.ffi.Rpm.RPMTAG_PAYLOADCOMPRESSOR;
-import static org.fedoraproject.javadeptools.ffi.Rpm.RPMTAG_PAYLOADFORMAT;
-import static org.fedoraproject.javadeptools.ffi.Rpm.RPMTAG_SOURCEPACKAGE;
-import static org.fedoraproject.javadeptools.ffi.Rpm.RPMTAG_SOURCERPM;
-import static org.fedoraproject.javadeptools.ffi.Rpm.RPMVSF_NODSA;
-import static org.fedoraproject.javadeptools.ffi.Rpm.RPMVSF_NODSAHEADER;
-import static org.fedoraproject.javadeptools.ffi.Rpm.RPMVSF_NOHDRCHK;
-import static org.fedoraproject.javadeptools.ffi.Rpm.RPMVSF_NOMD5;
-import static org.fedoraproject.javadeptools.ffi.Rpm.RPMVSF_NORSA;
-import static org.fedoraproject.javadeptools.ffi.Rpm.RPMVSF_NORSAHEADER;
-import static org.fedoraproject.javadeptools.ffi.Rpm.RPMVSF_NOSHA1HEADER;
-import static org.fedoraproject.javadeptools.ffi.Rpmio.Fclose;
-import static org.fedoraproject.javadeptools.ffi.Rpmio.Ferror;
-import static org.fedoraproject.javadeptools.ffi.Rpmio.Fopen;
-import static org.fedoraproject.javadeptools.ffi.Rpmio.Fstrerror;
-import static org.fedoraproject.javadeptools.ffi.Rpmio.Ftell;
-import static org.fedoraproject.javadeptools.ffi.Rpmio.fdDup;
-import static org.fedoraproject.javadeptools.ffi.Rpmlib.headerFree;
-import static org.fedoraproject.javadeptools.ffi.Rpmlib.headerGetNumber;
-import static org.fedoraproject.javadeptools.ffi.Rpmlib.headerGetString;
-import static org.fedoraproject.javadeptools.ffi.Rpmlib.rpmReadPackageFile;
-import static org.fedoraproject.javadeptools.ffi.Rpmlib.rpmtsCreate;
-import static org.fedoraproject.javadeptools.ffi.Rpmlib.rpmtsFree;
-import static org.fedoraproject.javadeptools.ffi.Rpmlib.rpmtsSetVSFlags;
-
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.URL;
@@ -55,10 +24,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
-import org.fedoraproject.javadeptools.ffi.Mman;
-import org.fedoraproject.javadeptools.ffi.Rpm;
-import org.fedoraproject.javadeptools.ffi.Rpmlib;
-import org.fedoraproject.javadeptools.ffi.Unistd;
+import org.fedoraproject.javadeptools.fma.Mman;
+import org.fedoraproject.javadeptools.fma.Rpmio;
+import org.fedoraproject.javadeptools.fma.Rpmlib;
+import org.fedoraproject.javadeptools.fma.Unistd;
 
 import jdk.incubator.foreign.CLinker;
 import jdk.incubator.foreign.MemoryAddress;
@@ -134,7 +103,7 @@ public class RpmInfo implements NEVRA {
         MemoryAddress fd;
         Runnable destructor = () -> {};
         if (url.getProtocol().equals("file")) {
-            fd = Fopen(url.getPath(), "r");
+            fd = Rpmio.Fopen(url.getPath(), "r");
         } else {
             byte[] bytes;
             try (var is = url.openStream()) {
@@ -142,34 +111,34 @@ public class RpmInfo implements NEVRA {
             }
             var intFD = Mman.memfd_create(url.getPath(), 0);
             destructor = () -> Unistd.close(intFD);
-            fd = fdDup(intFD);
+            fd = Rpmio.fdDup(intFD);
             Unistd.write(intFD, bytes);
             Unistd.lseek(intFD, 0, Unistd.SEEK_SET);
         }
 
-        var ts = rpmtsCreate();
+        var ts = Rpmlib.rpmtsCreate();
         try {
-            if (Ferror(fd) != 0) {
-                throw error(url, Fstrerror(fd));
+            if (Rpmio.Ferror(fd) != 0) {
+                throw error(url, Rpmio.Fstrerror(fd));
             }
-            rpmtsSetVSFlags(ts, RPMVSF_NOHDRCHK | RPMVSF_NOSHA1HEADER | RPMVSF_NODSAHEADER
-                    | RPMVSF_NORSAHEADER | RPMVSF_NOMD5 | RPMVSF_NODSA | RPMVSF_NORSA);
+            Rpmlib.rpmtsSetVSFlags(ts, Rpm.RPMVSF_NOHDRCHK | Rpm.RPMVSF_NOSHA1HEADER | Rpm.RPMVSF_NODSAHEADER
+                    | Rpm.RPMVSF_NORSAHEADER | Rpm.RPMVSF_NOMD5 | Rpm.RPMVSF_NODSA | Rpm.RPMVSF_NORSA);
 
             try (ResourceScope headerScope = ResourceScope.newConfinedScope()) {
                 MemorySegment ph = MemorySegment.allocateNative(CLinker.C_POINTER, headerScope);
-                int rc = rpmReadPackageFile(ts, fd, MemoryAddress.NULL, ph.address());
-                if (rc == RPMRC_NOTFOUND) {
+                int rc = Rpmlib.rpmReadPackageFile(ts, fd, MemoryAddress.NULL, ph.address());
+                if (rc == Rpm.RPMRC_NOTFOUND) {
                     throw error(url, "Not a RPM file");
                 }
-                if (rc != RPMRC_OK && rc != RPMRC_NOTTRUSTED && rc != RPMRC_NOKEY) {
+                if (rc != Rpm.RPMRC_OK && rc != Rpm.RPMRC_NOTTRUSTED && rc != Rpm.RPMRC_NOKEY) {
                     throw error(url, "Failed to parse RPM header");
                 }
 
                 MemoryAddress h = MemoryAddress.ofLong(ph.toLongArray()[0]);
                 try {
                     nevra = NEVRAImpl.from(h);
-                    buildArchs = headerGetListString(h, RPMTAG_BUILDARCHS);
-                    exclusiveArch = headerGetListString(h, RPMTAG_EXCLUSIVEARCH);
+                    buildArchs = headerGetListString(h, Rpm.RPMTAG_BUILDARCHS);
+                    exclusiveArch = headerGetListString(h, Rpm.RPMTAG_EXCLUSIVEARCH);
                     provides = headerGetListReldep(h, Rpm.RPMTAG_PROVIDENAME, Rpm.RPMTAG_PROVIDEFLAGS, Rpm.RPMTAG_PROVIDEVERSION);
                     requires = headerGetListReldep(h, Rpm.RPMTAG_REQUIRENAME, Rpm.RPMTAG_REQUIREFLAGS, Rpm.RPMTAG_REQUIREVERSION);
                     conflicts = headerGetListReldep(h, Rpm.RPMTAG_CONFLICTNAME, Rpm.RPMTAG_CONFLICTFLAGS, Rpm.RPMTAG_CONFLICTVERSION);
@@ -179,18 +148,18 @@ public class RpmInfo implements NEVRA {
                     supplements = headerGetListReldep(h, Rpm.RPMTAG_SUPPLEMENTNAME, Rpm.RPMTAG_SUPPLEMENTFLAGS, Rpm.RPMTAG_SUPPLEMENTVERSION);
                     enhances = headerGetListReldep(h, Rpm.RPMTAG_ENHANCENAME, Rpm.RPMTAG_ENHANCEFLAGS, Rpm.RPMTAG_ENHANCEVERSION);
                     orderWithRequires = headerGetListReldep(h, Rpm.RPMTAG_ORDERNAME, Rpm.RPMTAG_ORDERFLAGS, Rpm.RPMTAG_ORDERVERSION);
-                    archiveFormat = headerGetString(h, RPMTAG_PAYLOADFORMAT);
-                    compressionMethod = headerGetString(h, RPMTAG_PAYLOADCOMPRESSOR);
-                    sourceRPM = headerGetString(h, RPMTAG_SOURCERPM);
-                    sourcePackage = headerGetNumber(h, RPMTAG_SOURCEPACKAGE) != 0;
+                    archiveFormat = Rpmlib.headerGetString(h, Rpm.RPMTAG_PAYLOADFORMAT);
+                    compressionMethod = Rpmlib.headerGetString(h, Rpm.RPMTAG_PAYLOADCOMPRESSOR);
+                    sourceRPM = Rpmlib.headerGetString(h, Rpm.RPMTAG_SOURCERPM);
+                    sourcePackage = Rpmlib.headerGetNumber(h, Rpm.RPMTAG_SOURCEPACKAGE) != 0;
                 } finally {
-                    headerFree(h);
+                    Rpmlib.headerFree(h);
                 }
-                headerSize = Ftell(fd);
+                headerSize = Rpmio.Ftell(fd);
             }
         } finally {
-            Fclose(fd);
-            rpmtsFree(ts);
+            Rpmio.Fclose(fd);
+            Rpmlib.rpmtsFree(ts);
             destructor.run();
         }
     }
