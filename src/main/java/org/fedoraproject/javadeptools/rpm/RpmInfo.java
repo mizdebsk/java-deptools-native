@@ -244,6 +244,10 @@ public class RpmInfo implements NEVRA {
         return sourcePackage;
     }
 
+    public boolean isBinaryPackage() {
+        return !sourcePackage;
+    }
+
     public List<String> getBuildArchs() {
         return buildArchs;
     }
