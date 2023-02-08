@@ -306,7 +306,11 @@ public class RpmInfo implements NEVRA {
 
     @Override
     public String toString() {
-        return nevra.toString();
+        var result = nevra.toString();
+        if (isSourcePackage()) {
+            result += ".src";
+        }
+        return result;
     }
 
     @Override
@@ -317,11 +321,5 @@ public class RpmInfo implements NEVRA {
     @Override
     public boolean equals(Object obj) {
         return obj instanceof RpmInfo && ((RpmInfo) obj).nevra.equals(nevra);
-    }
-
-    public static void main(String[] args) throws Exception {
-        var url = new URL("https://kojipkgs.fedoraproject.org//packages/lucene/9.2.0/3.fc36/noarch/lucene-analysis-common-9.2.0-3.fc36.noarch.rpm");
-        var rpmi = new RpmInfo(url);
-        System.out.println(rpmi.getRequires());
     }
 }

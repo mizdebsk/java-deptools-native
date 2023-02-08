@@ -91,7 +91,8 @@ public class NEVRAImpl implements NEVRA {
     }
 
     private boolean equals(NEVRA other) {
-        return name.equals(other.getName())
+        return other != null &&
+                name.equals(other.getName())
                 && epoch == other.getEpoch()
                 && version.equals(other.getVersion())
                 && release.equals(other.getRelease())

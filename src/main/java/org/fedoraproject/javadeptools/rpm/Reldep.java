@@ -103,7 +103,9 @@ public class Reldep {
         if ((flags & RPMSENSE_GREATER) != 0) result += ">";
         if ((flags & RPMSENSE_EQUAL) != 0) result += "=";
         result += space;
-        result += version;
+        if (version != null) {
+            result += version;
+        }
         return result;
     }
 
