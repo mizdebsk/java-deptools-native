@@ -17,6 +17,7 @@ package org.fedoraproject.javadeptools.rpm;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -103,7 +104,11 @@ public class RpmInfo implements NEVRA {
         MemoryAddress fd;
         Runnable destructor = () -> {};
         if (url.getProtocol().equals("file")) {
-            fd = Rpmio.Fopen(url.getPath(), "r");
+            try {
+                fd = Rpmio.Fopen(Path.of(url.toURI()).toString(), "r");
+            } catch (URISyntaxException ex) {
+                throw new RuntimeException(ex);
+            }
         } else {
             byte[] bytes;
             try (var is = url.openStream()) {
