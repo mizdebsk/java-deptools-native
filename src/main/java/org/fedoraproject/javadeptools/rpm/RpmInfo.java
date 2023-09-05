@@ -153,6 +153,7 @@ public class RpmInfo implements NEVRA {
                     supplements = headerGetListReldep(h, Rpm.RPMTAG_SUPPLEMENTNAME, Rpm.RPMTAG_SUPPLEMENTFLAGS, Rpm.RPMTAG_SUPPLEMENTVERSION);
                     enhances = headerGetListReldep(h, Rpm.RPMTAG_ENHANCENAME, Rpm.RPMTAG_ENHANCEFLAGS, Rpm.RPMTAG_ENHANCEVERSION);
                     orderWithRequires = headerGetListReldep(h, Rpm.RPMTAG_ORDERNAME, Rpm.RPMTAG_ORDERFLAGS, Rpm.RPMTAG_ORDERVERSION);
+                    license = Rpmlib.headerGetString(h, Rpm.RPMTAG_LICENSE);
                     archiveFormat = Rpmlib.headerGetString(h, Rpm.RPMTAG_PAYLOADFORMAT);
                     compressionMethod = Rpmlib.headerGetString(h, Rpm.RPMTAG_PAYLOADCOMPRESSOR);
                     sourceRPM = Rpmlib.headerGetString(h, Rpm.RPMTAG_SOURCERPM);
@@ -195,6 +196,7 @@ public class RpmInfo implements NEVRA {
     private final List<Reldep> supplements;
     private final List<Reldep> enhances;
     private final List<Reldep> orderWithRequires;
+    private final String license;
     private final String archiveFormat;
     private final String compressionMethod;
     private final String sourceRPM;
@@ -251,6 +253,10 @@ public class RpmInfo implements NEVRA {
 
     public boolean isBinaryPackage() {
         return !sourcePackage;
+    }
+
+    public String getLicense() {
+        return license;
     }
 
     public List<String> getBuildArchs() {

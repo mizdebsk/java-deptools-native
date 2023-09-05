@@ -37,6 +37,7 @@ public final class Rpm {
     public static final int RPMTAG_VERSION = 1001;
     public static final int RPMTAG_RELEASE = 1002;
     public static final int RPMTAG_EPOCH = 1003;
+    public static final int RPMTAG_LICENSE = 1014;
     public static final int RPMTAG_ARCH = 1022;
     public static final int RPMTAG_SOURCERPM = 1044;
     public static final int RPMTAG_PROVIDENAME = 1047;
