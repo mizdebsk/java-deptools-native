@@ -16,8 +16,6 @@
 package org.fedoraproject.javadeptools.rpm;
 
 import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -25,10 +23,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
-import org.fedoraproject.javadeptools.fma.Mman;
 import org.fedoraproject.javadeptools.fma.Rpmio;
 import org.fedoraproject.javadeptools.fma.Rpmlib;
-import org.fedoraproject.javadeptools.fma.Unistd;
 
 import jdk.incubator.foreign.CLinker;
 import jdk.incubator.foreign.MemoryAddress;
@@ -97,30 +93,10 @@ public class RpmInfo implements NEVRA {
     }
 
     public RpmInfo(Path path) throws IOException {
-        this(path.toUri().toURL());
+        this(path.toUri().toURL(), Rpmio.Fopen(path.toString(), "r"));
     }
 
-    public RpmInfo(URL url) throws IOException {
-        MemoryAddress fd;
-        Runnable destructor = () -> {};
-        if (url.getProtocol().equals("file")) {
-            try {
-                fd = Rpmio.Fopen(Path.of(url.toURI()).toString(), "r");
-            } catch (URISyntaxException ex) {
-                throw new RuntimeException(ex);
-            }
-        } else {
-            byte[] bytes;
-            try (var is = url.openStream()) {
-                bytes = is.readAllBytes();
-            }
-            var intFD = Mman.memfd_create(url.getPath(), 0);
-            destructor = () -> Unistd.close(intFD);
-            fd = Rpmio.fdDup(intFD);
-            Unistd.write(intFD, bytes);
-            Unistd.lseek(intFD, 0, Unistd.SEEK_SET);
-        }
-
+    RpmInfo(URL url, MemoryAddress fd) throws IOException {
         var ts = Rpmlib.rpmtsCreate();
         try {
             if (Rpmio.Ferror(fd) != 0) {
@@ -166,20 +142,6 @@ public class RpmInfo implements NEVRA {
         } finally {
             Rpmio.Fclose(fd);
             Rpmlib.rpmtsFree(ts);
-            destructor.run();
-        }
-    }
-
-    /**
-     * Constructor which does not throw checked exceptions.
-     * @param path Path to .rpm file.
-     * @return The constructed RpmInfo.
-     */
-    static RpmInfo create(URL url) {
-        try {
-            return new RpmInfo(url);
-        } catch (IOException ex) {
-            throw new UncheckedIOException(ex);
         }
     }
 

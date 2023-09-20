@@ -38,12 +38,12 @@ import org.apache.commons.compress.compressors.zstandard.ZstdCompressorInputStre
 public class RpmArchiveInputStream extends ArchiveInputStream {
     private final CpioArchiveInputStream delegate;
 
-    public RpmArchiveInputStream(Path path) throws IOException {
-        this.delegate = wrapFile(path.toUri().toURL());
+    public RpmArchiveInputStream(RpmFile file) throws IOException {
+        this.delegate = wrapFile(file);
     }
 
-    public RpmArchiveInputStream(URL url) throws IOException {
-        this.delegate = wrapFile(url);
+    public RpmArchiveInputStream(Path path) throws IOException {
+        this.delegate = wrapFile(RpmFile.from(path));
     }
 
     @Override
@@ -84,9 +84,9 @@ public class RpmArchiveInputStream extends ArchiveInputStream {
         }
     }
 
-    private static CpioArchiveInputStream wrapFile(URL url) throws IOException {
-        RpmInfo info = new RpmInfo(url);
-        InputStream fis = new BufferedInputStream(url.openStream());
+    private static CpioArchiveInputStream wrapFile(RpmFile file) throws IOException {
+        RpmInfo info = file.getInfo();
+        InputStream fis = new BufferedInputStream(file.getContent());
         fis.skip(info.getHeaderSize());
 
         InputStream cis;
@@ -111,12 +111,12 @@ public class RpmArchiveInputStream extends ArchiveInputStream {
             break;
         default:
             fis.close();
-            throw error(url, "Unsupported compression method: " + info.getCompressionMethod());
+            throw error(file.getURL(), "Unsupported compression method: " + info.getCompressionMethod());
         }
 
         if (!info.getArchiveFormat().equals("cpio")) {
             cis.close();
-            throw error(url, "Unsupported archive format: " + info.getArchiveFormat());
+            throw error(file.getURL(), "Unsupported archive format: " + info.getArchiveFormat());
         }
 
         return new CpioArchiveInputStream(cis);

@@ -66,7 +66,7 @@ public class CLibrary {
     }
 
     private static void loadLibrary(String name) {
-        for (String libdirname : System.getProperty("java.library.path").split(":")) {
+        for (var libdirname : System.getProperty("java.library.path").split(":")) {
             try {
                 var libpath = Paths.get(libdirname);
                 if (Files.isDirectory(libpath)) {
