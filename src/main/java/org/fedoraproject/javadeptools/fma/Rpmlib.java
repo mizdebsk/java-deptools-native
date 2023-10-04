@@ -83,6 +83,9 @@ public class Rpmlib extends CLibrary {
     private final MethodHandle rpmtdGetUint64 = downcallHandle("rpmtdGetUint64",
             MethodType.methodType(MemoryAddress.class, MemoryAddress.class),
             FunctionDescriptor.of(CLinker.C_POINTER, CLinker.C_POINTER));
+    private final MethodHandle rpmtdGetNumber = downcallHandle("rpmtdGetNumber",
+            MethodType.methodType(long.class, MemoryAddress.class),
+            FunctionDescriptor.of(Layouts.int64_t, CLinker.C_POINTER));
     private final MethodHandle rpmtdGetString = downcallHandle("rpmtdGetString",
             MethodType.methodType(MemoryAddress.class, MemoryAddress.class),
             FunctionDescriptor.of(CLinker.C_POINTER, CLinker.C_POINTER));
@@ -272,6 +275,14 @@ public class Rpmlib extends CLibrary {
     public static final long rpmtdGetUint64(MemoryAddress td) {
         try {
             return ((MemoryAddress) Lazy.INSTANCE.rpmtdGetUint64.invokeExact(td)).asSegment(Layouts.int64_t.bitSize() / CLinker.C_CHAR.bitSize(), ResourceScope.globalScope()).toLongArray()[0];
+        } catch (Throwable thr) {
+            throw new RuntimeException(thr);
+        }
+    }
+
+    public static final long rpmtdGetNumber(MemoryAddress td) {
+        try {
+            return ((long) Lazy.INSTANCE.rpmtdGetNumber.invokeExact(td));
         } catch (Throwable thr) {
             throw new RuntimeException(thr);
         }

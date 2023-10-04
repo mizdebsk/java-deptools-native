@@ -145,7 +145,7 @@ public class RpmInfo implements NEVRA {
         }
     }
 
-    private final NEVRAImpl nevra;
+    private final NEVRA nevra;
     private final boolean sourcePackage;
     private final List<String> buildArchs;
     private final List<String> exclusiveArch;
@@ -170,7 +170,7 @@ public class RpmInfo implements NEVRA {
     }
 
     @Override
-    public int getEpoch() {
+    public Integer getEpoch() {
         return nevra.getEpoch();
     }
 

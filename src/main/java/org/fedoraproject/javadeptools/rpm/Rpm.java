@@ -88,6 +88,7 @@ public final class Rpm {
     public static final int RPMTAG_ENHANCEFLAGS = 5057;
 
     public static final int HEADERGET_MINMEM = 1 << 0;
+    public static final int HEADERGET_EXT = 1 << 1;
 
     public static final int RPMDBI_INSTFILENAMES = 5040;
 }

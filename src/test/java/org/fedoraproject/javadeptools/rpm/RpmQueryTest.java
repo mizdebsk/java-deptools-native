@@ -40,7 +40,7 @@ public class RpmQueryTest {
         assertEquals(1, providers.size());
         NEVRA nevra = providers.iterator().next();
         assertEquals("bash", nevra.getName());
-        assertEquals(0, nevra.getEpoch());
+        assertEquals(null, nevra.getEpoch());
         assertEquals("4.3.42", nevra.getVersion());
         assertEquals("3.fc23", nevra.getRelease());
         assertEquals("x86_64", nevra.getArch());

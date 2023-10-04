@@ -37,7 +37,7 @@ public class RpmInfoTest {
 
         assertFalse(info.isSourcePackage());
         assertEquals("foo", info.getName());
-        assertEquals(0, info.getEpoch());
+        assertEquals(null, info.getEpoch());
         assertEquals("1", info.getVersion());
         assertEquals("1.fc21", info.getRelease());
         assertEquals("x86_64", info.getArch());
@@ -62,7 +62,7 @@ public class RpmInfoTest {
 
         assertTrue(info.isSourcePackage());
         assertEquals("foo", info.getName());
-        assertEquals(0, info.getEpoch());
+        assertEquals(null, info.getEpoch());
         assertEquals("1", info.getVersion());
         assertEquals("1.fc21", info.getRelease());
         assertEquals("x86_64", info.getArch());
