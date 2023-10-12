@@ -16,6 +16,9 @@
 package org.fedoraproject.javadeptools.rpm;
 
 import java.io.IOException;
+import java.lang.foreign.Arena;
+import java.lang.foreign.MemorySegment;
+import java.lang.foreign.ValueLayout;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -26,11 +29,6 @@ import java.util.function.Function;
 import org.fedoraproject.javadeptools.fma.Rpmio;
 import org.fedoraproject.javadeptools.fma.Rpmlib;
 
-import jdk.incubator.foreign.CLinker;
-import jdk.incubator.foreign.MemoryAddress;
-import jdk.incubator.foreign.MemorySegment;
-import jdk.incubator.foreign.ResourceScope;
-
 /**
  * @author Mikolaj Izdebski
  */
@@ -39,7 +37,7 @@ public class RpmInfo implements NEVRA {
         throw new IOException("Unable to open RPM file " + url + ": " + message);
     }
 
-    private static <T> List<T> headerGetList(MemoryAddress h, int tag, Function<MemoryAddress, T> getter) {
+    private static <T> List<T> headerGetList(MemorySegment h, int tag, Function<MemorySegment, T> getter) {
         var td = Rpmlib.rpmtdNew();
         try {
             Rpmlib.headerGet(h, tag, td, Rpm.HEADERGET_MINMEM);
@@ -58,27 +56,27 @@ public class RpmInfo implements NEVRA {
         }
     }
 
-    private static List<String> headerGetListString(MemoryAddress h, int tag) {
+    private static List<String> headerGetListString(MemorySegment h, int tag) {
         return headerGetList(h, tag, (td) -> Rpmlib.rpmtdGetString(td));
     }
 
-    private static List<Long> headerGetListLong(MemoryAddress h, int tag) {
+    private static List<Long> headerGetListLong(MemorySegment h, int tag) {
         return headerGetList(h, tag, (td) -> Rpmlib.rpmtdGetUint64(td));
     }
 
-    private static List<Integer> headerGetListInt(MemoryAddress h, int tag) {
+    private static List<Integer> headerGetListInt(MemorySegment h, int tag) {
         return headerGetList(h, tag, (td) -> Rpmlib.rpmtdGetUint32(td));
     }
 
-    private static List<Short> headerGetListShort(MemoryAddress h, int tag) {
+    private static List<Short> headerGetListShort(MemorySegment h, int tag) {
         return headerGetList(h, tag, (td) -> Rpmlib.rpmtdGetUint16(td));
     }
 
-    private static List<Character> headerGetListChar(MemoryAddress h, int tag) {
+    private static List<Character> headerGetListChar(MemorySegment h, int tag) {
         return headerGetList(h, tag, (td) -> Rpmlib.rpmtdGetChar(td));
     }
 
-    private static List<Reldep> headerGetListReldep(MemoryAddress h, int nameTag, int flagsTag, int versionTag) {
+    private static List<Reldep> headerGetListReldep(MemorySegment h, int nameTag, int flagsTag, int versionTag) {
         var names = headerGetListString(h, nameTag);
         var flagIt = headerGetListInt(h, flagsTag).iterator();
         var versionIt = headerGetListString(h, versionTag).iterator();
@@ -96,7 +94,7 @@ public class RpmInfo implements NEVRA {
         this(path.toUri().toURL(), Rpmio.Fopen(path.toString(), "r"));
     }
 
-    RpmInfo(URL url, MemoryAddress fd) throws IOException {
+    RpmInfo(URL url, MemorySegment fd) throws IOException {
         var ts = Rpmlib.rpmtsCreate();
         try {
             if (Rpmio.Ferror(fd) != 0) {
@@ -105,9 +103,9 @@ public class RpmInfo implements NEVRA {
             Rpmlib.rpmtsSetVSFlags(ts, Rpm.RPMVSF_NOHDRCHK | Rpm.RPMVSF_NOSHA1HEADER | Rpm.RPMVSF_NODSAHEADER
                     | Rpm.RPMVSF_NORSAHEADER | Rpm.RPMVSF_NOMD5 | Rpm.RPMVSF_NODSA | Rpm.RPMVSF_NORSA);
 
-            try (ResourceScope headerScope = ResourceScope.newConfinedScope()) {
-                MemorySegment ph = MemorySegment.allocateNative(CLinker.C_POINTER, headerScope);
-                int rc = Rpmlib.rpmReadPackageFile(ts, fd, MemoryAddress.NULL, ph.address());
+            try (var headerArena = Arena.openConfined()) {
+                var ph = headerArena.allocate(ValueLayout.ADDRESS);
+                int rc = Rpmlib.rpmReadPackageFile(ts, fd, MemorySegment.NULL, ph);
                 if (rc == Rpm.RPMRC_NOTFOUND) {
                     throw error(url, "Not a RPM file");
                 }
@@ -115,7 +113,7 @@ public class RpmInfo implements NEVRA {
                     throw error(url, "Failed to parse RPM header");
                 }
 
-                MemoryAddress h = MemoryAddress.ofLong(ph.toLongArray()[0]);
+                var h = MemorySegment.ofAddress(ph.get(ValueLayout.JAVA_LONG, 0));
                 try {
                     nevra = NEVRAImpl.from(h);
                     buildArchs = headerGetListString(h, Rpm.RPMTAG_BUILDARCHS);

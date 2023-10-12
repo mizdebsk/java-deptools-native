@@ -15,6 +15,7 @@
  */
 package org.fedoraproject.javadeptools.rpm;
 
+import java.lang.foreign.MemorySegment;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,13 +23,10 @@ import java.util.List;
 
 import org.fedoraproject.javadeptools.fma.Rpmlib;
 
-import jdk.incubator.foreign.MemoryAddress;
-
 /**
  * @author Mikolaj Izdebski
  */
 public class RpmQuery {
-
     static {
         Rpmlib.rpmReadConfigFiles(null, null);
     }
@@ -38,18 +36,18 @@ public class RpmQuery {
     }
 
     public static List<? extends NEVRA> byFile(Path path, Path root) {
-        MemoryAddress ts = Rpmlib.rpmtsCreate();
+        var ts = Rpmlib.rpmtsCreate();
         try {
             if (path != null) {
                 if (Rpmlib.rpmtsSetRootDir(ts, root.toString()) != 0) {
                     return Collections.emptyList();
                 }
             }
-            MemoryAddress mi = Rpmlib.rpmtsInitIterator(ts, Rpm.RPMDBI_INSTFILENAMES, path.toAbsolutePath().toString(), 0);
+            var mi = Rpmlib.rpmtsInitIterator(ts, Rpm.RPMDBI_INSTFILENAMES, path.toAbsolutePath().toString(), 0);
             try {
                 List<NEVRAImpl> providers = new ArrayList<>();
-                MemoryAddress h;
-                while (!(h = Rpmlib.rpmdbNextIterator(mi)).equals(MemoryAddress.NULL)) {
+                MemorySegment h;
+                while (!(h = Rpmlib.rpmdbNextIterator(mi)).equals(MemorySegment.NULL)) {
                     providers.add(NEVRAImpl.from(h));
                 }
                 return Collections.unmodifiableList(providers);
@@ -60,5 +58,4 @@ public class RpmQuery {
             Rpmlib.rpmtsFree(ts);
         }
     }
-
 }

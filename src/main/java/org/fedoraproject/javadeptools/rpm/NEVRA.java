@@ -15,9 +15,9 @@
  */
 package org.fedoraproject.javadeptools.rpm;
 
-import org.fedoraproject.javadeptools.fma.Rpmlib;
+import java.lang.foreign.MemorySegment;
 
-import jdk.incubator.foreign.MemoryAddress;
+import org.fedoraproject.javadeptools.fma.Rpmlib;
 
 /**
  * @author Mikolaj Izdebski
@@ -58,7 +58,7 @@ class NEVRAImpl implements NEVRA {
         this.nevra = sb.toString();
     }
 
-    static NEVRAImpl from(MemoryAddress h) {
+    static NEVRAImpl from(MemorySegment h) {
         String name = Rpmlib.headerGetString(h, Rpm.RPMTAG_NAME);
         Integer epoch = null;
         String version = Rpmlib.headerGetString(h, Rpm.RPMTAG_VERSION);

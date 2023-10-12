@@ -1,12 +1,10 @@
 package org.fedoraproject.javadeptools.fma;
 
+import java.lang.foreign.Arena;
+import java.lang.foreign.FunctionDescriptor;
+import java.lang.foreign.MemorySegment;
+import java.lang.foreign.ValueLayout;
 import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodType;
-
-import jdk.incubator.foreign.CLinker;
-import jdk.incubator.foreign.FunctionDescriptor;
-import jdk.incubator.foreign.MemoryAddress;
-import jdk.incubator.foreign.ResourceScope;
 
 public class Rpmio extends CLibrary {
     private static class Lazy {
@@ -18,44 +16,38 @@ public class Rpmio extends CLibrary {
     }
 
     private final MethodHandle fdDup = downcallHandle("fdDup",
-            MethodType.methodType(MemoryAddress.class, int.class),
-            FunctionDescriptor.of(CLinker.C_POINTER, CLinker.C_INT));
+            FunctionDescriptor.of(ValueLayout.ADDRESS, ValueLayout.JAVA_INT));
     private final MethodHandle Fopen = downcallHandle("Fopen",
-            MethodType.methodType(MemoryAddress.class, MemoryAddress.class, MemoryAddress.class),
-            FunctionDescriptor.of(CLinker.C_POINTER, CLinker.C_POINTER, CLinker.C_POINTER));
+            FunctionDescriptor.of(ValueLayout.ADDRESS, ValueLayout.ADDRESS, ValueLayout.ADDRESS));
     private final MethodHandle Fclose = downcallHandle("Fclose",
-            MethodType.methodType(void.class, MemoryAddress.class),
-            FunctionDescriptor.ofVoid(CLinker.C_POINTER));
+            FunctionDescriptor.ofVoid(ValueLayout.ADDRESS));
     private final MethodHandle Ftell = downcallHandle("Ftell",
-            MethodType.methodType(long.class, MemoryAddress.class),
-            FunctionDescriptor.of(CLinker.C_LONG, CLinker.C_POINTER));
+            FunctionDescriptor.of(ValueLayout.JAVA_LONG, ValueLayout.ADDRESS));
     private final MethodHandle Ferror = downcallHandle("Ferror",
-            MethodType.methodType(int.class, MemoryAddress.class),
-            FunctionDescriptor.of(CLinker.C_INT, CLinker.C_POINTER));
+            FunctionDescriptor.of(ValueLayout.JAVA_INT, ValueLayout.ADDRESS));
     private final MethodHandle Fstrerror = downcallHandle("Fstrerror",
-            MethodType.methodType(MemoryAddress.class, MemoryAddress.class),
-            FunctionDescriptor.of(CLinker.C_POINTER, CLinker.C_POINTER));
+            FunctionDescriptor.of(ValueLayout.ADDRESS.asUnbounded(), ValueLayout.ADDRESS));
 
-    public static final MemoryAddress fdDup(int fd) {
+    public static final MemorySegment fdDup(int fd) {
         try {
-            return (MemoryAddress) Lazy.INSTANCE.fdDup.invokeExact(fd);
+            return (MemorySegment) Lazy.INSTANCE.fdDup.invokeExact(fd);
         } catch (Throwable thr) {
             throw new RuntimeException(thr);
         }
     }
 
-    public static final MemoryAddress Fopen(String filepath, String mode) {
-        try (var filepathScope = ResourceScope.newConfinedScope();
-             var modeScope = ResourceScope.newConfinedScope()) {
-            return (MemoryAddress) Lazy.INSTANCE.Fopen.invokeExact(
-                    CLibrary.toCStringAddress(filepath, filepathScope),
-                    CLibrary.toCStringAddress(mode, modeScope));
+    public static final MemorySegment Fopen(String filepath, String mode) {
+        try (var filepathArena = Arena.openConfined();
+             var modeArena = Arena.openConfined()) {
+            return (MemorySegment) Lazy.INSTANCE.Fopen.invokeExact(
+                    CLibrary.toCString(filepath, filepathArena),
+                    CLibrary.toCString(mode, modeArena));
         } catch (Throwable thr) {
             throw new RuntimeException(thr);
         }
     }
 
-    public static final void Fclose(MemoryAddress ts) {
+    public static final void Fclose(MemorySegment ts) {
         try {
             Lazy.INSTANCE.Fclose.invokeExact(ts);
         } catch (Throwable thr) {
@@ -63,7 +55,7 @@ public class Rpmio extends CLibrary {
         }
     }
 
-    public static final long Ftell(MemoryAddress fd) {
+    public static final long Ftell(MemorySegment fd) {
         try {
             return (long) Lazy.INSTANCE.Ftell.invokeExact(fd);
         } catch (Throwable thr) {
@@ -71,7 +63,7 @@ public class Rpmio extends CLibrary {
         }
     }
 
-    public static final int Ferror(MemoryAddress fd) {
+    public static final int Ferror(MemorySegment fd) {
         try {
             return (int) Lazy.INSTANCE.Ferror.invokeExact(fd);
         } catch (Throwable thr) {
@@ -79,9 +71,9 @@ public class Rpmio extends CLibrary {
         }
     }
 
-    public static final String Fstrerror(MemoryAddress fd) {
+    public static final String Fstrerror(MemorySegment fd) {
         try {
-            return CLinker.toJavaString((MemoryAddress) Lazy.INSTANCE.Fstrerror.invokeExact(fd));
+            return CLibrary.toJavaString((MemorySegment) Lazy.INSTANCE.Fstrerror.invokeExact(fd));
         } catch (Throwable thr) {
             throw new RuntimeException(thr);
         }

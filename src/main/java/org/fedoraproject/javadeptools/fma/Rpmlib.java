@@ -1,12 +1,10 @@
 package org.fedoraproject.javadeptools.fma;
 
+import java.lang.foreign.Arena;
+import java.lang.foreign.FunctionDescriptor;
+import java.lang.foreign.MemorySegment;
+import java.lang.foreign.ValueLayout;
 import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodType;
-
-import jdk.incubator.foreign.CLinker;
-import jdk.incubator.foreign.FunctionDescriptor;
-import jdk.incubator.foreign.MemoryAddress;
-import jdk.incubator.foreign.ResourceScope;
 
 public class Rpmlib extends CLibrary {
     private static class Lazy {
@@ -18,87 +16,63 @@ public class Rpmlib extends CLibrary {
     }
 
     private final MethodHandle rpmtsCreate = downcallHandle("rpmtsCreate",
-            MethodType.methodType(MemoryAddress.class),
-            FunctionDescriptor.of(CLinker.C_POINTER));
+            FunctionDescriptor.of(ValueLayout.ADDRESS));
     private final MethodHandle rpmtsFree = downcallHandle("rpmtsFree",
-            MethodType.methodType(void.class, MemoryAddress.class),
-            FunctionDescriptor.ofVoid(CLinker.C_POINTER));
+            FunctionDescriptor.ofVoid(ValueLayout.ADDRESS));
     private final MethodHandle rpmtsSetVSFlags = downcallHandle("rpmtsSetVSFlags",
-            MethodType.methodType(int.class, MemoryAddress.class, int.class),
-            FunctionDescriptor.of(CLinker.C_INT, CLinker.C_POINTER, CLinker.C_INT));
+            FunctionDescriptor.of(ValueLayout.JAVA_INT, ValueLayout.ADDRESS, ValueLayout.JAVA_INT));
     private final MethodHandle rpmtsSetRootDir = downcallHandle("rpmtsSetRootDir",
-            MethodType.methodType(int.class, MemoryAddress.class, MemoryAddress.class),
-            FunctionDescriptor.of(CLinker.C_INT, CLinker.C_POINTER, CLinker.C_POINTER));
+            FunctionDescriptor.of(ValueLayout.JAVA_INT, ValueLayout.ADDRESS, ValueLayout.ADDRESS));
     private final MethodHandle rpmtsInitIterator = downcallHandle("rpmtsInitIterator",
-            MethodType.methodType(MemoryAddress.class, MemoryAddress.class, int.class, MemoryAddress.class, long.class),
-            FunctionDescriptor.of(CLinker.C_POINTER, CLinker.C_POINTER, Layouts.int32_t, CLinker.C_POINTER, Layouts.size_t));
+            FunctionDescriptor.of(ValueLayout.ADDRESS, ValueLayout.ADDRESS, ValueLayout.JAVA_INT, ValueLayout.ADDRESS, ValueLayout.JAVA_LONG));
     private final MethodHandle rpmdbFreeIterator = downcallHandle("rpmdbFreeIterator",
-            MethodType.methodType(MemoryAddress.class, MemoryAddress.class),
-            FunctionDescriptor.of(CLinker.C_POINTER, CLinker.C_POINTER));
+            FunctionDescriptor.of(ValueLayout.ADDRESS, ValueLayout.ADDRESS));
     private final MethodHandle rpmdbNextIterator = downcallHandle("rpmdbNextIterator",
-            MethodType.methodType(MemoryAddress.class, MemoryAddress.class),
-            FunctionDescriptor.of(CLinker.C_POINTER, CLinker.C_POINTER));
+            FunctionDescriptor.of(ValueLayout.ADDRESS, ValueLayout.ADDRESS));
     private final MethodHandle rpmReadPackageFile = downcallHandle("rpmReadPackageFile",
-            MethodType.methodType(int.class, MemoryAddress.class, MemoryAddress.class, MemoryAddress.class, MemoryAddress.class),
-            FunctionDescriptor.of(CLinker.C_INT, CLinker.C_POINTER, CLinker.C_POINTER, CLinker.C_POINTER, CLinker.C_POINTER));
+            FunctionDescriptor.of(ValueLayout.JAVA_INT, ValueLayout.ADDRESS, ValueLayout.ADDRESS, ValueLayout.ADDRESS, ValueLayout.ADDRESS));
     private final MethodHandle rpmReadConfigFiles = downcallHandle("rpmReadConfigFiles",
-            MethodType.methodType(int.class, MemoryAddress.class, MemoryAddress.class),
-            FunctionDescriptor.of(CLinker.C_INT, CLinker.C_POINTER, CLinker.C_POINTER));
+            FunctionDescriptor.of(ValueLayout.JAVA_INT, ValueLayout.ADDRESS, ValueLayout.ADDRESS));
     private final MethodHandle headerFree = downcallHandle("headerFree",
-            MethodType.methodType(MemoryAddress.class, MemoryAddress.class),
-            FunctionDescriptor.of(CLinker.C_POINTER, CLinker.C_POINTER));
+            FunctionDescriptor.of(ValueLayout.ADDRESS, ValueLayout.ADDRESS));
     private final MethodHandle headerGet = downcallHandle("headerGet",
-            MethodType.methodType(int.class, MemoryAddress.class, int.class, MemoryAddress.class, int.class),
-            FunctionDescriptor.of(CLinker.C_INT, CLinker.C_POINTER, CLinker.C_INT, CLinker.C_POINTER, CLinker.C_INT));
+            FunctionDescriptor.of(ValueLayout.JAVA_INT, ValueLayout.ADDRESS, ValueLayout.JAVA_INT, ValueLayout.ADDRESS, ValueLayout.JAVA_INT));
     private final MethodHandle headerGetString = downcallHandle("headerGetString",
-            MethodType.methodType(MemoryAddress.class, MemoryAddress.class, int.class),
-            FunctionDescriptor.of(CLinker.C_POINTER, CLinker.C_POINTER, CLinker.C_INT));
+            FunctionDescriptor.of(ValueLayout.ADDRESS.asUnbounded(), ValueLayout.ADDRESS, ValueLayout.JAVA_INT));
     private final MethodHandle headerGetNumber = downcallHandle("headerGetNumber",
-            MethodType.methodType(long.class, MemoryAddress.class, int.class),
-            FunctionDescriptor.of(Layouts.int64_t, CLinker.C_POINTER, CLinker.C_INT));
+            FunctionDescriptor.of(ValueLayout.JAVA_LONG, ValueLayout.ADDRESS, ValueLayout.JAVA_INT));
     private final MethodHandle rpmtdNew = downcallHandle("rpmtdNew",
-            MethodType.methodType(MemoryAddress.class),
-            FunctionDescriptor.of(CLinker.C_POINTER));
+            FunctionDescriptor.of(ValueLayout.ADDRESS));
     private final MethodHandle rpmtdFree = downcallHandle("rpmtdFree",
-            MethodType.methodType(MemoryAddress.class, MemoryAddress.class),
-            FunctionDescriptor.of(CLinker.C_POINTER, CLinker.C_POINTER));
+            FunctionDescriptor.of(ValueLayout.ADDRESS, ValueLayout.ADDRESS));
     private final MethodHandle rpmtdFreeData = downcallHandle("rpmtdFreeData",
-            MethodType.methodType(void.class, MemoryAddress.class),
-            FunctionDescriptor.ofVoid(CLinker.C_POINTER));
+            FunctionDescriptor.ofVoid(ValueLayout.ADDRESS));
     private final MethodHandle rpmtdCount = downcallHandle("rpmtdCount",
-            MethodType.methodType(int.class, MemoryAddress.class),
-            FunctionDescriptor.of(Layouts.int32_t, CLinker.C_POINTER));
+            FunctionDescriptor.of(ValueLayout.JAVA_INT, ValueLayout.ADDRESS));
     private final MethodHandle rpmtdNext = downcallHandle("rpmtdNext",
-            MethodType.methodType(int.class, MemoryAddress.class),
-            FunctionDescriptor.of(CLinker.C_INT, CLinker.C_POINTER));
+            FunctionDescriptor.of(ValueLayout.JAVA_INT, ValueLayout.ADDRESS));
     private final MethodHandle rpmtdGetChar = downcallHandle("rpmtdGetChar",
-            MethodType.methodType(MemoryAddress.class, MemoryAddress.class),
-            FunctionDescriptor.of(CLinker.C_POINTER, CLinker.C_POINTER));
+            FunctionDescriptor.of(ValueLayout.ADDRESS.asUnbounded(), ValueLayout.ADDRESS));
     private final MethodHandle rpmtdGetUint16 = downcallHandle("rpmtdGetUint16",
-            MethodType.methodType(MemoryAddress.class, MemoryAddress.class),
-            FunctionDescriptor.of(CLinker.C_POINTER, CLinker.C_POINTER));
+            FunctionDescriptor.of(ValueLayout.ADDRESS.asUnbounded(), ValueLayout.ADDRESS));
     private final MethodHandle rpmtdGetUint32 = downcallHandle("rpmtdGetUint32",
-            MethodType.methodType(MemoryAddress.class, MemoryAddress.class),
-            FunctionDescriptor.of(CLinker.C_POINTER, CLinker.C_POINTER));
+            FunctionDescriptor.of(ValueLayout.ADDRESS.asUnbounded(), ValueLayout.ADDRESS));
     private final MethodHandle rpmtdGetUint64 = downcallHandle("rpmtdGetUint64",
-            MethodType.methodType(MemoryAddress.class, MemoryAddress.class),
-            FunctionDescriptor.of(CLinker.C_POINTER, CLinker.C_POINTER));
+            FunctionDescriptor.of(ValueLayout.ADDRESS.asUnbounded(), ValueLayout.ADDRESS));
     private final MethodHandle rpmtdGetNumber = downcallHandle("rpmtdGetNumber",
-            MethodType.methodType(long.class, MemoryAddress.class),
-            FunctionDescriptor.of(Layouts.int64_t, CLinker.C_POINTER));
+            FunctionDescriptor.of(ValueLayout.JAVA_LONG, ValueLayout.ADDRESS));
     private final MethodHandle rpmtdGetString = downcallHandle("rpmtdGetString",
-            MethodType.methodType(MemoryAddress.class, MemoryAddress.class),
-            FunctionDescriptor.of(CLinker.C_POINTER, CLinker.C_POINTER));
+            FunctionDescriptor.of(ValueLayout.ADDRESS.asUnbounded(), ValueLayout.ADDRESS));
 
-    public static final MemoryAddress rpmtsCreate() {
+    public static final MemorySegment rpmtsCreate() {
         try {
-            return (MemoryAddress) Lazy.INSTANCE.rpmtsCreate.invokeExact();
+            return (MemorySegment) Lazy.INSTANCE.rpmtsCreate.invokeExact();
         } catch (Throwable thr) {
             throw new RuntimeException(thr);
         }
     }
 
-    public static final void rpmtsFree(MemoryAddress ts) {
+    public static final void rpmtsFree(MemorySegment ts) {
         try {
             Lazy.INSTANCE.rpmtsFree.invokeExact(ts);
         } catch (Throwable thr) {
@@ -106,7 +80,7 @@ public class Rpmlib extends CLibrary {
         }
     }
 
-    public static final int rpmtsSetVSFlags(MemoryAddress ts, int flags) {
+    public static final int rpmtsSetVSFlags(MemorySegment ts, int flags) {
         try {
             return (int) Lazy.INSTANCE.rpmtsSetVSFlags.invokeExact(ts, flags);
         } catch (Throwable thr) {
@@ -114,45 +88,45 @@ public class Rpmlib extends CLibrary {
         }
     }
 
-    public static final int rpmtsSetRootDir(MemoryAddress ts, String rootDir) {
-        try (var rootDirScope = ResourceScope.newConfinedScope()) {
+    public static final int rpmtsSetRootDir(MemorySegment ts, String rootDir) {
+        try (var arena = Arena.openConfined()) {
             return (int) Lazy.INSTANCE.rpmtsSetRootDir.invokeExact(
                     ts,
-                    CLibrary.toCStringAddress(rootDir, rootDirScope));
+                    CLibrary.toCString(rootDir, arena));
         } catch (Throwable thr) {
             throw new RuntimeException(thr);
         }
     }
 
-    public static final MemoryAddress rpmtsInitIterator(MemoryAddress ts, int rpmtag, String keyp, long keylen) {
-        try (var keypScope = ResourceScope.newConfinedScope()) {
-            return (MemoryAddress) Lazy.INSTANCE.rpmtsInitIterator.invokeExact(
+    public static final MemorySegment rpmtsInitIterator(MemorySegment ts, int rpmtag, String keyp, long keylen) {
+        try (var arena = Arena.openConfined()) {
+            return (MemorySegment) Lazy.INSTANCE.rpmtsInitIterator.invokeExact(
                     ts,
                     rpmtag,
-                    CLibrary.toCStringAddress(keyp, keypScope),
+                    CLibrary.toCString(keyp, arena),
                     keylen);
         } catch (Throwable thr) {
             throw new RuntimeException(thr);
         }
     }
 
-    public static final MemoryAddress rpmdbFreeIterator(MemoryAddress mi) {
+    public static final MemorySegment rpmdbFreeIterator(MemorySegment mi) {
         try {
-            return (MemoryAddress) Lazy.INSTANCE.rpmdbFreeIterator.invokeExact(mi);
+            return (MemorySegment) Lazy.INSTANCE.rpmdbFreeIterator.invokeExact(mi);
         } catch (Throwable thr) {
             throw new RuntimeException(thr);
         }
     }
 
-    public static final MemoryAddress rpmdbNextIterator(MemoryAddress mi) {
+    public static final MemorySegment rpmdbNextIterator(MemorySegment mi) {
         try {
-            return (MemoryAddress) Lazy.INSTANCE.rpmdbNextIterator.invokeExact(mi);
+            return (MemorySegment) Lazy.INSTANCE.rpmdbNextIterator.invokeExact(mi);
         } catch (Throwable thr) {
             throw new RuntimeException(thr);
         }
     }
 
-    public static final int rpmReadPackageFile(MemoryAddress ts, MemoryAddress fd, MemoryAddress fn, MemoryAddress hdr) {
+    public static final int rpmReadPackageFile(MemorySegment ts, MemorySegment fd, MemorySegment fn, MemorySegment hdr) {
         try {
             return (int) Lazy.INSTANCE.rpmReadPackageFile.invokeExact(ts, fd, fn, hdr);
         } catch (Throwable thr) {
@@ -161,25 +135,25 @@ public class Rpmlib extends CLibrary {
     }
 
     public static final int rpmReadConfigFiles(String file, String target) {
-        try (var fileScope = ResourceScope.newConfinedScope();
-             var targetScope = ResourceScope.newConfinedScope()) {
+        try (var fileArena = Arena.openConfined();
+             var targetArena = Arena.openConfined()) {
             return (int) Lazy.INSTANCE.rpmReadConfigFiles.invokeExact(
-                    CLibrary.toCStringAddress(file, fileScope),
-                    CLibrary.toCStringAddress(target, targetScope));
+                    CLibrary.toCString(file, fileArena),
+                    CLibrary.toCString(target, targetArena));
         } catch (Throwable thr) {
             throw new RuntimeException(thr);
         }
     }
 
-    public static final MemoryAddress headerFree(MemoryAddress hdr) {
+    public static final MemorySegment headerFree(MemorySegment hdr) {
         try {
-            return (MemoryAddress) Lazy.INSTANCE.headerFree.invokeExact(hdr);
+            return (MemorySegment) Lazy.INSTANCE.headerFree.invokeExact(hdr);
         } catch (Throwable thr) {
             throw new RuntimeException(thr);
         }
     }
 
-    public static final int headerGet(MemoryAddress hdr, int tag, MemoryAddress td, int flags) {
+    public static final int headerGet(MemorySegment hdr, int tag, MemorySegment td, int flags) {
         try {
             return (int) Lazy.INSTANCE.headerGet.invokeExact(hdr, tag, td, flags);
         } catch (Throwable thr) {
@@ -187,20 +161,15 @@ public class Rpmlib extends CLibrary {
         }
     }
 
-    public static final String headerGetString(MemoryAddress hdr, int tag) {
+    public static final String headerGetString(MemorySegment hdr, int tag) {
         try {
-            var cstring = (MemoryAddress) Lazy.INSTANCE.headerGetString.invokeExact(hdr, tag);
-            if (cstring.equals(MemoryAddress.NULL)) {
-                return null;
-            } else {
-                return CLinker.toJavaString(cstring);
-            }
+            return CLibrary.toJavaString((MemorySegment) Lazy.INSTANCE.headerGetString.invokeExact(hdr, tag));
         } catch (Throwable thr) {
             throw new RuntimeException(thr);
         }
     }
 
-    public static final long headerGetNumber(MemoryAddress hdr, int tag) {
+    public static final long headerGetNumber(MemorySegment hdr, int tag) {
         try {
             return (long) Lazy.INSTANCE.headerGetNumber.invokeExact(hdr, tag);
         } catch (Throwable thr) {
@@ -208,23 +177,23 @@ public class Rpmlib extends CLibrary {
         }
     }
 
-    public static final MemoryAddress rpmtdNew() {
+    public static final MemorySegment rpmtdNew() {
         try {
-            return (MemoryAddress) Lazy.INSTANCE.rpmtdNew.invokeExact();
+            return (MemorySegment) Lazy.INSTANCE.rpmtdNew.invokeExact();
         } catch (Throwable thr) {
             throw new RuntimeException(thr);
         }
     }
 
-    public static final MemoryAddress rpmtdFree(MemoryAddress td) {
+    public static final MemorySegment rpmtdFree(MemorySegment td) {
         try {
-            return (MemoryAddress) Lazy.INSTANCE.rpmtdFree.invokeExact(td);
+            return (MemorySegment) Lazy.INSTANCE.rpmtdFree.invokeExact(td);
         } catch (Throwable thr) {
             throw new RuntimeException(thr);
         }
     }
 
-    public static final void rpmtdFreeData(MemoryAddress td) {
+    public static final void rpmtdFreeData(MemorySegment td) {
         try {
             Lazy.INSTANCE.rpmtdFreeData.invokeExact(td);
         } catch (Throwable thr) {
@@ -232,7 +201,7 @@ public class Rpmlib extends CLibrary {
         }
     }
 
-    public static final int rpmtdCount(MemoryAddress td) {
+    public static final int rpmtdCount(MemorySegment td) {
         try {
             return (int) Lazy.INSTANCE.rpmtdCount.invokeExact(td);
         } catch (Throwable thr) {
@@ -240,7 +209,7 @@ public class Rpmlib extends CLibrary {
         }
     }
 
-    public static final int rpmtdNext(MemoryAddress td) {
+    public static final int rpmtdNext(MemorySegment td) {
         try {
             return (int) Lazy.INSTANCE.rpmtdNext.invokeExact(td);
         } catch (Throwable thr) {
@@ -248,39 +217,39 @@ public class Rpmlib extends CLibrary {
         }
     }
 
-    public static final char rpmtdGetChar(MemoryAddress td) {
+    public static final char rpmtdGetChar(MemorySegment td) {
         try {
-            return ((MemoryAddress) Lazy.INSTANCE.rpmtdGetChar.invokeExact(td)).asSegment(1, ResourceScope.globalScope()).toCharArray()[0];
+            return (char) ((MemorySegment) Lazy.INSTANCE.rpmtdGetChar.invokeExact(td)).get(ValueLayout.JAVA_BYTE, 0);
         } catch (Throwable thr) {
             throw new RuntimeException(thr);
         }
     }
 
-    public static final short rpmtdGetUint16(MemoryAddress td) {
+    public static final short rpmtdGetUint16(MemorySegment td) {
         try {
-            return ((MemoryAddress) Lazy.INSTANCE.rpmtdGetUint16.invokeExact(td)).asSegment(CLinker.C_SHORT.bitSize() / CLinker.C_CHAR.bitSize(), ResourceScope.globalScope()).toShortArray()[0];
+            return ((MemorySegment) Lazy.INSTANCE.rpmtdGetUint16.invokeExact(td)).get(ValueLayout.JAVA_SHORT, 0);
         } catch (Throwable thr) {
             throw new RuntimeException(thr);
         }
     }
 
-    public static final int rpmtdGetUint32(MemoryAddress td) {
+    public static final int rpmtdGetUint32(MemorySegment td) {
         try {
-            return ((MemoryAddress) Lazy.INSTANCE.rpmtdGetUint32.invokeExact(td)).asSegment(Layouts.int32_t.bitSize() / CLinker.C_CHAR.bitSize(), ResourceScope.globalScope()).toIntArray()[0];
+            return ((MemorySegment) Lazy.INSTANCE.rpmtdGetUint32.invokeExact(td)).get(ValueLayout.JAVA_INT, 0);
         } catch (Throwable thr) {
             throw new RuntimeException(thr);
         }
     }
 
-    public static final long rpmtdGetUint64(MemoryAddress td) {
+    public static final long rpmtdGetUint64(MemorySegment td) {
         try {
-            return ((MemoryAddress) Lazy.INSTANCE.rpmtdGetUint64.invokeExact(td)).asSegment(Layouts.int64_t.bitSize() / CLinker.C_CHAR.bitSize(), ResourceScope.globalScope()).toLongArray()[0];
+            return ((MemorySegment) Lazy.INSTANCE.rpmtdGetUint64.invokeExact(td)).get(ValueLayout.JAVA_INT, 0);
         } catch (Throwable thr) {
             throw new RuntimeException(thr);
         }
     }
 
-    public static final long rpmtdGetNumber(MemoryAddress td) {
+    public static final long rpmtdGetNumber(MemorySegment td) {
         try {
             return ((long) Lazy.INSTANCE.rpmtdGetNumber.invokeExact(td));
         } catch (Throwable thr) {
@@ -288,9 +257,9 @@ public class Rpmlib extends CLibrary {
         }
     }
 
-    public static final String rpmtdGetString(MemoryAddress td) {
+    public static final String rpmtdGetString(MemorySegment td) {
         try {
-            return CLinker.toJavaString((MemoryAddress) Lazy.INSTANCE.rpmtdGetString.invokeExact(td));
+            return CLibrary.toJavaString((MemorySegment) Lazy.INSTANCE.rpmtdGetString.invokeExact(td));
         } catch (Throwable thr) {
             throw new RuntimeException(thr);
         }

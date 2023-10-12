@@ -2,66 +2,56 @@ package org.fedoraproject.javadeptools.fma;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.lang.foreign.Arena;
+import java.lang.foreign.FunctionDescriptor;
+import java.lang.foreign.Linker;
+import java.lang.foreign.MemorySegment;
+import java.lang.foreign.SymbolLookup;
 import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodType;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Arrays;
-
-import jdk.incubator.foreign.CLinker;
-import jdk.incubator.foreign.FunctionDescriptor;
-import jdk.incubator.foreign.MemoryAddress;
-import jdk.incubator.foreign.ResourceScope;
-import jdk.incubator.foreign.SymbolLookup;
-import jdk.incubator.foreign.ValueLayout;
 
 public class CLibrary {
     private final SymbolLookup lookup;
-    private final CLinker clinker;
+    private final Linker linker;
 
     protected CLibrary(String... libraries) {
+        linker = Linker.nativeLinker();
+
         /*
          * Libraries and fields have to be initialized in this parent
          * constructor before inherited final method handles are initialized
          */
         if (libraries.length == 0) {
-            lookup = CLinker.systemLookup();
+            lookup = linker.defaultLookup();
         } else {
             lookup = SymbolLookup.loaderLookup();
         }
-        clinker = CLinker.getInstance();
 
         for (String library : libraries) {
             loadLibrary(library);
         }
     }
 
-    public static class Layouts {
-        private static ValueLayout findLayout(int bitSize) {
-            for (ValueLayout layout : Arrays.asList(CLinker.C_CHAR, CLinker.C_SHORT,
-                    CLinker.C_INT, CLinker.C_LONG, CLinker.C_LONG_LONG)) {
-                if (layout.bitSize() == bitSize) {
-                    return layout;
-                }
-            }
-
-            return null;
-        }
-
-        // TODO cleaner solution possible in JDKs > 17
-        // static final ValueLayout int32_t = ValueLayout.JAVA_INT;
-        // static final ValueLayout int64_t = ValueLayout.JAVA_LONG;
-        static final ValueLayout int32_t = findLayout(32);
-        static final ValueLayout int64_t = findLayout(64);
-
-        static final ValueLayout size_t = CLinker.C_LONG_LONG;
-    }
-
-    public static final MemoryAddress toCStringAddress(String string, ResourceScope scope) {
+    public static final MemorySegment toCString(String string, Arena arena) {
         if (string == null) {
-            return MemoryAddress.NULL;
+            return MemorySegment.NULL;
         } else {
-            return CLinker.toCString(string, scope).address();
+            ByteBuffer buffer = StandardCharsets.UTF_8.encode(string);
+            var segment = arena.allocate(buffer.capacity() + 1);
+            segment.asByteBuffer().put(buffer);
+            return segment;
+        }
+     }
+
+    protected static final String toJavaString(MemorySegment segment) {
+        if (segment.equals(MemorySegment.NULL)) {
+            return null;
+        } else {
+            // segment = MemorySegment.ofAddress(segment.address(), Unistd.strlen(segment) + 1);
+            return segment.getUtf8String(0);
         }
     }
 
@@ -85,7 +75,7 @@ public class CLibrary {
         throw new UnsatisfiedLinkError("Library " + name + " not found in " + System.getProperty("java.library.path"));
     }
 
-    protected final MethodHandle downcallHandle(String symbol, MethodType type, FunctionDescriptor descriptor) {
-        return clinker.downcallHandle(lookup.lookup(symbol).get(), type, descriptor);
+    protected final MethodHandle downcallHandle(String symbol, FunctionDescriptor descriptor) {
+        return linker.downcallHandle(lookup.find(symbol).get(), descriptor);
     }
 }
