@@ -42,6 +42,10 @@ public class RpmInfoTest {
         assertEquals("x86_64", exclArchIt.next());
         assertEquals("noarch", exclArchIt.next());
         assertFalse(exclArchIt.hasNext());
+
+        Iterator<String> buildArchIt = info.getBuildArchs().iterator();
+        assertEquals("noarch", buildArchIt.next());
+        assertFalse(buildArchIt.hasNext());
     }
 
     @Test
