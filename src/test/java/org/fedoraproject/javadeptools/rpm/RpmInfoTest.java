@@ -48,11 +48,13 @@ public class RpmInfoTest {
         assertFalse(buildArchIt.hasNext());
 
         assertEquals(null, info.getSourceRPM());
+        assertEquals("CC0", info.getLicense());
 
         path = Paths.get("src/test/resources/rpm/rpmtags-1-1.noarch.rpm");
         info = new RpmInfo(path);
 
         assertEquals("rpmtags-1-1.src.rpm", info.getSourceRPM());
+        assertEquals("CC0", info.getLicense());
     }
 
     @Test
@@ -101,6 +103,8 @@ public class RpmInfoTest {
     public void testDependencies() throws Exception {
         Path path = Paths.get("src/test/resources/rpm/soft-1-1.noarch.rpm");
         RpmInfo info = new RpmInfo(path);
+
+        assertEquals("ASL 2.0", info.getLicense());
 
         Iterator<String> provIt = info.getProvides().iterator();
         assertEquals("soft", provIt.next());

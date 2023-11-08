@@ -42,6 +42,7 @@ final class Rpm {
     static final int RPMTAG_VERSION = 1001;
     static final int RPMTAG_RELEASE = 1002;
     static final int RPMTAG_EPOCH = 1003;
+    static final int RPMTAG_LICENSE = 1014;
     static final int RPMTAG_ARCH = 1022;
     static final int RPMTAG_SOURCERPM = 1044;
     static final int RPMTAG_PROVIDENAME = 1047;
