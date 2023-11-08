@@ -15,13 +15,7 @@
  */
 package org.fedoraproject.javadeptools.rpm;
 
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMTAG_ARCH;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMTAG_EPOCH;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMTAG_NAME;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMTAG_RELEASE;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMTAG_VERSION;
-import static org.fedoraproject.javadeptools.rpm.Rpm.headerGetNumber;
-import static org.fedoraproject.javadeptools.rpm.Rpm.headerGetString;
+import static org.fedoraproject.javadeptools.rpm.Rpm.*;
 
 import com.sun.jna.Pointer;
 

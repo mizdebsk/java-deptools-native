@@ -15,47 +15,7 @@
  */
 package org.fedoraproject.javadeptools.rpm;
 
-import static org.fedoraproject.javadeptools.rpm.Rpm.Fclose;
-import static org.fedoraproject.javadeptools.rpm.Rpm.Ferror;
-import static org.fedoraproject.javadeptools.rpm.Rpm.Fopen;
-import static org.fedoraproject.javadeptools.rpm.Rpm.Fstrerror;
-import static org.fedoraproject.javadeptools.rpm.Rpm.Ftell;
-import static org.fedoraproject.javadeptools.rpm.Rpm.HEADERGET_MINMEM;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMRC_NOKEY;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMRC_NOTFOUND;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMRC_NOTTRUSTED;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMRC_OK;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMTAG_CONFLICTNAME;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMTAG_ENHANCENAME;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMTAG_OBSOLETENAME;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMTAG_ORDERNAME;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMTAG_PAYLOADCOMPRESSOR;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMTAG_PAYLOADFORMAT;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMTAG_PROVIDENAME;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMTAG_RECOMMENDNAME;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMTAG_REQUIRENAME;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMTAG_SOURCEPACKAGE;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMTAG_SUGGESTNAME;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMTAG_SUPPLEMENTNAME;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMVSF_NODSA;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMVSF_NODSAHEADER;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMVSF_NOHDRCHK;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMVSF_NOMD5;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMVSF_NORSA;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMVSF_NORSAHEADER;
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMVSF_NOSHA1HEADER;
-import static org.fedoraproject.javadeptools.rpm.Rpm.headerFree;
-import static org.fedoraproject.javadeptools.rpm.Rpm.headerGet;
-import static org.fedoraproject.javadeptools.rpm.Rpm.headerGetNumber;
-import static org.fedoraproject.javadeptools.rpm.Rpm.headerGetString;
-import static org.fedoraproject.javadeptools.rpm.Rpm.rpmReadPackageFile;
-import static org.fedoraproject.javadeptools.rpm.Rpm.rpmtdCount;
-import static org.fedoraproject.javadeptools.rpm.Rpm.rpmtdFreeData;
-import static org.fedoraproject.javadeptools.rpm.Rpm.rpmtdGetString;
-import static org.fedoraproject.javadeptools.rpm.Rpm.rpmtdNext;
-import static org.fedoraproject.javadeptools.rpm.Rpm.rpmtsCreate;
-import static org.fedoraproject.javadeptools.rpm.Rpm.rpmtsFree;
-import static org.fedoraproject.javadeptools.rpm.Rpm.rpmtsSetVSFlags;
+import static org.fedoraproject.javadeptools.rpm.Rpm.*;
 
 import java.io.IOException;
 import java.nio.file.Path;

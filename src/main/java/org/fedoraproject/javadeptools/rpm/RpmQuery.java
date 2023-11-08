@@ -15,14 +15,7 @@
  */
 package org.fedoraproject.javadeptools.rpm;
 
-import static org.fedoraproject.javadeptools.rpm.Rpm.RPMDBI_INSTFILENAMES;
-import static org.fedoraproject.javadeptools.rpm.Rpm.rpmReadConfigFiles;
-import static org.fedoraproject.javadeptools.rpm.Rpm.rpmdbFreeIterator;
-import static org.fedoraproject.javadeptools.rpm.Rpm.rpmdbNextIterator;
-import static org.fedoraproject.javadeptools.rpm.Rpm.rpmtsCreate;
-import static org.fedoraproject.javadeptools.rpm.Rpm.rpmtsFree;
-import static org.fedoraproject.javadeptools.rpm.Rpm.rpmtsInitIterator;
-import static org.fedoraproject.javadeptools.rpm.Rpm.rpmtsSetRootDir;
+import static org.fedoraproject.javadeptools.rpm.Rpm.*;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
