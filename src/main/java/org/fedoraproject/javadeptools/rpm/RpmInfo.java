@@ -68,6 +68,7 @@ public class RpmInfo {
             Pointer h = ph.getPointer(0);
             try {
                 nevra = new NEVRA(h);
+                sourceRPM = headerGetString(h, RPMTAG_SOURCERPM);
                 exclusiveArch = headerGetList(h, RPMTAG_EXCLUSIVEARCH);
                 buildArchs = headerGetList(h, RPMTAG_BUILDARCHS);
                 provides = headerGetList(h, RPMTAG_PROVIDENAME);
@@ -94,6 +95,7 @@ public class RpmInfo {
 
     private final NEVRA nevra;
     private final boolean sourcePackage;
+    private final String sourceRPM;
     private final List<String> exclusiveArch;
     private final List<String> buildArchs;
     private final List<String> provides;
@@ -111,6 +113,10 @@ public class RpmInfo {
 
     public NEVRA getNEVRA() {
         return nevra;
+    }
+
+    public String getSourceRPM() {
+        return sourceRPM;
     }
 
     public List<String> getExclusiveArch() {

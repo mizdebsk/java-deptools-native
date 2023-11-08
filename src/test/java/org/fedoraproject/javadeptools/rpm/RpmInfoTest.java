@@ -46,6 +46,13 @@ public class RpmInfoTest {
         Iterator<String> buildArchIt = info.getBuildArchs().iterator();
         assertEquals("noarch", buildArchIt.next());
         assertFalse(buildArchIt.hasNext());
+
+        assertEquals(null, info.getSourceRPM());
+
+        path = Paths.get("src/test/resources/rpm/rpmtags-1-1.noarch.rpm");
+        info = new RpmInfo(path);
+
+        assertEquals("rpmtags-1-1.src.rpm", info.getSourceRPM());
     }
 
     @Test
@@ -54,6 +61,7 @@ public class RpmInfoTest {
         RpmInfo info = new RpmInfo(path);
 
         assertFalse(info.isSourcePackage());
+        assertEquals("foo-1-1.fc21.src.rpm", info.getSourceRPM());
         assertEquals("foo", info.getName());
         assertEquals(0, info.getEpoch());
         assertEquals("1", info.getVersion());
@@ -75,6 +83,7 @@ public class RpmInfoTest {
         RpmInfo info = new RpmInfo(path);
 
         assertTrue(info.isSourcePackage());
+        assertEquals(null, info.getSourceRPM());
         assertEquals("foo", info.getName());
         assertEquals(0, info.getEpoch());
         assertEquals("1", info.getVersion());
