@@ -68,6 +68,7 @@ public class RpmInfo {
             Pointer h = ph.getPointer(0);
             try {
                 nevra = new NEVRA(h);
+                exclusiveArch = headerGetList(h, RPMTAG_EXCLUSIVEARCH);
                 provides = headerGetList(h, RPMTAG_PROVIDENAME);
                 requires = headerGetList(h, RPMTAG_REQUIRENAME);
                 conflicts = headerGetList(h, RPMTAG_CONFLICTNAME);
@@ -92,6 +93,7 @@ public class RpmInfo {
 
     private final NEVRA nevra;
     private final boolean sourcePackage;
+    private final List<String> exclusiveArch;
     private final List<String> provides;
     private final List<String> requires;
     private final List<String> conflicts;
@@ -107,6 +109,10 @@ public class RpmInfo {
 
     public NEVRA getNEVRA() {
         return nevra;
+    }
+
+    public List<String> getExclusiveArch() {
+        return exclusiveArch;
     }
 
     public String getName() {

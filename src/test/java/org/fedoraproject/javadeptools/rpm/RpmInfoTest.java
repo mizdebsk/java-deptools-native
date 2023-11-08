@@ -31,6 +31,20 @@ import org.junit.Test;
  */
 public class RpmInfoTest {
     @Test
+    public void testRpmTags() throws Exception {
+        Path path = Paths.get("src/test/resources/rpm/rpmtags-1-1.src.rpm");
+        RpmInfo info = new RpmInfo(path);
+
+        Iterator<String> exclArchIt = info.getExclusiveArch().iterator();
+        assertEquals("aarch64", exclArchIt.next());
+        assertEquals("ppc64le", exclArchIt.next());
+        assertEquals("s390x", exclArchIt.next());
+        assertEquals("x86_64", exclArchIt.next());
+        assertEquals("noarch", exclArchIt.next());
+        assertFalse(exclArchIt.hasNext());
+    }
+
+    @Test
     public void testBinaryPackage() throws Exception {
         Path path = Paths.get("src/test/resources/rpm/foo-1-1.fc21.x86_64.rpm");
         RpmInfo info = new RpmInfo(path);

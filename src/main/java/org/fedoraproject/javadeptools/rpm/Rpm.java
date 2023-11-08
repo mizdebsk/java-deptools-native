@@ -46,6 +46,7 @@ final class Rpm {
     static final int RPMTAG_PROVIDENAME = 1047;
     static final int RPMTAG_REQUIRENAME = 1049;
     static final int RPMTAG_CONFLICTNAME = 1054;
+    static final int RPMTAG_EXCLUSIVEARCH = 1061;
     static final int RPMTAG_OBSOLETENAME = 1090;
     static final int RPMTAG_SOURCEPACKAGE = 1106;
     static final int RPMTAG_PAYLOADCOMPRESSOR = 1125;
