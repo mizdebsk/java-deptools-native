@@ -8,9 +8,11 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: quay.io/mizdebsk/maven:latest
+    container: docker.io/library/eclipse-temurin:21-jdk-ubi9-minimal
     steps:
+      - name: Install dependencies
+        run: microdnf -y install git-core maven rpm-libs
       - name: Checkout sources
         uses: actions/checkout@v3
       - name: Maven build
-        run: mvn -B clean package
+        run: mvn -B clean install
