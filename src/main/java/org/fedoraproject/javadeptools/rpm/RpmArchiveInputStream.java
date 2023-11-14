@@ -81,9 +81,10 @@ public class RpmArchiveInputStream extends ArchiveInputStream {
     }
 
     private static CpioArchiveInputStream wrapFile(Path path) throws IOException {
-        RpmInfo info = new RpmInfo(path);
+        RpmPackage rpm = new RpmPackage(path);
+        RpmInfo info = rpm.getInfo();
         InputStream fis = new BufferedInputStream(Files.newInputStream(path));
-        fis.skip(info.getHeaderSize());
+        fis.skip(rpm.getHeaderSize());
 
         InputStream cis;
         switch (info.getCompressionMethod()) {

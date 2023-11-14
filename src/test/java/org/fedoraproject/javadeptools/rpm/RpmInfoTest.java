@@ -33,7 +33,7 @@ public class RpmInfoTest {
     @Test
     public void testRpmTags() throws Exception {
         Path path = Paths.get("src/test/resources/rpm/rpmtags-1-1.src.rpm");
-        RpmInfo info = new RpmInfo(path);
+        RpmInfo info = new RpmPackage(path).getInfo();
 
         Iterator<String> exclArchIt = info.getExclusiveArch().iterator();
         assertEquals("aarch64", exclArchIt.next());
@@ -51,7 +51,7 @@ public class RpmInfoTest {
         assertEquals("CC0", info.getLicense());
 
         path = Paths.get("src/test/resources/rpm/rpmtags-1-1.noarch.rpm");
-        info = new RpmInfo(path);
+        info = new RpmPackage(path).getInfo();
 
         assertEquals("rpmtags-1-1.src.rpm", info.getSourceRPM());
         assertEquals("CC0", info.getLicense());
@@ -60,7 +60,7 @@ public class RpmInfoTest {
     @Test
     public void testBinaryPackage() throws Exception {
         Path path = Paths.get("src/test/resources/rpm/foo-1-1.fc21.x86_64.rpm");
-        RpmInfo info = new RpmInfo(path);
+        RpmInfo info = new RpmPackage(path).getInfo();
 
         assertFalse(info.isSourcePackage());
         assertEquals("foo-1-1.fc21.src.rpm", info.getSourceRPM());
@@ -82,7 +82,7 @@ public class RpmInfoTest {
     @Test
     public void testSourcePackage() throws Exception {
         Path path = Paths.get("src/test/resources/rpm/foo-1-1.fc21.src.rpm");
-        RpmInfo info = new RpmInfo(path);
+        RpmInfo info = new RpmPackage(path).getInfo();
 
         assertTrue(info.isSourcePackage());
         assertEquals(null, info.getSourceRPM());
@@ -102,7 +102,7 @@ public class RpmInfoTest {
     @Test
     public void testDependencies() throws Exception {
         Path path = Paths.get("src/test/resources/rpm/soft-1-1.noarch.rpm");
-        RpmInfo info = new RpmInfo(path);
+        RpmInfo info = new RpmPackage(path).getInfo();
 
         assertEquals("ASL 2.0", info.getLicense());
 

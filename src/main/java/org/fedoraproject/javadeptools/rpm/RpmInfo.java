@@ -17,8 +17,6 @@ package org.fedoraproject.javadeptools.rpm;
 
 import static org.fedoraproject.javadeptools.rpm.Rpm.*;
 
-import java.io.IOException;
-import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -27,10 +25,6 @@ import java.util.List;
  * @author Mikolaj Izdebski
  */
 public class RpmInfo {
-    private static IOException error(Path path, String message) throws IOException {
-        throw new IOException("Unable to open RPM file " + path + ": " + message);
-    }
-
     private static List<String> headerGetList(RpmHeader h, int tag) {
         RpmTD td = rpmtdNew();
         headerGet(h, tag, td, HEADERGET_MINMEM);
@@ -47,47 +41,24 @@ public class RpmInfo {
         }
     }
 
-    public RpmInfo(Path path) throws IOException {
-        RpmTS ts = rpmtsCreate();
-        RpmFD fd = Fopen(path.toString(), "r");
-        try {
-            if (Ferror(fd) != 0)
-                throw error(path, Fstrerror(fd));
-            rpmtsSetVSFlags(ts, RPMVSF_NOHDRCHK | RPMVSF_NOSHA1HEADER | RPMVSF_NODSAHEADER
-                    | RPMVSF_NORSAHEADER | RPMVSF_NOMD5 | RPMVSF_NODSA | RPMVSF_NORSA);
-            Pointer ph = new Pointer();
-            int rc = rpmReadPackageFile(ts, fd, null, ph);
-            if (rc == RPMRC_NOTFOUND)
-                throw error(path, "Not a RPM file");
-            if (rc != RPMRC_OK && rc != RPMRC_NOTTRUSTED && rc != RPMRC_NOKEY)
-                throw error(path, "Failed to parse RPM header");
-            RpmHeader h = ph.dereference(RpmHeader.class);
-            try {
-                nevra = new NEVRA(h);
-                license = headerGetString(h, RPMTAG_LICENSE);
-                sourceRPM = headerGetString(h, RPMTAG_SOURCERPM);
-                exclusiveArch = headerGetList(h, RPMTAG_EXCLUSIVEARCH);
-                buildArchs = headerGetList(h, RPMTAG_BUILDARCHS);
-                provides = headerGetList(h, RPMTAG_PROVIDENAME);
-                requires = headerGetList(h, RPMTAG_REQUIRENAME);
-                conflicts = headerGetList(h, RPMTAG_CONFLICTNAME);
-                obsoletes = headerGetList(h, RPMTAG_OBSOLETENAME);
-                recommends = headerGetList(h, RPMTAG_RECOMMENDNAME);
-                suggests = headerGetList(h, RPMTAG_SUGGESTNAME);
-                supplements = headerGetList(h, RPMTAG_SUPPLEMENTNAME);
-                enhances = headerGetList(h, RPMTAG_ENHANCENAME);
-                orderWithRequires = headerGetList(h, RPMTAG_ORDERNAME);
-                archiveFormat = headerGetString(h, RPMTAG_PAYLOADFORMAT);
-                compressionMethod = headerGetString(h, RPMTAG_PAYLOADCOMPRESSOR);
-                sourcePackage = headerGetNumber(h, RPMTAG_SOURCEPACKAGE) != 0;
-            } finally {
-                headerFree(h);
-            }
-            headerSize = Ftell(fd);
-        } finally {
-            Fclose(fd);
-            rpmtsFree(ts);
-        }
+    RpmInfo(RpmHeader h) {
+        nevra = new NEVRA(h);
+        license = headerGetString(h, RPMTAG_LICENSE);
+        sourceRPM = headerGetString(h, RPMTAG_SOURCERPM);
+        exclusiveArch = headerGetList(h, RPMTAG_EXCLUSIVEARCH);
+        buildArchs = headerGetList(h, RPMTAG_BUILDARCHS);
+        provides = headerGetList(h, RPMTAG_PROVIDENAME);
+        requires = headerGetList(h, RPMTAG_REQUIRENAME);
+        conflicts = headerGetList(h, RPMTAG_CONFLICTNAME);
+        obsoletes = headerGetList(h, RPMTAG_OBSOLETENAME);
+        recommends = headerGetList(h, RPMTAG_RECOMMENDNAME);
+        suggests = headerGetList(h, RPMTAG_SUGGESTNAME);
+        supplements = headerGetList(h, RPMTAG_SUPPLEMENTNAME);
+        enhances = headerGetList(h, RPMTAG_ENHANCENAME);
+        orderWithRequires = headerGetList(h, RPMTAG_ORDERNAME);
+        archiveFormat = headerGetString(h, RPMTAG_PAYLOADFORMAT);
+        compressionMethod = headerGetString(h, RPMTAG_PAYLOADCOMPRESSOR);
+        sourcePackage = headerGetNumber(h, RPMTAG_SOURCEPACKAGE) != 0;
     }
 
     private final NEVRA nevra;
@@ -107,7 +78,6 @@ public class RpmInfo {
     private final List<String> orderWithRequires;
     private final String archiveFormat;
     private final String compressionMethod;
-    private final long headerSize;
 
     public NEVRA getNEVRA() {
         return nevra;
@@ -195,10 +165,6 @@ public class RpmInfo {
 
     public String getCompressionMethod() {
         return compressionMethod != null ? compressionMethod : "gzip";
-    }
-
-    public long getHeaderSize() {
-        return headerSize;
     }
 
     @Override
