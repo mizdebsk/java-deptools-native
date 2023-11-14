@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 2012-2016 Red Hat, Inc.
+ * Copyright (c) 2012-2023 Red Hat, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 package org.fedoraproject.javadeptools.rpm;
-
-import com.sun.jna.Library;
-import com.sun.jna.Native;
-import com.sun.jna.Pointer;
 
 /**
  * @author Mikolaj Izdebski
@@ -64,82 +60,84 @@ final class Rpm {
 
     static final int RPMDBI_INSTFILENAMES = 5040;
 
-    private static interface RpmLib extends Library {
+    private static interface RpmLib {
 
         int rpmReadConfigFiles(String file, String target);
 
-        Pointer rpmtsCreate();
+        RpmTS rpmtsCreate();
 
-        void rpmtsFree(Pointer ts);
+        void rpmtsFree(RpmTS ts);
 
-        int rpmtsSetRootDir(Pointer ts, String rootDir);
+        int rpmtsSetRootDir(RpmTS ts, String rootDir);
 
-        Pointer rpmtsInitIterator(Pointer ts, int rpmtag, String keyp, long keylen);
+        RpmMI rpmtsInitIterator(RpmTS ts, int rpmtag, String keyp, long keylen);
 
-        void rpmtsSetVSFlags(Pointer ts, int vsflags);
+        void rpmtsSetVSFlags(RpmTS ts, int vsflags);
 
-        Pointer rpmdbNextIterator(Pointer mi);
+        RpmHeader rpmdbNextIterator(RpmMI mi);
 
-        void rpmdbFreeIterator(Pointer mi);
+        void rpmdbFreeIterator(RpmMI mi);
 
-        int rpmReadPackageFile(Pointer ts, Pointer fd, Pointer fn, Pointer hdrp);
+        int rpmReadPackageFile(RpmTS ts, RpmFD fd, String fn, Pointer hdrp);
 
-        void headerFree(Pointer h);
+        void headerFree(RpmHeader h);
 
-        boolean headerGet(Pointer h, int tag, Pointer td, int flags);
+        int headerGet(RpmHeader h, int tag, RpmTD td, int flags);
 
-        String headerGetString(Pointer h, int tag);
+        String headerGetString(RpmHeader h, int tag);
 
-        long headerGetNumber(Pointer h, int tag);
+        long headerGetNumber(RpmHeader h, int tag);
 
-        int rpmtdCount(Pointer td);
+        RpmTD rpmtdNew();
 
-        int rpmtdNext(Pointer td);
+        int rpmtdCount(RpmTD td);
 
-        String rpmtdGetString(Pointer td);
+        int rpmtdNext(RpmTD td);
 
-        void rpmtdFreeData(Pointer td);
+        String rpmtdGetString(RpmTD td);
+
+        void rpmtdFree(RpmTD td);
     }
 
-    private static interface RpmIO extends Library {
+    private static interface RpmIO {
 
-        Pointer Fopen(String path, String mode);
+        RpmFD Fopen(String path, String mode);
 
-        void Fclose(Pointer fd);
+        void Fclose(RpmFD fd);
 
-        long Ftell(Pointer fd);
+        long Ftell(RpmFD fd);
 
-        boolean Ferror(Pointer fd);
+        int Ferror(RpmFD fd);
 
-        String Fstrerror(Pointer fd);
+        String Fstrerror(RpmFD fd);
 
     }
 
     private static class Lazy {
-        static final RpmLib RPM = Native.load("rpm", RpmLib.class);
+        static final RpmLib RPM = Native.load(RpmLib.class, "librpm.so.9");
     }
 
     private static class LazyIO {
-        static final RpmIO RPMIO = Native.load("rpmio", RpmIO.class);
+        static final RpmIO RPMIO = Native.load(RpmIO.class, "librpmio.so.9");
     }
 
-    static final Pointer Fopen(String path, String mode) {
+    static final RpmFD Fopen(String path, String mode) {
         return LazyIO.RPMIO.Fopen(path, mode);
     }
 
-    static final void Fclose(Pointer fd) {
+    static final void Fclose(RpmFD fd) {
         LazyIO.RPMIO.Fclose(fd);
     }
 
-    static final long Ftell(Pointer fd) {
+    static final long Ftell(RpmFD fd) {
         return LazyIO.RPMIO.Ftell(fd);
     }
 
-    static final boolean Ferror(Pointer fd) {
+    static final int Ferror(RpmFD fd) {
         return LazyIO.RPMIO.Ferror(fd);
     }
 
-    static final String Fstrerror(Pointer fd) {
+    static final String Fstrerror(RpmFD fd) {
         return LazyIO.RPMIO.Fstrerror(fd);
     }
 
@@ -147,67 +145,71 @@ final class Rpm {
         return Lazy.RPM.rpmReadConfigFiles(file, target);
     }
 
-    static final Pointer rpmtsCreate() {
+    static final RpmTS rpmtsCreate() {
         return Lazy.RPM.rpmtsCreate();
     }
 
-    static final void rpmtsFree(Pointer ts) {
+    static final void rpmtsFree(RpmTS ts) {
         Lazy.RPM.rpmtsFree(ts);
     }
 
-    static final int rpmtsSetRootDir(Pointer ts, String rootDir) {
+    static final int rpmtsSetRootDir(RpmTS ts, String rootDir) {
         return Lazy.RPM.rpmtsSetRootDir(ts, rootDir);
     }
 
-    static final Pointer rpmtsInitIterator(Pointer ts, int rpmtag, String keyp, long keylen) {
+    static final RpmMI rpmtsInitIterator(RpmTS ts, int rpmtag, String keyp, long keylen) {
         return Lazy.RPM.rpmtsInitIterator(ts, rpmtag, keyp, keylen);
     }
 
-    static final void rpmtsSetVSFlags(Pointer ts, int vsflags) {
+    static final void rpmtsSetVSFlags(RpmTS ts, int vsflags) {
         Lazy.RPM.rpmtsSetVSFlags(ts, vsflags);
     }
 
-    static final Pointer rpmdbNextIterator(Pointer mi) {
+    static final RpmHeader rpmdbNextIterator(RpmMI mi) {
         return Lazy.RPM.rpmdbNextIterator(mi);
     }
 
-    static final void rpmdbFreeIterator(Pointer mi) {
+    static final void rpmdbFreeIterator(RpmMI mi) {
         Lazy.RPM.rpmdbFreeIterator(mi);
     }
 
-    static final int rpmReadPackageFile(Pointer ts, Pointer fd, Pointer fn, Pointer hdrp) {
+    static final int rpmReadPackageFile(RpmTS ts, RpmFD fd, String fn, Pointer hdrp) {
         return Lazy.RPM.rpmReadPackageFile(ts, fd, fn, hdrp);
     }
 
-    static final void headerFree(Pointer h) {
+    static final void headerFree(RpmHeader h) {
         Lazy.RPM.headerFree(h);
     }
 
-    static final boolean headerGet(Pointer h, int tag, Pointer td, int flags) {
+    static final int headerGet(RpmHeader h, int tag, RpmTD td, int flags) {
         return Lazy.RPM.headerGet(h, tag, td, flags);
     }
 
-    static final String headerGetString(Pointer h, int tag) {
+    static final String headerGetString(RpmHeader h, int tag) {
         return Lazy.RPM.headerGetString(h, tag);
     }
 
-    static final long headerGetNumber(Pointer h, int tag) {
+    static final long headerGetNumber(RpmHeader h, int tag) {
         return Lazy.RPM.headerGetNumber(h, tag);
     }
 
-    static final int rpmtdCount(Pointer td) {
+    static final RpmTD rpmtdNew() {
+        return Lazy.RPM.rpmtdNew();
+    }
+
+    static final int rpmtdCount(RpmTD td) {
         return Lazy.RPM.rpmtdCount(td);
     }
 
-    static final int rpmtdNext(Pointer td) {
+    static final int rpmtdNext(RpmTD td) {
         return Lazy.RPM.rpmtdNext(td);
     }
 
-    static final String rpmtdGetString(Pointer td) {
+    static final String rpmtdGetString(RpmTD td) {
         return Lazy.RPM.rpmtdGetString(td);
     }
 
-    static final void rpmtdFreeData(Pointer td) {
-        Lazy.RPM.rpmtdFreeData(td);
+    static final void rpmtdFree(RpmTD td) {
+        Lazy.RPM.rpmtdFree(td);
     }
 }

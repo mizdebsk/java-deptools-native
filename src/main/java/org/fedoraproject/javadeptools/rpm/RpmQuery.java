@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 2016 Red Hat, Inc.
+ * Copyright (c) 2016-2023 Red Hat, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,8 +22,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.sun.jna.Pointer;
-
 /**
  * @author Mikolaj Izdebski
  */
@@ -38,17 +36,17 @@ public class RpmQuery {
     }
 
     public static List<NEVRA> byFile(Path path, Path root) {
-        Pointer ts = rpmtsCreate();
+        RpmTS ts = rpmtsCreate();
         try {
             if (path != null) {
                 if (rpmtsSetRootDir(ts, root.toString()) != 0) {
                     return Collections.emptyList();
                 }
             }
-            Pointer mi = rpmtsInitIterator(ts, RPMDBI_INSTFILENAMES, path.toAbsolutePath().toString(), 0);
+            RpmMI mi = rpmtsInitIterator(ts, RPMDBI_INSTFILENAMES, path.toAbsolutePath().toString(), 0);
             try {
                 List<NEVRA> providers = new ArrayList<>();
-                Pointer h;
+                RpmHeader h;
                 while ((h = rpmdbNextIterator(mi)) != null) {
                     providers.add(new NEVRA(h));
                 }

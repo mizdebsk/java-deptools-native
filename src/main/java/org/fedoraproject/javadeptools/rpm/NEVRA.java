@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 2016 Red Hat, Inc.
+ * Copyright (c) 2016-2023 Red Hat, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,6 @@ package org.fedoraproject.javadeptools.rpm;
 
 import static org.fedoraproject.javadeptools.rpm.Rpm.*;
 
-import com.sun.jna.Pointer;
-
 /**
  * @author Mikolaj Izdebski
  */
@@ -30,7 +28,7 @@ public class NEVRA {
     private final String arch;
     private final String nevra;
 
-    NEVRA(Pointer h) {
+    NEVRA(RpmHeader h) {
         name = headerGetString(h, RPMTAG_NAME);
         epoch = (int) headerGetNumber(h, RPMTAG_EPOCH);
         version = headerGetString(h, RPMTAG_VERSION);

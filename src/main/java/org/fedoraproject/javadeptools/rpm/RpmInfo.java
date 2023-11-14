@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 2020 Red Hat, Inc.
+ * Copyright (c) 2020-2023 Red Hat, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,10 +23,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import com.sun.jna.Memory;
-import com.sun.jna.Native;
-import com.sun.jna.Pointer;
-
 /**
  * @author Mikolaj Izdebski
  */
@@ -35,37 +31,37 @@ public class RpmInfo {
         throw new IOException("Unable to open RPM file " + path + ": " + message);
     }
 
-    private static List<String> headerGetList(Pointer h, int tag) {
-        Pointer ptd = new Memory(1024);
-        headerGet(h, tag, ptd, HEADERGET_MINMEM);
+    private static List<String> headerGetList(RpmHeader h, int tag) {
+        RpmTD td = rpmtdNew();
+        headerGet(h, tag, td, HEADERGET_MINMEM);
         try {
-            int size = rpmtdCount(ptd);
+            int size = rpmtdCount(td);
             String[] list = new String[size];
             for (int i = 0; i < size; i++) {
-                rpmtdNext(ptd);
-                list[i] = rpmtdGetString(ptd);
+                rpmtdNext(td);
+                list[i] = rpmtdGetString(td);
             }
             return Collections.unmodifiableList(Arrays.asList(list));
         } finally {
-            rpmtdFreeData(ptd);
+            rpmtdFree(td);
         }
     }
 
     public RpmInfo(Path path) throws IOException {
-        Pointer ts = rpmtsCreate();
-        Pointer fd = Fopen(path.toString(), "r");
+        RpmTS ts = rpmtsCreate();
+        RpmFD fd = Fopen(path.toString(), "r");
         try {
-            if (Ferror(fd))
+            if (Ferror(fd) != 0)
                 throw error(path, Fstrerror(fd));
             rpmtsSetVSFlags(ts, RPMVSF_NOHDRCHK | RPMVSF_NOSHA1HEADER | RPMVSF_NODSAHEADER
                     | RPMVSF_NORSAHEADER | RPMVSF_NOMD5 | RPMVSF_NODSA | RPMVSF_NORSA);
-            Pointer ph = new Memory(Native.POINTER_SIZE);
+            Pointer ph = new Pointer();
             int rc = rpmReadPackageFile(ts, fd, null, ph);
             if (rc == RPMRC_NOTFOUND)
                 throw error(path, "Not a RPM file");
             if (rc != RPMRC_OK && rc != RPMRC_NOTTRUSTED && rc != RPMRC_NOKEY)
                 throw error(path, "Failed to parse RPM header");
-            Pointer h = ph.getPointer(0);
+            RpmHeader h = ph.dereference(RpmHeader.class);
             try {
                 nevra = new NEVRA(h);
                 license = headerGetString(h, RPMTAG_LICENSE);
