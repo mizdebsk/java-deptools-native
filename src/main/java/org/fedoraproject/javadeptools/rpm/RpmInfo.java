@@ -42,7 +42,11 @@ public class RpmInfo {
     }
 
     RpmInfo(RpmHeader h) {
-        nevra = new NEVRA(h);
+        name = headerGetString(h, RPMTAG_NAME);
+        epoch = (int) headerGetNumber(h, RPMTAG_EPOCH);
+        version = headerGetString(h, RPMTAG_VERSION);
+        release = headerGetString(h, RPMTAG_RELEASE);
+        arch = headerGetString(h, RPMTAG_ARCH);
         license = headerGetString(h, RPMTAG_LICENSE);
         sourceRPM = headerGetString(h, RPMTAG_SOURCERPM);
         exclusiveArch = headerGetList(h, RPMTAG_EXCLUSIVEARCH);
@@ -59,9 +63,22 @@ public class RpmInfo {
         archiveFormat = headerGetString(h, RPMTAG_PAYLOADFORMAT);
         compressionMethod = headerGetString(h, RPMTAG_PAYLOADCOMPRESSOR);
         sourcePackage = headerGetNumber(h, RPMTAG_SOURCEPACKAGE) != 0;
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(name).append('-');
+        if (epoch > 0)
+            sb.append(epoch + ":");
+        sb.append(version).append('-').append(release);
+        sb.append('.').append(arch);
+        nevra = sb.toString();
     }
 
-    private final NEVRA nevra;
+    private final String name;
+    private final int epoch;
+    private final String version;
+    private final String release;
+    private final String arch;
+    private final String nevra;
     private final boolean sourcePackage;
     private final String license;
     private final String sourceRPM;
@@ -78,10 +95,6 @@ public class RpmInfo {
     private final List<String> orderWithRequires;
     private final String archiveFormat;
     private final String compressionMethod;
-
-    public NEVRA getNEVRA() {
-        return nevra;
-    }
 
     public String getLicense() {
         return license;
@@ -100,23 +113,23 @@ public class RpmInfo {
     }
 
     public String getName() {
-        return nevra.getName();
+        return name;
     }
 
     public int getEpoch() {
-        return nevra.getEpoch();
+        return epoch;
     }
 
     public String getVersion() {
-        return nevra.getVersion();
+        return version;
     }
 
     public String getRelease() {
-        return nevra.getRelease();
+        return release;
     }
 
     public String getArch() {
-        return nevra.getArch();
+        return arch;
     }
 
     public boolean isSourcePackage() {

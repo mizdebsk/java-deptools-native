@@ -31,11 +31,11 @@ public class RpmQuery {
         rpmReadConfigFiles(null, null);
     }
 
-    public static List<NEVRA> byFile(Path path) {
+    public static List<RpmInfo> byFile(Path path) {
         return byFile(path, null);
     }
 
-    public static List<NEVRA> byFile(Path path, Path root) {
+    public static List<RpmInfo> byFile(Path path, Path root) {
         RpmTS ts = rpmtsCreate();
         try {
             if (path != null) {
@@ -45,10 +45,10 @@ public class RpmQuery {
             }
             RpmMI mi = rpmtsInitIterator(ts, RPMDBI_INSTFILENAMES, path.toAbsolutePath().toString(), 0);
             try {
-                List<NEVRA> providers = new ArrayList<>();
+                List<RpmInfo> providers = new ArrayList<>();
                 RpmHeader h;
                 while ((h = rpmdbNextIterator(mi)) != null) {
-                    providers.add(new NEVRA(h));
+                    providers.add(new RpmInfo(h));
                 }
                 return Collections.unmodifiableList(providers);
             } finally {

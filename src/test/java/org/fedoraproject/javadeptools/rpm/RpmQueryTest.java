@@ -35,15 +35,15 @@ public class RpmQueryTest {
 
     @Test
     public void testFileLookup() throws Exception {
-        List<NEVRA> providers = RpmQuery.byFile(Paths.get("/usr/bin/bash"), getResource("root1"));
+        List<RpmInfo> providers = RpmQuery.byFile(Paths.get("/usr/bin/bash"), getResource("root1"));
         assertNotNull(providers);
         assertEquals(1, providers.size());
-        NEVRA nevra = providers.iterator().next();
-        assertEquals("bash", nevra.getName());
-        assertEquals(0, nevra.getEpoch());
-        assertEquals("4.3.42", nevra.getVersion());
-        assertEquals("3.fc23", nevra.getRelease());
-        assertEquals("x86_64", nevra.getArch());
-        assertEquals("bash-4.3.42-3.fc23.x86_64", nevra.toString());
+        RpmInfo info = providers.iterator().next();
+        assertEquals("bash", info.getName());
+        assertEquals(0, info.getEpoch());
+        assertEquals("4.3.42", info.getVersion());
+        assertEquals("3.fc23", info.getRelease());
+        assertEquals("x86_64", info.getArch());
+        assertEquals("bash-4.3.42-3.fc23.x86_64", info.toString());
     }
 }
