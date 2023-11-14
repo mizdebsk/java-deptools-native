@@ -38,7 +38,7 @@ public class RpmQuery {
     public static List<RpmInfo> byFile(Path path, Path root) {
         RpmTS ts = rpmtsCreate();
         try {
-            if (path != null) {
+            if (root != null) {
                 if (rpmtsSetRootDir(ts, root.toString()) != 0) {
                     return Collections.emptyList();
                 }
