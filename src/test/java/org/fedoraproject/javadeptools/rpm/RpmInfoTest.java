@@ -23,6 +23,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Test;
 
@@ -48,11 +49,13 @@ public class RpmInfoTest {
         assertFalse(buildArchIt.hasNext());
 
         assertEquals(null, info.getSourceRPM());
+        assertEquals(Optional.of(4242424242L), info.getEpoch());
         assertEquals("CC0", info.getLicense());
 
         path = Paths.get("src/test/resources/rpm/rpmtags-1-1.noarch.rpm");
         info = new RpmPackage(path).getInfo();
 
+        assertEquals(Optional.of(4242424242L), info.getEpoch());
         assertEquals("rpmtags-1-1.src.rpm", info.getSourceRPM());
         assertEquals("CC0", info.getLicense());
     }
@@ -65,7 +68,7 @@ public class RpmInfoTest {
         assertFalse(info.isSourcePackage());
         assertEquals("foo-1-1.fc21.src.rpm", info.getSourceRPM());
         assertEquals("foo", info.getName());
-        assertEquals(0, info.getEpoch());
+        assertEquals(Optional.empty(), info.getEpoch());
         assertEquals("1", info.getVersion());
         assertEquals("1.fc21", info.getRelease());
         assertEquals("x86_64", info.getArch());
@@ -87,7 +90,7 @@ public class RpmInfoTest {
         assertTrue(info.isSourcePackage());
         assertEquals(null, info.getSourceRPM());
         assertEquals("foo", info.getName());
-        assertEquals(0, info.getEpoch());
+        assertEquals(Optional.empty(), info.getEpoch());
         assertEquals("1", info.getVersion());
         assertEquals("1.fc21", info.getRelease());
         assertEquals("x86_64", info.getArch());

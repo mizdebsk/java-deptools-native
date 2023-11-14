@@ -96,6 +96,8 @@ final class Rpm {
 
         String rpmtdGetString(RpmTD td);
 
+        long rpmtdGetNumber(RpmTD td);
+
         void rpmtdFree(RpmTD td);
     }
 
@@ -207,6 +209,10 @@ final class Rpm {
 
     static final String rpmtdGetString(RpmTD td) {
         return Lazy.RPM.rpmtdGetString(td);
+    }
+
+    static final long rpmtdGetNumber(RpmTD td) {
+        return Lazy.RPM.rpmtdGetNumber(td);
     }
 
     static final void rpmtdFree(RpmTD td) {

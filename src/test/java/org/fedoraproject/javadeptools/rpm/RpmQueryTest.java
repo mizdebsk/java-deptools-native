@@ -21,6 +21,7 @@ import static org.junit.Assert.assertNotNull;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Test;
 
@@ -40,7 +41,7 @@ public class RpmQueryTest {
         assertEquals(1, providers.size());
         RpmInfo info = providers.iterator().next();
         assertEquals("bash", info.getName());
-        assertEquals(0, info.getEpoch());
+        assertEquals(Optional.empty(), info.getEpoch());
         assertEquals("4.3.42", info.getVersion());
         assertEquals("3.fc23", info.getRelease());
         assertEquals("x86_64", info.getArch());

@@ -20,6 +20,7 @@ import static org.fedoraproject.javadeptools.rpm.Rpm.*;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Mikolaj Izdebski
@@ -41,9 +42,22 @@ public class RpmInfo {
         }
     }
 
+    private static Optional<Long> headerGetOptionalNumber(RpmHeader h, int tag) {
+        RpmTD td = rpmtdNew();
+        headerGet(h, tag, td, HEADERGET_MINMEM);
+        try {
+            if (rpmtdNext(td) == 0) {
+                return Optional.of(rpmtdGetNumber(td));
+            }
+            return Optional.empty();
+        } finally {
+            rpmtdFree(td);
+        }
+    }
+
     RpmInfo(RpmHeader h) {
         name = headerGetString(h, RPMTAG_NAME);
-        epoch = (int) headerGetNumber(h, RPMTAG_EPOCH);
+        epoch = headerGetOptionalNumber(h, RPMTAG_EPOCH);
         version = headerGetString(h, RPMTAG_VERSION);
         release = headerGetString(h, RPMTAG_RELEASE);
         arch = headerGetString(h, RPMTAG_ARCH);
@@ -66,15 +80,15 @@ public class RpmInfo {
 
         StringBuilder sb = new StringBuilder();
         sb.append(name).append('-');
-        if (epoch > 0)
-            sb.append(epoch + ":");
+        if (epoch.isPresent())
+            sb.append(epoch.get() + ":");
         sb.append(version).append('-').append(release);
         sb.append('.').append(arch);
         nevra = sb.toString();
     }
 
     private final String name;
-    private final int epoch;
+    private final Optional<Long> epoch;
     private final String version;
     private final String release;
     private final String arch;
@@ -116,7 +130,7 @@ public class RpmInfo {
         return name;
     }
 
-    public int getEpoch() {
+    public Optional<Long> getEpoch() {
         return epoch;
     }
 
