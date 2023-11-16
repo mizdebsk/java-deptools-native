@@ -107,6 +107,10 @@ final class Rpm {
         int rpmdsNext(RpmDS ds);
 
         String rpmdsDNEVR(RpmDS ds);
+
+        String rpmdsN(RpmDS ds);
+
+        String rpmdsEVR(RpmDS ds);
     }
 
     private static interface RpmIO {
@@ -241,5 +245,13 @@ final class Rpm {
 
     static final String rpmdsDNEVR(RpmDS ds) {
         return Lazy.RPM.rpmdsDNEVR(ds);
+    }
+
+    static final String rpmdsN(RpmDS ds) {
+        return Lazy.RPM.rpmdsN(ds);
+    }
+
+    static final String rpmdsEVR(RpmDS ds) {
+        return Lazy.RPM.rpmdsEVR(ds);
     }
 }

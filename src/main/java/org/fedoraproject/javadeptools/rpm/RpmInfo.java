@@ -56,11 +56,11 @@ public class RpmInfo {
         }
     }
 
-    private static List<String> dependencyList(RpmHeader h, int tag) {
-        List<String> list = new ArrayList<>();
+    private static List<RpmDependency> dependencyList(RpmHeader h, int tag) {
+        List<RpmDependency> list = new ArrayList<>();
         RpmDS ds = rpmdsNew(h, tag, 0);
         while (rpmdsNext(ds) >= 0) {
-            list.add(rpmdsDNEVR(ds).substring(2));
+            list.add(new RpmDependency(ds));
         }
         rpmdsFree(ds);
         return list;
@@ -109,15 +109,15 @@ public class RpmInfo {
     private final String sourceRPM;
     private final List<String> exclusiveArch;
     private final List<String> buildArchs;
-    private final List<String> provides;
-    private final List<String> requires;
-    private final List<String> conflicts;
-    private final List<String> obsoletes;
-    private final List<String> recommends;
-    private final List<String> suggests;
-    private final List<String> supplements;
-    private final List<String> enhances;
-    private final List<String> orderWithRequires;
+    private final List<RpmDependency> provides;
+    private final List<RpmDependency> requires;
+    private final List<RpmDependency> conflicts;
+    private final List<RpmDependency> obsoletes;
+    private final List<RpmDependency> recommends;
+    private final List<RpmDependency> suggests;
+    private final List<RpmDependency> supplements;
+    private final List<RpmDependency> enhances;
+    private final List<RpmDependency> orderWithRequires;
     private final String archiveFormat;
     private final String compressionMethod;
 
@@ -161,39 +161,39 @@ public class RpmInfo {
         return sourcePackage;
     }
 
-    public List<String> getProvides() {
+    public List<RpmDependency> getProvides() {
         return provides;
     }
 
-    public List<String> getRequires() {
+    public List<RpmDependency> getRequires() {
         return requires;
     }
 
-    public List<String> getConflicts() {
+    public List<RpmDependency> getConflicts() {
         return conflicts;
     }
 
-    public List<String> getObsoletes() {
+    public List<RpmDependency> getObsoletes() {
         return obsoletes;
     }
 
-    public List<String> getRecommends() {
+    public List<RpmDependency> getRecommends() {
         return recommends;
     }
 
-    public List<String> getSuggests() {
+    public List<RpmDependency> getSuggests() {
         return suggests;
     }
 
-    public List<String> getSupplements() {
+    public List<RpmDependency> getSupplements() {
         return supplements;
     }
 
-    public List<String> getEnhances() {
+    public List<RpmDependency> getEnhances() {
         return enhances;
     }
 
-    public List<String> getOrderWithRequires() {
+    public List<RpmDependency> getOrderWithRequires() {
         return orderWithRequires;
     }
 

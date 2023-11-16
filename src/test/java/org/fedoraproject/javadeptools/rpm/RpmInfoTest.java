@@ -73,12 +73,12 @@ public class RpmInfoTest {
         assertEquals("1.fc21", info.getRelease());
         assertEquals("x86_64", info.getArch());
 
-        Iterator<String> prov = info.getProvides().iterator();
-        assertEquals("foo = 1-1.fc21", prov.next());
-        assertEquals("foo(x86-64) = 1-1.fc21", prov.next());
+        Iterator<RpmDependency> prov = info.getProvides().iterator();
+        assertEquals("foo = 1-1.fc21", prov.next().toString());
+        assertEquals("foo(x86-64) = 1-1.fc21", prov.next().toString());
         assertFalse(prov.hasNext());
 
-        List<String> req = info.getRequires();
+        List<RpmDependency> req = info.getRequires();
         assertEquals(4, req.size());
     }
 
@@ -95,10 +95,10 @@ public class RpmInfoTest {
         assertEquals("1.fc21", info.getRelease());
         assertEquals("x86_64", info.getArch());
 
-        Iterator<String> prov = info.getProvides().iterator();
+        Iterator<RpmDependency> prov = info.getProvides().iterator();
         assertFalse(prov.hasNext());
 
-        List<String> req = info.getRequires();
+        List<RpmDependency> req = info.getRequires();
         assertEquals(2, req.size());
     }
 
@@ -109,90 +109,90 @@ public class RpmInfoTest {
 
         assertEquals("ASL 2.0", info.getLicense());
 
-        Iterator<String> provIt = info.getProvides().iterator();
-        assertEquals("soft = 1-1", provIt.next());
-        assertEquals("test-Provides-A", provIt.next());
-        assertEquals("test-Provides-B", provIt.next());
-        assertEquals("test-Provides-C", provIt.next());
+        Iterator<RpmDependency> provIt = info.getProvides().iterator();
+        assertEquals("soft = 1-1", provIt.next().toString());
+        assertEquals("test-Provides-A", provIt.next().toString());
+        assertEquals("test-Provides-B", provIt.next().toString());
+        assertEquals("test-Provides-C", provIt.next().toString());
         assertFalse(provIt.hasNext());
 
-        Iterator<String> reqIt = info.getRequires().iterator();
-        assertEquals("rpmlib(CompressedFileNames) <= 3.0.4-1", reqIt.next());
-        assertEquals("rpmlib(FileDigests) <= 4.6.0-1", reqIt.next());
-        assertEquals("rpmlib(PayloadFilesHavePrefix) <= 4.0-1", reqIt.next());
-        assertEquals("rpmlib(PayloadIsZstd) <= 5.4.18-1", reqIt.next());
-        assertEquals("test-Requires-A", reqIt.next());
-        assertEquals("test-Requires-B", reqIt.next());
-        assertEquals("test-Requires-C", reqIt.next());
-        assertEquals("test-Requires-interp-A", reqIt.next());
-        assertEquals("test-Requires-interp-B", reqIt.next());
-        assertEquals("test-Requires-interp-C", reqIt.next());
-        assertEquals("test-Requires-post-A", reqIt.next());
-        assertEquals("test-Requires-post-B", reqIt.next());
-        assertEquals("test-Requires-post-C", reqIt.next());
-        assertEquals("test-Requires-posttrans-A", reqIt.next());
-        assertEquals("test-Requires-posttrans-B", reqIt.next());
-        assertEquals("test-Requires-posttrans-C", reqIt.next());
-        assertEquals("test-Requires-postun-A", reqIt.next());
-        assertEquals("test-Requires-postun-B", reqIt.next());
-        assertEquals("test-Requires-postun-C", reqIt.next());
-        assertEquals("test-Requires-pre-A", reqIt.next());
-        assertEquals("test-Requires-pre-B", reqIt.next());
-        assertEquals("test-Requires-pre-C", reqIt.next());
-        assertEquals("test-Requires-pretrans-A", reqIt.next());
-        assertEquals("test-Requires-pretrans-B", reqIt.next());
-        assertEquals("test-Requires-pretrans-C", reqIt.next());
-        assertEquals("test-Requires-preun-A", reqIt.next());
-        assertEquals("test-Requires-preun-B", reqIt.next());
-        assertEquals("test-Requires-preun-C", reqIt.next());
-        assertEquals("test-Requires-rpmlib-A", reqIt.next());
-        assertEquals("test-Requires-rpmlib-B", reqIt.next());
-        assertEquals("test-Requires-rpmlib-C", reqIt.next());
-        assertEquals("test-Requires-verify-A", reqIt.next());
-        assertEquals("test-Requires-verify-B", reqIt.next());
-        assertEquals("test-Requires-verify-C", reqIt.next());
+        Iterator<RpmDependency> reqIt = info.getRequires().iterator();
+        assertEquals("rpmlib(CompressedFileNames) <= 3.0.4-1", reqIt.next().toString());
+        assertEquals("rpmlib(FileDigests) <= 4.6.0-1", reqIt.next().toString());
+        assertEquals("rpmlib(PayloadFilesHavePrefix) <= 4.0-1", reqIt.next().toString());
+        assertEquals("rpmlib(PayloadIsZstd) <= 5.4.18-1", reqIt.next().toString());
+        assertEquals("test-Requires-A", reqIt.next().toString());
+        assertEquals("test-Requires-B", reqIt.next().toString());
+        assertEquals("test-Requires-C", reqIt.next().toString());
+        assertEquals("test-Requires-interp-A", reqIt.next().toString());
+        assertEquals("test-Requires-interp-B", reqIt.next().toString());
+        assertEquals("test-Requires-interp-C", reqIt.next().toString());
+        assertEquals("test-Requires-post-A", reqIt.next().toString());
+        assertEquals("test-Requires-post-B", reqIt.next().toString());
+        assertEquals("test-Requires-post-C", reqIt.next().toString());
+        assertEquals("test-Requires-posttrans-A", reqIt.next().toString());
+        assertEquals("test-Requires-posttrans-B", reqIt.next().toString());
+        assertEquals("test-Requires-posttrans-C", reqIt.next().toString());
+        assertEquals("test-Requires-postun-A", reqIt.next().toString());
+        assertEquals("test-Requires-postun-B", reqIt.next().toString());
+        assertEquals("test-Requires-postun-C", reqIt.next().toString());
+        assertEquals("test-Requires-pre-A", reqIt.next().toString());
+        assertEquals("test-Requires-pre-B", reqIt.next().toString());
+        assertEquals("test-Requires-pre-C", reqIt.next().toString());
+        assertEquals("test-Requires-pretrans-A", reqIt.next().toString());
+        assertEquals("test-Requires-pretrans-B", reqIt.next().toString());
+        assertEquals("test-Requires-pretrans-C", reqIt.next().toString());
+        assertEquals("test-Requires-preun-A", reqIt.next().toString());
+        assertEquals("test-Requires-preun-B", reqIt.next().toString());
+        assertEquals("test-Requires-preun-C", reqIt.next().toString());
+        assertEquals("test-Requires-rpmlib-A", reqIt.next().toString());
+        assertEquals("test-Requires-rpmlib-B", reqIt.next().toString());
+        assertEquals("test-Requires-rpmlib-C", reqIt.next().toString());
+        assertEquals("test-Requires-verify-A", reqIt.next().toString());
+        assertEquals("test-Requires-verify-B", reqIt.next().toString());
+        assertEquals("test-Requires-verify-C", reqIt.next().toString());
         assertFalse(reqIt.hasNext());
 
-        Iterator<String> conflIt = info.getConflicts().iterator();
-        assertEquals("test-Conflicts-A", conflIt.next());
-        assertEquals("test-Conflicts-B", conflIt.next());
-        assertEquals("test-Conflicts-C", conflIt.next());
+        Iterator<RpmDependency> conflIt = info.getConflicts().iterator();
+        assertEquals("test-Conflicts-A", conflIt.next().toString());
+        assertEquals("test-Conflicts-B", conflIt.next().toString());
+        assertEquals("test-Conflicts-C", conflIt.next().toString());
         assertFalse(conflIt.hasNext());
 
-        Iterator<String> obsIt = info.getObsoletes().iterator();
-        assertEquals("test-Obsoletes-A", obsIt.next());
-        assertEquals("test-Obsoletes-B", obsIt.next());
-        assertEquals("test-Obsoletes-C", obsIt.next());
+        Iterator<RpmDependency> obsIt = info.getObsoletes().iterator();
+        assertEquals("test-Obsoletes-A", obsIt.next().toString());
+        assertEquals("test-Obsoletes-B", obsIt.next().toString());
+        assertEquals("test-Obsoletes-C", obsIt.next().toString());
         assertFalse(obsIt.hasNext());
 
-        Iterator<String> recIt = info.getRecommends().iterator();
-        assertEquals("test-Recommends-A", recIt.next());
-        assertEquals("test-Recommends-B", recIt.next());
-        assertEquals("test-Recommends-C", recIt.next());
+        Iterator<RpmDependency> recIt = info.getRecommends().iterator();
+        assertEquals("test-Recommends-A", recIt.next().toString());
+        assertEquals("test-Recommends-B", recIt.next().toString());
+        assertEquals("test-Recommends-C", recIt.next().toString());
         assertFalse(recIt.hasNext());
 
-        Iterator<String> sugIt = info.getSuggests().iterator();
-        assertEquals("test-Suggests-A", sugIt.next());
-        assertEquals("test-Suggests-B", sugIt.next());
-        assertEquals("test-Suggests-C", sugIt.next());
+        Iterator<RpmDependency> sugIt = info.getSuggests().iterator();
+        assertEquals("test-Suggests-A", sugIt.next().toString());
+        assertEquals("test-Suggests-B", sugIt.next().toString());
+        assertEquals("test-Suggests-C", sugIt.next().toString());
         assertFalse(sugIt.hasNext());
 
-        Iterator<String> supIt = info.getSupplements().iterator();
-        assertEquals("test-Supplements-A", supIt.next());
-        assertEquals("test-Supplements-B", supIt.next());
-        assertEquals("test-Supplements-C", supIt.next());
+        Iterator<RpmDependency> supIt = info.getSupplements().iterator();
+        assertEquals("test-Supplements-A", supIt.next().toString());
+        assertEquals("test-Supplements-B", supIt.next().toString());
+        assertEquals("test-Supplements-C", supIt.next().toString());
         assertFalse(supIt.hasNext());
 
-        Iterator<String> enhIt = info.getEnhances().iterator();
-        assertEquals("test-Enhances-A", enhIt.next());
-        assertEquals("test-Enhances-B", enhIt.next());
-        assertEquals("test-Enhances-C", enhIt.next());
+        Iterator<RpmDependency> enhIt = info.getEnhances().iterator();
+        assertEquals("test-Enhances-A", enhIt.next().toString());
+        assertEquals("test-Enhances-B", enhIt.next().toString());
+        assertEquals("test-Enhances-C", enhIt.next().toString());
         assertFalse(enhIt.hasNext());
 
-        Iterator<String> orderIt = info.getOrderWithRequires().iterator();
-        assertEquals("test-OrderWithRequires-A", orderIt.next());
-        assertEquals("test-OrderWithRequires-B", orderIt.next());
-        assertEquals("test-OrderWithRequires-C", orderIt.next());
+        Iterator<RpmDependency> orderIt = info.getOrderWithRequires().iterator();
+        assertEquals("test-OrderWithRequires-A", orderIt.next().toString());
+        assertEquals("test-OrderWithRequires-B", orderIt.next().toString());
+        assertEquals("test-OrderWithRequires-C", orderIt.next().toString());
         assertFalse(orderIt.hasNext());
     }
 }
