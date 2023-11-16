@@ -26,13 +26,13 @@ public class RpmDependency {
     private final String dnevr;
     private final String name;
     private final int flags;
-    private final String evr;
+    private final RpmVersion version;
 
     RpmDependency(RpmDS ds) {
         dnevr = rpmdsDNEVR(ds);
         name = rpmdsN(ds);
         flags = rpmdsFlags(ds);
-        evr = rpmdsEVR(ds);
+        version = new RpmVersion(rpmdsEVR(ds));
     }
 
     public String getName() {
@@ -43,8 +43,8 @@ public class RpmDependency {
         return SENSES[(flags & 0xF) >> 1];
     }
 
-    public String getEVR() {
-        return evr;
+    public RpmVersion getVersion() {
+        return version;
     }
 
     @Override
