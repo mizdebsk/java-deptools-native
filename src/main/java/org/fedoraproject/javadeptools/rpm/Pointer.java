@@ -31,11 +31,11 @@ class Pointer extends NativeDataStructure {
     }
 
     <T extends NativeDataStructure> T dereference(Class<T> type) {
+        MemorySegment address = ms.get(ValueLayout.ADDRESS, 0);
+        if (address.equals(MemorySegment.NULL)) {
+            return null;
+        }
         try {
-            MemorySegment address = MemorySegment.ofAddress(ms.get(ValueLayout.JAVA_LONG, 0));
-            if (address.equals(MemorySegment.NULL)) {
-                return null;
-            }
             return type.getDeclaredConstructor(MemorySegment.class).newInstance(address);
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException(e);
