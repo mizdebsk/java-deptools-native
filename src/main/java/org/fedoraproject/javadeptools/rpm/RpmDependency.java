@@ -27,12 +27,14 @@ public class RpmDependency {
     private final String name;
     private final int flags;
     private final RpmVersion version;
+    private final boolean isRich;
 
     RpmDependency(RpmDS ds) {
         dnevr = rpmdsDNEVR(ds);
         name = rpmdsN(ds);
         flags = rpmdsFlags(ds);
         version = new RpmVersion(rpmdsEVR(ds));
+        isRich = rpmdsIsRich(ds) != 0;
     }
 
     public String getName() {
@@ -45,6 +47,10 @@ public class RpmDependency {
 
     public RpmVersion getVersion() {
         return version;
+    }
+
+    public boolean isRich() {
+        return isRich;
     }
 
     @Override

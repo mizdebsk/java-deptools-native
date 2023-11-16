@@ -16,6 +16,8 @@
 package org.fedoraproject.javadeptools.rpm;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -36,29 +38,34 @@ public class RpmDependencyTest {
         assertEquals("((ant and ivy) or maven >= 3.0.4)", dep0.getName());
         assertEquals("", dep0.getSense());
         assertEquals("", dep0.getVersion().toString());
+        assertTrue(dep0.isRich());
 
         RpmDependency dep1 = info.getRecommends().get(1);
         assertEquals("bar = 23-4.5", dep1.toString());
         assertEquals("bar", dep1.getName());
         assertEquals("=", dep1.getSense());
         assertEquals("23-4.5", dep1.getVersion().toString());
+        assertFalse(dep1.isRich());
 
         RpmDependency dep2 = info.getRecommends().get(2);
         assertEquals("baz >= 3333333333:444444444444444444444-xaxaxayyyy.5517~77+8", dep2.toString());
         assertEquals("baz", dep2.getName());
         assertEquals(">=", dep2.getSense());
         assertEquals("3333333333:444444444444444444444-xaxaxayyyy.5517~77+8", dep2.getVersion().toString());
+        assertFalse(dep2.isRich());
 
         RpmDependency dep3 = info.getRecommends().get(3);
         assertEquals("foo < 1", dep3.toString());
         assertEquals("foo", dep3.getName());
         assertEquals("<", dep3.getSense());
         assertEquals("1", dep3.getVersion().toString());
+        assertFalse(dep3.isRich());
 
         RpmDependency dep4 = info.getRecommends().get(4);
         assertEquals("nethack", dep4.toString());
         assertEquals("nethack", dep4.getName());
         assertEquals("", dep4.getSense());
         assertEquals("", dep4.getVersion().toString());
+        assertFalse(dep4.isRich());
     }
 }

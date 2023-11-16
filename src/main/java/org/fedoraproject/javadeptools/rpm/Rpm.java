@@ -113,6 +113,8 @@ final class Rpm {
         String rpmdsEVR(RpmDS ds);
 
         int rpmdsFlags(RpmDS ds);
+
+        int rpmdsIsRich(RpmDS ds);
     }
 
     private static interface RpmIO {
@@ -270,6 +272,10 @@ final class Rpm {
 
     static final int rpmdsFlags(RpmDS ds) {
         return Lazy.RPM.rpmdsFlags(ds);
+    }
+
+    static final int rpmdsIsRich(RpmDS ds) {
+        return Lazy.RPM.rpmdsIsRich(ds);
     }
 
     static final RpmEVR rpmverParse(String evr) {
