@@ -99,6 +99,14 @@ final class Rpm {
         long rpmtdGetNumber(RpmTD td);
 
         void rpmtdFree(RpmTD td);
+
+        RpmDS rpmdsNew(RpmHeader h, int tagN, int flags);
+
+        void rpmdsFree(RpmDS ds);
+
+        int rpmdsNext(RpmDS ds);
+
+        String rpmdsDNEVR(RpmDS ds);
     }
 
     private static interface RpmIO {
@@ -217,5 +225,21 @@ final class Rpm {
 
     static final void rpmtdFree(RpmTD td) {
         Lazy.RPM.rpmtdFree(td);
+    }
+
+    static final RpmDS rpmdsNew(RpmHeader h, int tagN, int flags) {
+        return Lazy.RPM.rpmdsNew(h, tagN, flags);
+    }
+
+    static final void rpmdsFree(RpmDS ds) {
+        Lazy.RPM.rpmdsFree(ds);
+    }
+
+    static final int rpmdsNext(RpmDS ds) {
+        return Lazy.RPM.rpmdsNext(ds);
+    }
+
+    static final String rpmdsDNEVR(RpmDS ds) {
+        return Lazy.RPM.rpmdsDNEVR(ds);
     }
 }

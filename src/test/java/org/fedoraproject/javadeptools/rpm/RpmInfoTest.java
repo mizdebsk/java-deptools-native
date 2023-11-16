@@ -74,8 +74,8 @@ public class RpmInfoTest {
         assertEquals("x86_64", info.getArch());
 
         Iterator<String> prov = info.getProvides().iterator();
-        assertEquals("foo", prov.next());
-        assertEquals("foo(x86-64)", prov.next());
+        assertEquals("foo = 1-1.fc21", prov.next());
+        assertEquals("foo(x86-64) = 1-1.fc21", prov.next());
         assertFalse(prov.hasNext());
 
         List<String> req = info.getRequires();
@@ -110,17 +110,17 @@ public class RpmInfoTest {
         assertEquals("ASL 2.0", info.getLicense());
 
         Iterator<String> provIt = info.getProvides().iterator();
-        assertEquals("soft", provIt.next());
+        assertEquals("soft = 1-1", provIt.next());
         assertEquals("test-Provides-A", provIt.next());
         assertEquals("test-Provides-B", provIt.next());
         assertEquals("test-Provides-C", provIt.next());
         assertFalse(provIt.hasNext());
 
         Iterator<String> reqIt = info.getRequires().iterator();
-        assertEquals("rpmlib(CompressedFileNames)", reqIt.next());
-        assertEquals("rpmlib(FileDigests)", reqIt.next());
-        assertEquals("rpmlib(PayloadFilesHavePrefix)", reqIt.next());
-        assertEquals("rpmlib(PayloadIsZstd)", reqIt.next());
+        assertEquals("rpmlib(CompressedFileNames) <= 3.0.4-1", reqIt.next());
+        assertEquals("rpmlib(FileDigests) <= 4.6.0-1", reqIt.next());
+        assertEquals("rpmlib(PayloadFilesHavePrefix) <= 4.0-1", reqIt.next());
+        assertEquals("rpmlib(PayloadIsZstd) <= 5.4.18-1", reqIt.next());
         assertEquals("test-Requires-A", reqIt.next());
         assertEquals("test-Requires-B", reqIt.next());
         assertEquals("test-Requires-C", reqIt.next());

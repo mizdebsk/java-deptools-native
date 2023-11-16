@@ -17,6 +17,7 @@ package org.fedoraproject.javadeptools.rpm;
 
 import static org.fedoraproject.javadeptools.rpm.Rpm.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -55,6 +56,16 @@ public class RpmInfo {
         }
     }
 
+    private static List<String> dependencyList(RpmHeader h, int tag) {
+        List<String> list = new ArrayList<>();
+        RpmDS ds = rpmdsNew(h, tag, 0);
+        while (rpmdsNext(ds) >= 0) {
+            list.add(rpmdsDNEVR(ds).substring(2));
+        }
+        rpmdsFree(ds);
+        return list;
+    }
+
     RpmInfo(RpmHeader h) {
         name = headerGetString(h, RPMTAG_NAME);
         epoch = headerGetOptionalNumber(h, RPMTAG_EPOCH);
@@ -65,15 +76,15 @@ public class RpmInfo {
         sourceRPM = headerGetString(h, RPMTAG_SOURCERPM);
         exclusiveArch = headerGetList(h, RPMTAG_EXCLUSIVEARCH);
         buildArchs = headerGetList(h, RPMTAG_BUILDARCHS);
-        provides = headerGetList(h, RPMTAG_PROVIDENAME);
-        requires = headerGetList(h, RPMTAG_REQUIRENAME);
-        conflicts = headerGetList(h, RPMTAG_CONFLICTNAME);
-        obsoletes = headerGetList(h, RPMTAG_OBSOLETENAME);
-        recommends = headerGetList(h, RPMTAG_RECOMMENDNAME);
-        suggests = headerGetList(h, RPMTAG_SUGGESTNAME);
-        supplements = headerGetList(h, RPMTAG_SUPPLEMENTNAME);
-        enhances = headerGetList(h, RPMTAG_ENHANCENAME);
-        orderWithRequires = headerGetList(h, RPMTAG_ORDERNAME);
+        provides = dependencyList(h, RPMTAG_PROVIDENAME);
+        requires = dependencyList(h, RPMTAG_REQUIRENAME);
+        conflicts = dependencyList(h, RPMTAG_CONFLICTNAME);
+        obsoletes = dependencyList(h, RPMTAG_OBSOLETENAME);
+        recommends = dependencyList(h, RPMTAG_RECOMMENDNAME);
+        suggests = dependencyList(h, RPMTAG_SUGGESTNAME);
+        supplements = dependencyList(h, RPMTAG_SUPPLEMENTNAME);
+        enhances = dependencyList(h, RPMTAG_ENHANCENAME);
+        orderWithRequires = dependencyList(h, RPMTAG_ORDERNAME);
         archiveFormat = headerGetString(h, RPMTAG_PAYLOADFORMAT);
         compressionMethod = headerGetString(h, RPMTAG_PAYLOADCOMPRESSOR);
         sourcePackage = headerGetNumber(h, RPMTAG_SOURCEPACKAGE) != 0;
