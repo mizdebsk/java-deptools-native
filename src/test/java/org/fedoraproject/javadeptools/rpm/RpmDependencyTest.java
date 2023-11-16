@@ -34,26 +34,31 @@ public class RpmDependencyTest {
         RpmDependency dep0 = info.getRecommends().get(0);
         assertEquals("((ant and ivy) or maven >= 3.0.4)", dep0.toString());
         assertEquals("((ant and ivy) or maven >= 3.0.4)", dep0.getName());
+        assertEquals("", dep0.getSense());
         assertEquals("", dep0.getEVR());
 
         RpmDependency dep1 = info.getRecommends().get(1);
         assertEquals("bar = 23-4.5", dep1.toString());
         assertEquals("bar", dep1.getName());
+        assertEquals("=", dep1.getSense());
         assertEquals("23-4.5", dep1.getEVR());
 
         RpmDependency dep2 = info.getRecommends().get(2);
         assertEquals("baz >= 3333333333:444444444444444444444-xaxaxayyyy.5517~77+8", dep2.toString());
         assertEquals("baz", dep2.getName());
+        assertEquals(">=", dep2.getSense());
         assertEquals("3333333333:444444444444444444444-xaxaxayyyy.5517~77+8", dep2.getEVR());
 
         RpmDependency dep3 = info.getRecommends().get(3);
         assertEquals("foo < 1", dep3.toString());
         assertEquals("foo", dep3.getName());
+        assertEquals("<", dep3.getSense());
         assertEquals("1", dep3.getEVR());
 
         RpmDependency dep4 = info.getRecommends().get(4);
         assertEquals("nethack", dep4.toString());
         assertEquals("nethack", dep4.getName());
+        assertEquals("", dep4.getSense());
         assertEquals("", dep4.getEVR());
     }
 }

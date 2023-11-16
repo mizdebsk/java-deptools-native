@@ -21,18 +21,26 @@ import static org.fedoraproject.javadeptools.rpm.Rpm.*;
  * @author Mikolaj Izdebski
  */
 public class RpmDependency {
+    private static final String[] SENSES = new String[] { "", "<", ">", "<>", "=", "<=", ">=", "<>=", };
+
     private final String dnevr;
     private final String name;
+    private final int flags;
     private final String evr;
 
     RpmDependency(RpmDS ds) {
         dnevr = rpmdsDNEVR(ds);
         name = rpmdsN(ds);
+        flags = rpmdsFlags(ds);
         evr = rpmdsEVR(ds);
     }
 
     public String getName() {
         return name;
+    }
+
+    public String getSense() {
+        return SENSES[(flags & 0xF) >> 1];
     }
 
     public String getEVR() {
