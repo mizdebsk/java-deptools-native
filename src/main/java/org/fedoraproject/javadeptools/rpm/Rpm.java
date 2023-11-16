@@ -127,6 +127,17 @@ final class Rpm {
 
         String Fstrerror(RpmFD fd);
 
+        RpmEVR rpmverParse(String evr);
+
+        void rpmverFree(RpmEVR rv);
+
+        long rpmverEVal(RpmEVR rv);
+
+        String rpmverE(RpmEVR rv);
+
+        String rpmverV(RpmEVR rv);
+
+        String rpmverR(RpmEVR rv);
     }
 
     private static class Lazy {
@@ -259,5 +270,29 @@ final class Rpm {
 
     static final int rpmdsFlags(RpmDS ds) {
         return Lazy.RPM.rpmdsFlags(ds);
+    }
+
+    static final RpmEVR rpmverParse(String evr) {
+        return LazyIO.RPMIO.rpmverParse(evr);
+    }
+
+    static final void rpmverFree(RpmEVR rv) {
+        LazyIO.RPMIO.rpmverFree(rv);
+    }
+
+    static final long rpmverEVal(RpmEVR rv) {
+        return LazyIO.RPMIO.rpmverEVal(rv);
+    }
+
+    static final String rpmverE(RpmEVR rv) {
+        return LazyIO.RPMIO.rpmverE(rv);
+    }
+
+    static final String rpmverV(RpmEVR rv) {
+        return LazyIO.RPMIO.rpmverV(rv);
+    }
+
+    static final String rpmverR(RpmEVR rv) {
+        return LazyIO.RPMIO.rpmverR(rv);
     }
 }
