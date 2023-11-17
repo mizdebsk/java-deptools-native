@@ -15,28 +15,45 @@
  */
 package org.fedoraproject.javadeptools.nativ;
 
+import java.lang.foreign.MemorySegment;
+import java.lang.foreign.SymbolLookup;
+import java.util.Optional;
+
 /**
  * @author Mikolaj Izdebski
  */
-class DynamicLinker {
+class DynamicLinker implements SymbolLookup {
+
+    private static class DynamicLibrary extends NativeDataStructure {}
+    private static class DynamicSymbol extends NativeDataStructure {}
 
     private static interface LibDL {
         DynamicLibrary dlopen(String filename, int flags);
-
         DynamicSymbol dlsym(DynamicLibrary handle, String symbol);
     }
 
-    static final int RTLD_LAZY = 1;
+    private static final int RTLD_LAZY = 1;
 
     private static class Lazy {
         static final LibDL DL = Native.load(LibDL.class);
     }
 
-    static final DynamicLibrary dlopen(String filename, int flags) {
+    private static final DynamicLibrary dlopen(String filename, int flags) {
         return Lazy.DL.dlopen(filename, flags);
     }
 
-    static final DynamicSymbol dlsym(DynamicLibrary handle, String symbol) {
+    private static final DynamicSymbol dlsym(DynamicLibrary handle, String symbol) {
         return Lazy.DL.dlsym(handle, symbol);
+    }
+
+    private final DynamicLibrary handle;
+
+    public DynamicLinker(String lib) {
+        handle = dlopen(lib, RTLD_LAZY);
+    }
+
+    @Override
+    public Optional<MemorySegment> find(String name) {
+        return Optional.ofNullable(dlsym(handle, name).ms);
     }
 }

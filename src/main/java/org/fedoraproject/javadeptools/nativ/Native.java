@@ -15,12 +15,9 @@
  */
 package org.fedoraproject.javadeptools.nativ;
 
-import static org.fedoraproject.javadeptools.nativ.DynamicLinker.*;
-
 import java.lang.foreign.Linker;
 import java.lang.foreign.SymbolLookup;
 import java.lang.reflect.Proxy;
-import java.util.Optional;
 
 /**
  * @author Mikolaj Izdebski
@@ -33,9 +30,8 @@ public class Native {
     }
 
     public static <T> T load(Class<T> type, String lib) {
-        DynamicLibrary handle = dlopen(lib, RTLD_LAZY);
-        SymbolLookup lookup = name -> Optional.of(dlsym(handle, name).ms);
         Linker linker = Linker.nativeLinker();
+        SymbolLookup lookup = new DynamicLinker(lib);
         return load(type, lookup, linker);
 
     }
