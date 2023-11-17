@@ -24,13 +24,16 @@ import java.lang.foreign.ValueLayout;
  * 
  * @author Mikolaj Izdebski
  */
-class Pointer extends NativeDataStructure {
+class Pointer<T extends NativeDataStructure> extends NativeDataStructure {
 
-    public Pointer() {
+    private Class<T> type;
+
+    public Pointer(Class<T> type) {
         super(Arena.ofAuto().allocate(ValueLayout.ADDRESS));
+        this.type = type;
     }
 
-    <T extends NativeDataStructure> T dereference(Class<T> type) {
+    public T dereference() {
         MemorySegment address = ms.get(ValueLayout.ADDRESS, 0);
         if (address.equals(MemorySegment.NULL)) {
             return null;

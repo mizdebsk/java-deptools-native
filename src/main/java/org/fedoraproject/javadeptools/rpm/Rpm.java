@@ -78,7 +78,7 @@ final class Rpm {
 
         void rpmdbFreeIterator(RpmMI mi);
 
-        int rpmReadPackageFile(RpmTS ts, RpmFD fd, String fn, Pointer hdrp);
+        int rpmReadPackageFile(RpmTS ts, RpmFD fd, String fn, Pointer<RpmHeader> hdrp);
 
         void headerFree(RpmHeader h);
 
@@ -202,7 +202,7 @@ final class Rpm {
         Lazy.RPM.rpmdbFreeIterator(mi);
     }
 
-    static final int rpmReadPackageFile(RpmTS ts, RpmFD fd, String fn, Pointer hdrp) {
+    static final int rpmReadPackageFile(RpmTS ts, RpmFD fd, String fn, Pointer<RpmHeader> hdrp) {
         return Lazy.RPM.rpmReadPackageFile(ts, fd, fn, hdrp);
     }
 
