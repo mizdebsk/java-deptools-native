@@ -16,6 +16,7 @@
 package org.fedoraproject.javadeptools.rpm;
 
 import org.fedoraproject.javadeptools.nativ.Native;
+import org.fedoraproject.javadeptools.nativ.NativeDataStructure;
 import org.fedoraproject.javadeptools.nativ.NativePointer;
 
 /**
@@ -63,85 +64,55 @@ final class Rpm {
 
     static final int RPMDBI_INSTFILENAMES = 5040;
 
+    static class RpmDS extends NativeDataStructure {}
+    static class RpmEVR extends NativeDataStructure {}
+    static class RpmFD extends NativeDataStructure {}
+    static class RpmHeader extends NativeDataStructure {}
+    static class RpmMI extends NativeDataStructure {}
+    static class RpmTD extends NativeDataStructure {}
+    static class RpmTS extends NativeDataStructure {}
+
     private static interface RpmLib {
-
         int rpmReadConfigFiles(String file, String target);
-
         RpmTS rpmtsCreate();
-
         void rpmtsFree(RpmTS ts);
-
         int rpmtsSetRootDir(RpmTS ts, String rootDir);
-
         RpmMI rpmtsInitIterator(RpmTS ts, int rpmtag, String keyp, long keylen);
-
         void rpmtsSetVSFlags(RpmTS ts, int vsflags);
-
         RpmHeader rpmdbNextIterator(RpmMI mi);
-
         void rpmdbFreeIterator(RpmMI mi);
-
         int rpmReadPackageFile(RpmTS ts, RpmFD fd, String fn, NativePointer<RpmHeader> hdrp);
-
         void headerFree(RpmHeader h);
-
         int headerGet(RpmHeader h, int tag, RpmTD td, int flags);
-
         String headerGetString(RpmHeader h, int tag);
-
         long headerGetNumber(RpmHeader h, int tag);
-
         RpmTD rpmtdNew();
-
         int rpmtdCount(RpmTD td);
-
         int rpmtdNext(RpmTD td);
-
         String rpmtdGetString(RpmTD td);
-
         long rpmtdGetNumber(RpmTD td);
-
         void rpmtdFree(RpmTD td);
-
         RpmDS rpmdsNew(RpmHeader h, int tagN, int flags);
-
         void rpmdsFree(RpmDS ds);
-
         int rpmdsNext(RpmDS ds);
-
         String rpmdsDNEVR(RpmDS ds);
-
         String rpmdsN(RpmDS ds);
-
         String rpmdsEVR(RpmDS ds);
-
         int rpmdsFlags(RpmDS ds);
-
         int rpmdsIsRich(RpmDS ds);
     }
 
     private static interface RpmIO {
-
         RpmFD Fopen(String path, String mode);
-
         void Fclose(RpmFD fd);
-
         long Ftell(RpmFD fd);
-
         int Ferror(RpmFD fd);
-
         String Fstrerror(RpmFD fd);
-
         RpmEVR rpmverParse(String evr);
-
         void rpmverFree(RpmEVR rv);
-
         long rpmverEVal(RpmEVR rv);
-
         String rpmverE(RpmEVR rv);
-
         String rpmverV(RpmEVR rv);
-
         String rpmverR(RpmEVR rv);
     }
 
