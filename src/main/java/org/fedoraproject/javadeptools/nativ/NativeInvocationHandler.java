@@ -34,26 +34,101 @@ import java.util.Map;
  */
 class NativeInvocationHandler implements InvocationHandler {
 
-    private Map<String, MethodHandle> handles = new LinkedHashMap<>();
+    private static interface DownConverter {
+        Object convert(Object obj, Arena arena) throws Throwable;
 
-    private MemoryLayout layout(Method method, Class<?> type) {
+        static DownConverter forType(Class<?> type) {
+            return switch (type) {
+            case Class<?> cls when String.class.isAssignableFrom(cls) ->
+                (obj, arena) -> arena.allocateUtf8String((String) obj);
+            case Class<?> cls when NativeDataStructure.class.isAssignableFrom(cls) ->
+                (obj, arena) -> ((NativeDataStructure) obj).ms;
+            default -> (obj, arena) -> obj;
+            };
+        }
+    }
+
+    private static interface UpConverter {
+        Object convert(Object obj) throws Throwable;
+
+        static UpConverter forType(Class<?> type) throws ReflectiveOperationException {
+            return switch (type) {
+            case Class<?> cls when String.class.isAssignableFrom(cls) ->
+                ((UpConverter) ms -> ((MemorySegment) ms).getUtf8String(0));
+            case Class<?> cls when NativeDataStructure.class.isAssignableFrom(cls) -> new NativeUpConverter(cls);
+            default -> ((UpConverter) obj -> obj);
+            };
+        }
+    }
+
+    private static class NativeUpConverter implements UpConverter {
+        private Constructor<?> ctr;
+
+        NativeUpConverter(Class<?> type) throws ReflectiveOperationException {
+            ctr = type.getDeclaredConstructor();
+            ctr.setAccessible(true);
+        }
+
+        public NativeDataStructure convert(Object obj) throws Throwable {
+            NativeDataStructure nativ = (NativeDataStructure) ctr.newInstance();
+            nativ.ms = (MemorySegment) obj;
+            return nativ;
+        }
+
+    }
+
+    private static class Stub {
+        final MethodHandle mh;
+        final DownConverter[] argConvs;
+        final UpConverter retConv;
+
+        Stub(MethodHandle mh, DownConverter[] argConvs, UpConverter retConv) {
+            this.mh = mh;
+            this.argConvs = argConvs;
+            this.retConv = retConv;
+        }
+
+        Object invoke(Object[] args, Arena arena) throws Throwable {
+            for (int i = 0; i < argConvs.length; i++) {
+                if (args[i] == null) {
+                    args[i] = MemorySegment.NULL;
+                } else {
+                    args[i] = argConvs[i].convert(args[i], arena);
+                }
+            }
+            Object ret = mh.invokeWithArguments(args);
+            if (MemorySegment.NULL.equals(ret)) {
+                return null;
+            }
+            return retConv.convert(ret);
+        }
+
+    }
+
+    private Map<String, Stub> stubs = new LinkedHashMap<>();
+
+    private static MemoryLayout selectLayout(Class<?> type) {
         return switch (type) {
-        case Class<?> cls when long.class.isAssignableFrom(cls) -> ValueLayout.JAVA_LONG;
-        case Class<?> cls when int.class.isAssignableFrom(cls) -> ValueLayout.JAVA_INT;
         case Class<?> cls when String.class.isAssignableFrom(cls) ->
             ValueLayout.ADDRESS.withTargetLayout(MemoryLayout.sequenceLayout(ValueLayout.JAVA_BYTE));
         case Class<?> cls when NativeDataStructure.class.isAssignableFrom(cls) -> ValueLayout.ADDRESS;
-        default -> throw new IllegalStateException("layout " + type);
+        case Class<?> cls when long.class.isAssignableFrom(cls) -> ValueLayout.JAVA_LONG;
+        case Class<?> cls when int.class.isAssignableFrom(cls) -> ValueLayout.JAVA_INT;
+        default -> throw new IllegalStateException("data type is not supported: " + type);
         };
     }
 
-    public NativeInvocationHandler(SymbolLookup lookup, Linker linker, Class<?> iface) {
+    public NativeInvocationHandler(SymbolLookup lookup, Linker linker, Class<?> iface)
+            throws ReflectiveOperationException {
 
         for (Method method : iface.getDeclaredMethods()) {
             MemoryLayout[] argLayouts = new MemoryLayout[method.getParameterCount()];
+            DownConverter[] argConvs = new DownConverter[method.getParameterCount()];
             int i = 0;
             for (Class<?> type : method.getParameterTypes()) {
-                argLayouts[i++] = layout(method, type);
+                argLayouts[i] = selectLayout(type);
+                argConvs[i] = DownConverter.forType(type);
+                i++;
             }
             MemorySegment methodAddress = lookup.find(method.getName()).get();
             MethodHandle mh;
@@ -61,39 +136,13 @@ class NativeInvocationHandler implements InvocationHandler {
                 mh = linker.downcallHandle(methodAddress, FunctionDescriptor.ofVoid(argLayouts));
             } else {
                 mh = linker.downcallHandle(methodAddress,
-                        FunctionDescriptor.of(layout(method, method.getReturnType()), argLayouts));
+                        FunctionDescriptor.of(selectLayout(method.getReturnType()), argLayouts));
             }
-            handles.put(method.getName(), mh);
-        }
-    }
 
-    private static Object downConvert(Object obj, Arena arena) {
-        return switch (obj) {
-        case null -> MemorySegment.NULL;
-        case String s -> arena.allocateUtf8String(s);
-        case NativeDataStructure p -> p.ms;
-        default -> obj;
-        };
-    }
-
-    private static Object upConvert(Object obj, Class<?> type) throws Throwable {
-        if (obj instanceof MemorySegment ms) {
-            if (ms.equals(MemorySegment.NULL)) {
-                return null;
-            }
-            return switch (type) {
-            case Class<?> cls when String.class.isAssignableFrom(cls) -> ms.getUtf8String(0);
-            case Class<?> cls when NativeDataStructure.class.isAssignableFrom(cls) -> {
-                Constructor<?> ctr = cls.getDeclaredConstructor();
-                ctr.setAccessible(true);
-                NativeDataStructure obj2 = (NativeDataStructure) ctr.newInstance();
-                obj2.ms = ms;
-                yield obj2;
-            }
-            default -> obj;
-            };
+            UpConverter retConv = UpConverter.forType(method.getReturnType());
+            Stub stub = new Stub(mh, argConvs, retConv);
+            stubs.put(method.getName(), stub);
         }
-        return obj;
     }
 
     @Override
@@ -102,11 +151,11 @@ class NativeInvocationHandler implements InvocationHandler {
             if (args == null) {
                 args = new Object[0];
             }
-            for (int i = 0; i < args.length; i++) {
-                args[i] = downConvert(args[i], arena);
+            Stub stub = stubs.get(method.getName());
+            if (stub == null) {
+                throw new IllegalStateException("No stub was bound for method " + method);
             }
-            Object ret = handles.get(method.getName()).invokeWithArguments(args);
-            return upConvert(ret, method.getReturnType());
+            return stub.invoke(args, arena);
         }
     }
 

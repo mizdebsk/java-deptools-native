@@ -25,8 +25,12 @@ import java.lang.reflect.Proxy;
 public class Native {
 
     private static <T> T load(Class<T> type, SymbolLookup lookup, Linker linker) {
-        return type.cast(Proxy.newProxyInstance(type.getClassLoader(), new Class<?>[] { type },
-                new NativeInvocationHandler(lookup, linker, type)));
+        try {
+            return type.cast(Proxy.newProxyInstance(type.getClassLoader(), new Class<?>[] { type },
+                    new NativeInvocationHandler(lookup, linker, type)));
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static <T> T load(Class<T> type, String lib) {
