@@ -15,8 +15,6 @@
  */
 package org.fedoraproject.javadeptools.nativ;
 
-import static java.lang.foreign.ValueLayout.JAVA_BYTE;
-
 import java.lang.foreign.Arena;
 import java.lang.foreign.FunctionDescriptor;
 import java.lang.foreign.Linker;
@@ -43,7 +41,7 @@ class NativeInvocationHandler implements InvocationHandler {
         case Class<?> cls when long.class.isAssignableFrom(cls) -> ValueLayout.JAVA_LONG;
         case Class<?> cls when int.class.isAssignableFrom(cls) -> ValueLayout.JAVA_INT;
         case Class<?> cls when String.class.isAssignableFrom(cls) ->
-            ValueLayout.ADDRESS.withTargetLayout(MemoryLayout.sequenceLayout(JAVA_BYTE));
+            ValueLayout.ADDRESS.withTargetLayout(MemoryLayout.sequenceLayout(ValueLayout.JAVA_BYTE));
         case Class<?> cls when NativeDataStructure.class.isAssignableFrom(cls) -> ValueLayout.ADDRESS;
         default -> throw new IllegalStateException("layout " + type);
         };
