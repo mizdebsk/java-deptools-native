@@ -15,7 +15,7 @@
  */
 package org.fedoraproject.javadeptools.rpm;
 
-import java.lang.foreign.MemorySegment;
+import org.fedoraproject.javadeptools.nativ.NativeDataStructure;
 
 /**
  * RPM file descriptor.
@@ -23,7 +23,4 @@ import java.lang.foreign.MemorySegment;
  * @author Mikolaj Izdebski
  */
 class RpmFD extends NativeDataStructure {
-    public RpmFD(MemorySegment ms) {
-        super(ms);
-    }
 }

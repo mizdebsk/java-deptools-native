@@ -20,6 +20,8 @@ import static org.fedoraproject.javadeptools.rpm.Rpm.*;
 import java.io.IOException;
 import java.nio.file.Path;
 
+import org.fedoraproject.javadeptools.nativ.NativePointer;
+
 /**
  * @author Mikolaj Izdebski
  */
@@ -41,7 +43,7 @@ public class RpmPackage {
                 throw error(path, Fstrerror(fd));
             rpmtsSetVSFlags(ts, RPMVSF_NOHDRCHK | RPMVSF_NOSHA1HEADER | RPMVSF_NODSAHEADER | RPMVSF_NORSAHEADER
                     | RPMVSF_NOMD5 | RPMVSF_NODSA | RPMVSF_NORSA);
-            Pointer<RpmHeader> ph = new Pointer<>(RpmHeader.class);
+            NativePointer<RpmHeader> ph = new NativePointer<>(RpmHeader.class);
             int rc = rpmReadPackageFile(ts, fd, null, ph);
             if (rc == RPMRC_NOTFOUND)
                 throw error(path, "Not a RPM file");

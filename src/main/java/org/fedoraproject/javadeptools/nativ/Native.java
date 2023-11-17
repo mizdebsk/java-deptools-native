@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.javadeptools.rpm;
+package org.fedoraproject.javadeptools.nativ;
 
-import static org.fedoraproject.javadeptools.rpm.DynamicLinker.RTLD_LAZY;
-import static org.fedoraproject.javadeptools.rpm.DynamicLinker.dlopen;
-import static org.fedoraproject.javadeptools.rpm.DynamicLinker.dlsym;
+import static org.fedoraproject.javadeptools.nativ.DynamicLinker.*;
 
 import java.lang.foreign.Linker;
 import java.lang.foreign.SymbolLookup;
@@ -27,14 +25,14 @@ import java.util.Optional;
 /**
  * @author Mikolaj Izdebski
  */
-class Native {
+public class Native {
 
-    static <T> T load(Class<T> type, SymbolLookup lookup, Linker linker) {
+    private static <T> T load(Class<T> type, SymbolLookup lookup, Linker linker) {
         return type.cast(Proxy.newProxyInstance(type.getClassLoader(), new Class<?>[] { type },
                 new NativeInvocationHandler(lookup, linker, type)));
     }
 
-    static <T> T load(Class<T> type, String lib) {
+    public static <T> T load(Class<T> type, String lib) {
         DynamicLibrary handle = dlopen(lib, RTLD_LAZY);
         SymbolLookup lookup = name -> Optional.of(dlsym(handle, name).ms);
         Linker linker = Linker.nativeLinker();
@@ -42,7 +40,7 @@ class Native {
 
     }
 
-    static <T> T load(Class<T> type) {
+    public static <T> T load(Class<T> type) {
         Linker linker = Linker.nativeLinker();
         SymbolLookup lookup = linker.defaultLookup();
         return load(type, lookup, linker);

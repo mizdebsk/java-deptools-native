@@ -15,6 +15,9 @@
  */
 package org.fedoraproject.javadeptools.rpm;
 
+import org.fedoraproject.javadeptools.nativ.Native;
+import org.fedoraproject.javadeptools.nativ.NativePointer;
+
 /**
  * @author Mikolaj Izdebski
  */
@@ -78,7 +81,7 @@ final class Rpm {
 
         void rpmdbFreeIterator(RpmMI mi);
 
-        int rpmReadPackageFile(RpmTS ts, RpmFD fd, String fn, Pointer<RpmHeader> hdrp);
+        int rpmReadPackageFile(RpmTS ts, RpmFD fd, String fn, NativePointer<RpmHeader> hdrp);
 
         void headerFree(RpmHeader h);
 
@@ -202,7 +205,7 @@ final class Rpm {
         Lazy.RPM.rpmdbFreeIterator(mi);
     }
 
-    static final int rpmReadPackageFile(RpmTS ts, RpmFD fd, String fn, Pointer<RpmHeader> hdrp) {
+    static final int rpmReadPackageFile(RpmTS ts, RpmFD fd, String fn, NativePointer<RpmHeader> hdrp) {
         return Lazy.RPM.rpmReadPackageFile(ts, fd, fn, hdrp);
     }
 

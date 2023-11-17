@@ -13,15 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.javadeptools.rpm;
-
-import java.lang.foreign.MemorySegment;
+package org.fedoraproject.javadeptools.nativ;
 
 /**
  * @author Mikolaj Izdebski
  */
-class DynamicSymbol extends NativeDataStructure {
-    public DynamicSymbol(MemorySegment ms) {
-        super(ms);
-    }
+class DynamicLibrary extends NativeDataStructure {
 }

@@ -13,30 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.javadeptools.rpm;
+package org.fedoraproject.javadeptools.nativ;
+
+import java.lang.foreign.MemorySegment;
 
 /**
+ * Native data structure.
+ * 
  * @author Mikolaj Izdebski
  */
-class DynamicLinker {
-
-    private static interface LibDL {
-        DynamicLibrary dlopen(String filename, int flags);
-
-        DynamicSymbol dlsym(DynamicLibrary handle, String symbol);
-    }
-
-    static final int RTLD_LAZY = 1;
-
-    private static class Lazy {
-        static final LibDL DL = Native.load(LibDL.class);
-    }
-
-    static final DynamicLibrary dlopen(String filename, int flags) {
-        return Lazy.DL.dlopen(filename, flags);
-    }
-
-    static final DynamicSymbol dlsym(DynamicLibrary handle, String symbol) {
-        return Lazy.DL.dlsym(handle, symbol);
-    }
+public abstract class NativeDataStructure {
+    MemorySegment ms;
 }

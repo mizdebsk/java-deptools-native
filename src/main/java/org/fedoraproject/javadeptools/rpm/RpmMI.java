@@ -15,7 +15,7 @@
  */
 package org.fedoraproject.javadeptools.rpm;
 
-import java.lang.foreign.MemorySegment;
+import org.fedoraproject.javadeptools.nativ.NativeDataStructure;
 
 /**
  * RPM match iterator.
@@ -23,7 +23,4 @@ import java.lang.foreign.MemorySegment;
  * @author Mikolaj Izdebski
  */
 class RpmMI extends NativeDataStructure {
-    public RpmMI(MemorySegment ms) {
-        super(ms);
-    }
 }

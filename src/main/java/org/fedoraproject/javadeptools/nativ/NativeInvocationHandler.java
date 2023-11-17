@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.javadeptools.rpm;
+package org.fedoraproject.javadeptools.nativ;
 
 import static java.lang.foreign.ValueLayout.JAVA_BYTE;
 
@@ -25,6 +25,7 @@ import java.lang.foreign.MemorySegment;
 import java.lang.foreign.SymbolLookup;
 import java.lang.foreign.ValueLayout;
 import java.lang.invoke.MethodHandle;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.LinkedHashMap;
@@ -84,8 +85,13 @@ class NativeInvocationHandler implements InvocationHandler {
             }
             return switch (type) {
             case Class<?> cls when String.class.isAssignableFrom(cls) -> ms.getUtf8String(0);
-            case Class<?> cls when NativeDataStructure.class.isAssignableFrom(cls) ->
-                cls.getDeclaredConstructor(MemorySegment.class).newInstance(ms);
+            case Class<?> cls when NativeDataStructure.class.isAssignableFrom(cls) -> {
+                Constructor<?> ctr = cls.getDeclaredConstructor();
+                ctr.setAccessible(true);
+                NativeDataStructure obj2 = (NativeDataStructure) ctr.newInstance();
+                obj2.ms = ms;
+                yield obj2;
+            }
             default -> obj;
             };
         }

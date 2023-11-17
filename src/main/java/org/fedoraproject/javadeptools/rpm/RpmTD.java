@@ -15,7 +15,7 @@
  */
 package org.fedoraproject.javadeptools.rpm;
 
-import java.lang.foreign.MemorySegment;
+import org.fedoraproject.javadeptools.nativ.NativeDataStructure;
 
 /**
  * RPM tag data.
@@ -23,7 +23,4 @@ import java.lang.foreign.MemorySegment;
  * @author Mikolaj Izdebski
  */
 class RpmTD extends NativeDataStructure {
-    public RpmTD(MemorySegment ms) {
-        super(ms);
-    }
 }

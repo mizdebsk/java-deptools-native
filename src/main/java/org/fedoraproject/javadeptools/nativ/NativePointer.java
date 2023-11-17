@@ -13,24 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.javadeptools.rpm;
+package org.fedoraproject.javadeptools.nativ;
 
 import java.lang.foreign.Arena;
 import java.lang.foreign.MemorySegment;
 import java.lang.foreign.ValueLayout;
+import java.lang.reflect.Constructor;
 
 /**
- * Native pointer to a RPM data structure.
+ * Native pointer to a native data structure.
  * 
  * @author Mikolaj Izdebski
  */
-class Pointer<T extends NativeDataStructure> extends NativeDataStructure {
+public class NativePointer<T extends NativeDataStructure> extends NativeDataStructure {
 
-    private Class<T> type;
+    private final Constructor<T> ctr;
 
-    public Pointer(Class<T> type) {
-        super(Arena.ofAuto().allocate(ValueLayout.ADDRESS));
-        this.type = type;
+    public NativePointer(Class<T> type) {
+        try {
+            ctr = type.getDeclaredConstructor();
+            ctr.setAccessible(true);
+            this.ms = Arena.ofAuto().allocate(ValueLayout.ADDRESS);
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public T dereference() {
@@ -39,7 +45,9 @@ class Pointer<T extends NativeDataStructure> extends NativeDataStructure {
             return null;
         }
         try {
-            return type.getDeclaredConstructor(MemorySegment.class).newInstance(address);
+            T obj = ctr.newInstance();
+            obj.ms = address;
+            return obj;
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException(e);
         }
