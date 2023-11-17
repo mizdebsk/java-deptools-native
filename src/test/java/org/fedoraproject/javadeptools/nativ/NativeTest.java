@@ -67,4 +67,18 @@ public class NativeTest {
 
         assertEquals(0, C.strcmp("xy", "x" + 'y'));
     }
+
+    static interface LibM {
+        double sin(double x);
+    }
+
+    @Test
+    public void testUnsupportedLayout() throws Exception {
+        try {
+            Native.load(LibM.class);
+            fail("IllegalStateException was expected to be thrown");
+        } catch (IllegalStateException e) {
+            assertEquals("data type is not supported: double", e.getMessage());
+        }
+    }
 }
