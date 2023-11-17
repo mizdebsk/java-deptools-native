@@ -60,28 +60,24 @@ public class RpmArchiveInputStreamTest {
         ais.close();
     }
 
-    @SuppressWarnings("resource")
     @Test
     public void testInvalidRPM() throws Exception {
         Path path = getResource("invalid.rpm");
 
-        try {
-            new RpmArchiveInputStream(path);
-            fail();
+        try (var ais = new RpmArchiveInputStream(path)) {
+            fail("Expected IOException to be thrown");
         } catch (IOException e) {
             assertTrue(e.getMessage().startsWith("Unable to open "));
             assertTrue(e.getMessage().endsWith(": Not a RPM file"));
         }
     }
 
-    @SuppressWarnings("resource")
     @Test
     public void testNonexistentRPM() throws Exception {
         Path path = Paths.get("/some/non-existent/path");
 
-        try {
-            new RpmArchiveInputStream(path);
-            fail();
+        try (var ais = new RpmArchiveInputStream(path)) {
+            fail("Expected IOException to be thrown");
         } catch (IOException e) {
             assertTrue(e.getMessage().startsWith("Unable to open "));
             assertTrue(e.getMessage().endsWith(": No such file or directory"));
