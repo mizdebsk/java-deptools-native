@@ -81,4 +81,28 @@ public class NativeTest {
             assertEquals("data type is not supported: double", e.getMessage());
         }
     }
+
+    static interface LibDummy {
+        int some_dummy_func_xx(int y);
+    }
+
+    @Test
+    public void testMissingLib() throws Exception {
+        try {
+            Native.load(LibDummy.class, "this-lib-is-missing");
+            fail("RuntimeException was expected to be thrown");
+        } catch (RuntimeException e) {
+            assertEquals("Unable to dlopen native library: this-lib-is-missing", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testMissingFunct() throws Exception {
+        try {
+            Native.load(LibDummy.class);
+            fail("RuntimeException was expected to be thrown");
+        } catch (RuntimeException e) {
+            assertEquals("Native method was not bound: some_dummy_func_xx", e.getMessage());
+        }
+    }
 }

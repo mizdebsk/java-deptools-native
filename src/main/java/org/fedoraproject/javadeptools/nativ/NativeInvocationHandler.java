@@ -28,6 +28,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author Mikolaj Izdebski
@@ -130,12 +131,15 @@ class NativeInvocationHandler implements InvocationHandler {
                 argConvs[i] = DownConverter.forType(type);
                 i++;
             }
-            MemorySegment methodAddress = lookup.find(method.getName()).get();
+            Optional<MemorySegment> methodAddress = lookup.find(method.getName());
+            if (methodAddress.isEmpty()) {
+                throw new RuntimeException("Native method was not bound: " + method.getName());
+            }
             MethodHandle mh;
             if (method.getReturnType().equals(Void.TYPE)) {
-                mh = linker.downcallHandle(methodAddress, FunctionDescriptor.ofVoid(argLayouts));
+                mh = linker.downcallHandle(methodAddress.get(), FunctionDescriptor.ofVoid(argLayouts));
             } else {
-                mh = linker.downcallHandle(methodAddress,
+                mh = linker.downcallHandle(methodAddress.get(),
                         FunctionDescriptor.of(selectLayout(method.getReturnType()), argLayouts));
             }
 

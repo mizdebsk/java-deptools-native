@@ -50,10 +50,17 @@ class DynamicLinker implements SymbolLookup {
 
     public DynamicLinker(String lib) {
         handle = dlopen(lib, RTLD_LAZY);
+        if (handle == null) {
+            throw new RuntimeException("Unable to dlopen native library: " + lib);
+        }
     }
 
     @Override
     public Optional<MemorySegment> find(String name) {
-        return Optional.ofNullable(dlsym(handle, name).ms);
+        DynamicSymbol sym = dlsym(handle, name);
+        if (sym == null) {
+            return Optional.empty();
+        }
+        return Optional.of(sym.ms);
     }
 }
