@@ -105,7 +105,7 @@ class NativeInvocationHandler implements InvocationHandler {
 
     }
 
-    private Map<String, Stub> stubs = new LinkedHashMap<>();
+    private Map<Method, Stub> stubs = new LinkedHashMap<>();
 
     private static MemoryLayout selectLayout(Class<?> type) {
         return switch (type) {
@@ -141,7 +141,7 @@ class NativeInvocationHandler implements InvocationHandler {
 
             UpConverter retConv = UpConverter.forType(method.getReturnType());
             Stub stub = new Stub(mh, argConvs, retConv);
-            stubs.put(method.getName(), stub);
+            stubs.put(method, stub);
         }
     }
 
@@ -151,7 +151,7 @@ class NativeInvocationHandler implements InvocationHandler {
             if (args == null) {
                 args = new Object[0];
             }
-            Stub stub = stubs.get(method.getName());
+            Stub stub = stubs.get(method);
             if (stub == null) {
                 throw new IllegalStateException("No stub was bound for method " + method);
             }
