@@ -22,7 +22,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.apache.commons.compress.archivers.ArchiveEntry;
-import org.apache.commons.compress.archivers.ArchiveInputStream;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -38,7 +37,7 @@ public class RpmArchiveInputStreamTest {
     public void testSRPM() throws Exception {
         Path path = getResource("foo-1-1.fc21.src.rpm");
 
-        ArchiveInputStream ais = new RpmArchiveInputStream(path);
+        RpmArchiveInputStream ais = new RpmArchiveInputStream(path);
 
         ArchiveEntry entry = ais.getNextEntry();
         assertNotNull(entry);
@@ -88,7 +87,7 @@ public class RpmArchiveInputStreamTest {
     public void testLZMA() throws Exception {
         Path path = getResource("foo-1-1.fc21.x86_64.rpm");
 
-        ArchiveInputStream ais = new RpmArchiveInputStream(path);
+        RpmArchiveInputStream ais = new RpmArchiveInputStream(path);
         assertNull(ais.getNextEntry());
         ais.close();
     }
@@ -97,7 +96,7 @@ public class RpmArchiveInputStreamTest {
     public void testZSTD() throws Exception {
         Path path = getResource("testrpm-1-1.fc31.x86_64.rpm");
 
-        ArchiveInputStream ais = new RpmArchiveInputStream(path);
+        RpmArchiveInputStream ais = new RpmArchiveInputStream(path);
         assertNull(ais.getNextEntry());
         ais.close();
     }
@@ -106,7 +105,7 @@ public class RpmArchiveInputStreamTest {
     public void testNoCompression() throws Exception {
         Path path = getResource("bar-1.0.0-1.fc23.noarch.rpm");
 
-        ArchiveInputStream ais = new RpmArchiveInputStream(path);
+        RpmArchiveInputStream ais = new RpmArchiveInputStream(path);
         assertNotNull(ais.getNextEntry());
         assertNull(ais.getNextEntry());
         ais.close();

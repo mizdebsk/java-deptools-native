@@ -35,7 +35,7 @@ import org.apache.commons.compress.compressors.zstandard.ZstdCompressorInputStre
  * 
  * @author Mikolaj Izdebski
  */
-public class RpmArchiveInputStream extends ArchiveInputStream {
+public class RpmArchiveInputStream extends ArchiveInputStream<CpioArchiveEntry> {
     private final CpioArchiveInputStream delegate;
 
     public RpmArchiveInputStream(Path path) throws IOException {
@@ -49,7 +49,7 @@ public class RpmArchiveInputStream extends ArchiveInputStream {
 
     @Override
     public CpioArchiveEntry getNextEntry() throws IOException {
-        return delegate.getNextCPIOEntry();
+        return delegate.getNextEntry();
     }
 
     @Override
