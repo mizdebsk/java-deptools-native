@@ -15,13 +15,11 @@
  */
 package io.kojan.javadeptools.nativ;
 
-import java.lang.foreign.MemorySegment;
-
 /**
  * Native data structure.
  * 
  * @author Mikolaj Izdebski
  */
 public abstract class NativeDataStructure {
-    MemorySegment ms;
+    Object ms;
 }

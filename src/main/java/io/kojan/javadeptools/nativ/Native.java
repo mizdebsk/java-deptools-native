@@ -15,8 +15,8 @@
  */
 package io.kojan.javadeptools.nativ;
 
-import java.lang.foreign.Linker;
-import java.lang.foreign.SymbolLookup;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Proxy;
 
 /**
@@ -24,25 +24,41 @@ import java.lang.reflect.Proxy;
  */
 public class Native {
 
-    private static <T> T load(Class<T> type, SymbolLookup lookup, Linker linker) {
+    private static final String INVOCATION_HANDLER_CLASS = "io.kojan.javadeptools.nativ.NativeInvocationHandler";
+    private static final String NATIVE_POINTER_IMPL_CLASS = "io.kojan.javadeptools.nativ.NativePointerImpl";
+
+    public static <T> T load(Class<T> type, String lib) {
         try {
-            return type.cast(Proxy.newProxyInstance(type.getClassLoader(), new Class<?>[] { type },
-                    new NativeInvocationHandler(lookup, linker, type)));
+            Class<?> implClass = Native.class.getClassLoader().loadClass(INVOCATION_HANDLER_CLASS);
+            InvocationHandler ih = (InvocationHandler) implClass.getDeclaredConstructor(Class.class, String.class)
+                    .newInstance(type, lib);
+            return type.cast(Proxy.newProxyInstance(type.getClassLoader(), new Class<?>[] { type }, ih));
+        } catch (InvocationTargetException e) {
+            if (e.getCause() instanceof RuntimeException re) {
+                throw re;
+            }
+            throw new RuntimeException(e);
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static <T> T load(Class<T> type, String lib) {
-        Linker linker = Linker.nativeLinker();
-        SymbolLookup lookup = new DynamicLinker(lib);
-        return load(type, lookup, linker);
-
+    public static <T> T load(Class<T> type) {
+        return load(type, null);
     }
 
-    public static <T> T load(Class<T> type) {
-        Linker linker = Linker.nativeLinker();
-        SymbolLookup lookup = linker.defaultLookup();
-        return load(type, lookup, linker);
+    @SuppressWarnings("unchecked")
+    public static <T extends NativeDataStructure> NativePointer<T> newPointer(Class<T> type) {
+        try {
+            Class<?> implClass = Native.class.getClassLoader().loadClass(NATIVE_POINTER_IMPL_CLASS);
+            return (NativePointer<T>) implClass.getDeclaredConstructor(Class.class).newInstance(type);
+        } catch (InvocationTargetException e) {
+            if (e.getCause() instanceof RuntimeException re) {
+                throw re;
+            }
+            throw new RuntimeException(e);
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

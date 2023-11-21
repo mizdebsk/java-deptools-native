@@ -73,10 +73,39 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
         <version>3.11.0</version>
         <configuration>
           <release>21</release>
-          <compilerArgs>
-            <arg>--enable-preview</arg>
-          </compilerArgs>
         </configuration>
+        <executions>
+          <execution>
+            <id>default-compile</id>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+            <configuration>
+              <excludes>
+                <exclude>**/DynamicLinker.java</exclude>
+                <exclude>**/NativeInvocationHandler.java</exclude>
+                <exclude>**/NativePointerImpl.java</exclude>
+              </excludes>
+            </configuration>
+          </execution>
+          <execution>
+            <id>compile-preview</id>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+            <configuration>
+              <compilerArgs>
+                <arg>--enable-preview</arg>
+              </compilerArgs>
+              <includes>
+                <include>**/module-info.java</include>
+                <include>**/DynamicLinker.java</include>
+                <include>**/NativeInvocationHandler.java</include>
+                <include>**/NativePointerImpl.java</include>
+              </includes>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

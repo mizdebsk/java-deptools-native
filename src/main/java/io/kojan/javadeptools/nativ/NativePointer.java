@@ -15,41 +15,11 @@
  */
 package io.kojan.javadeptools.nativ;
 
-import java.lang.foreign.Arena;
-import java.lang.foreign.MemorySegment;
-import java.lang.foreign.ValueLayout;
-import java.lang.reflect.Constructor;
-
 /**
  * Native pointer to a native data structure.
  * 
  * @author Mikolaj Izdebski
  */
-public class NativePointer<T extends NativeDataStructure> extends NativeDataStructure {
-
-    private final Constructor<T> ctr;
-
-    public NativePointer(Class<T> type) {
-        try {
-            ctr = type.getDeclaredConstructor();
-            ctr.setAccessible(true);
-            this.ms = Arena.ofAuto().allocate(ValueLayout.ADDRESS);
-        } catch (ReflectiveOperationException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public T dereference() {
-        MemorySegment address = ms.get(ValueLayout.ADDRESS, 0);
-        if (address.equals(MemorySegment.NULL)) {
-            return null;
-        }
-        try {
-            T obj = ctr.newInstance();
-            obj.ms = address;
-            return obj;
-        } catch (ReflectiveOperationException e) {
-            throw new RuntimeException(e);
-        }
-    }
+public abstract class NativePointer<T extends NativeDataStructure> extends NativeDataStructure {
+    public abstract T dereference();
 }
