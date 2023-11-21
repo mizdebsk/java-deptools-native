@@ -20,6 +20,7 @@ import static io.kojan.javadeptools.rpm.Rpm.*;
 import java.io.IOException;
 import java.nio.file.Path;
 
+import io.kojan.javadeptools.nativ.Native;
 import io.kojan.javadeptools.nativ.NativePointer;
 
 /**
@@ -43,7 +44,7 @@ public class RpmPackage {
                 throw error(path, Fstrerror(fd));
             rpmtsSetVSFlags(ts, RPMVSF_NOHDRCHK | RPMVSF_NOSHA1HEADER | RPMVSF_NODSAHEADER | RPMVSF_NORSAHEADER
                     | RPMVSF_NOMD5 | RPMVSF_NODSA | RPMVSF_NORSA);
-            NativePointer<RpmHeader> ph = new NativePointer<>(RpmHeader.class);
+            NativePointer<RpmHeader> ph = Native.newPointer(RpmHeader.class);
             int rc = rpmReadPackageFile(ts, fd, null, ph);
             if (rc == RPMRC_NOTFOUND)
                 throw error(path, "Not a RPM file");

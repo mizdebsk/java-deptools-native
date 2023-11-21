@@ -72,7 +72,7 @@ class NativeInvocationHandler implements InvocationHandler {
 
         public NativeDataStructure convert(Object obj) throws Throwable {
             NativeDataStructure nativ = (NativeDataStructure) ctr.newInstance();
-            nativ.ms = (MemorySegment) obj;
+            nativ.ms = obj;
             return nativ;
         }
 
@@ -119,8 +119,10 @@ class NativeInvocationHandler implements InvocationHandler {
         };
     }
 
-    public NativeInvocationHandler(SymbolLookup lookup, Linker linker, Class<?> iface)
-            throws ReflectiveOperationException {
+    public NativeInvocationHandler(Class<?> iface, String lib) throws ReflectiveOperationException {
+
+        Linker linker = Linker.nativeLinker();
+        SymbolLookup lookup = lib != null ? new DynamicLinker(lib) : linker.defaultLookup();
 
         for (Method method : iface.getDeclaredMethods()) {
             MemoryLayout[] argLayouts = new MemoryLayout[method.getParameterCount()];
