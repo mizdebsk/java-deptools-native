@@ -83,7 +83,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
         <artifactId>maven-surefire-plugin</artifactId>
         <version>3.2.2</version>
         <configuration>
-          <argLine>--enable-preview --enable-native-access ALL-UNNAMED</argLine>
+          <argLine>--enable-preview --enable-native-access io.kojan.javadeptools.rpm</argLine>
         </configuration>
       </plugin>
     </plugins>
