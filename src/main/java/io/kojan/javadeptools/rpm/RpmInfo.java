@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.javadeptools.rpm;
+package io.kojan.javadeptools.rpm;
 
-import static org.fedoraproject.javadeptools.rpm.Rpm.*;
+import static io.kojan.javadeptools.rpm.Rpm.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;

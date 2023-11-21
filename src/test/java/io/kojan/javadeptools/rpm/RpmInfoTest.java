@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.javadeptools.rpm;
+package io.kojan.javadeptools.rpm;
 
 import static org.junit.jupiter.api.Assertions.*;
 

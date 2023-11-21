@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.javadeptools.rpm;
+package io.kojan.javadeptools.rpm;
 
-import org.fedoraproject.javadeptools.nativ.Native;
-import org.fedoraproject.javadeptools.nativ.NativeDataStructure;
-import org.fedoraproject.javadeptools.nativ.NativePointer;
+import io.kojan.javadeptools.nativ.Native;
+import io.kojan.javadeptools.nativ.NativeDataStructure;
+import io.kojan.javadeptools.nativ.NativePointer;
 
 /**
  * @author Mikolaj Izdebski
