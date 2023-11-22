@@ -46,7 +46,18 @@ public class RpmArchiveInputStream extends ArchiveInputStream<CpioArchiveEntry> 
      *                     error occurs reading package from disk
      */
     public RpmArchiveInputStream(Path path) throws IOException {
-        this.delegate = wrapFile(path);
+        this(new RpmPackage(path));
+    }
+
+    /**
+     * Opens RPM package from disk as {@link ArchiveInputStream}
+     * 
+     * @param rpm instance of RPM package to read contents of
+     * @throws IOException when given file is not a valid RPM package or when I/O
+     *                     error occurs reading package from disk
+     */
+    public RpmArchiveInputStream(RpmPackage rpm) throws IOException {
+        this.delegate = wrapFile(rpm);
     }
 
     @Override
@@ -87,10 +98,9 @@ public class RpmArchiveInputStream extends ArchiveInputStream<CpioArchiveEntry> 
         }
     }
 
-    private static CpioArchiveInputStream wrapFile(Path path) throws IOException {
-        RpmPackage rpm = new RpmPackage(path);
+    private static CpioArchiveInputStream wrapFile(RpmPackage rpm) throws IOException {
         RpmInfo info = rpm.getInfo();
-        InputStream fis = new BufferedInputStream(Files.newInputStream(path));
+        InputStream fis = new BufferedInputStream(Files.newInputStream(rpm.getPath()));
         fis.skip(rpm.getHeaderSize());
 
         InputStream cis = switch (info.getCompressionMethod()) {
@@ -101,13 +111,13 @@ public class RpmArchiveInputStream extends ArchiveInputStream<CpioArchiveEntry> 
         case "zstd" -> cis = new ZstdCompressorInputStream(fis);
         default -> {
             fis.close();
-            throw error(path, "Unsupported compression method: " + info.getCompressionMethod());
+            throw error(rpm.getPath(), "Unsupported compression method: " + info.getCompressionMethod());
         }
         };
 
         if (!info.getArchiveFormat().equals("cpio")) {
             cis.close();
-            throw error(path, "Unsupported archive format: " + info.getArchiveFormat());
+            throw error(rpm.getPath(), "Unsupported archive format: " + info.getArchiveFormat());
         }
 
         return new CpioArchiveInputStream(cis);
