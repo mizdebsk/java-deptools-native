@@ -93,30 +93,17 @@ public class RpmArchiveInputStream extends ArchiveInputStream<CpioArchiveEntry> 
         InputStream fis = new BufferedInputStream(Files.newInputStream(path));
         fis.skip(rpm.getHeaderSize());
 
-        InputStream cis;
-        switch (info.getCompressionMethod()) {
-        case "gzip":
-            if (hasGzipMagic(fis))
-                cis = new GzipCompressorInputStream(fis, true);
-            else
-                cis = fis;
-            break;
-        case "bzip2":
-            cis = new BZip2CompressorInputStream(fis);
-            break;
-        case "xz":
-            cis = new XZCompressorInputStream(fis);
-            break;
-        case "lzma":
-            cis = new LZMACompressorInputStream(fis);
-            break;
-        case "zstd":
-            cis = new ZstdCompressorInputStream(fis);
-            break;
-        default:
+        InputStream cis = switch (info.getCompressionMethod()) {
+        case "gzip" -> hasGzipMagic(fis) ? new GzipCompressorInputStream(fis, true) : fis;
+        case "bzip2" -> new BZip2CompressorInputStream(fis);
+        case "xz" -> cis = new XZCompressorInputStream(fis);
+        case "lzma" -> cis = new LZMACompressorInputStream(fis);
+        case "zstd" -> cis = new ZstdCompressorInputStream(fis);
+        default -> {
             fis.close();
             throw error(path, "Unsupported compression method: " + info.getCompressionMethod());
         }
+        };
 
         if (!info.getArchiveFormat().equals("cpio")) {
             cis.close();
