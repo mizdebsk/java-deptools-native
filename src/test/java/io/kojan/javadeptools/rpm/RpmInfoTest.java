@@ -50,6 +50,13 @@ public class RpmInfoTest {
         assertEquals(Optional.of(4242424242L), info.getEpoch());
         assertEquals("CC0", info.getLicense());
 
+        Iterator<RpmDependency> reqIt = info.getRequires().iterator();
+        assertEquals("bash", reqIt.next().toString());
+
+        Iterator<RpmDependency> provIt = info.getProvides().iterator();
+        assertEquals("rpmtags = 4242424242:1-1", provIt.next().toString());
+        assertFalse(provIt.hasNext());
+
         path = Paths.get("src/test/resources/rpm/rpmtags-1-1.noarch.rpm");
         info = new RpmPackage(path).getInfo();
 
