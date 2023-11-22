@@ -38,6 +38,13 @@ import org.apache.commons.compress.compressors.zstandard.ZstdCompressorInputStre
 public class RpmArchiveInputStream extends ArchiveInputStream<CpioArchiveEntry> {
     private final CpioArchiveInputStream delegate;
 
+    /**
+     * Opens RPM package from disk as {@link ArchiveInputStream}
+     * 
+     * @param path path to a file to read as RPM package
+     * @throws IOException when given file is not a valid RPM package or when I/O
+     *                     error occurs reading package from disk
+     */
     public RpmArchiveInputStream(Path path) throws IOException {
         this.delegate = wrapFile(path);
     }

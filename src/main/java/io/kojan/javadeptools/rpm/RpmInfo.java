@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Optional;
 
 /**
+ * Information about RPM package, based on data from RPM header.
+ * 
  * @author Mikolaj Izdebski
  */
 public class RpmInfo {
@@ -121,87 +123,182 @@ public class RpmInfo {
     private final String archiveFormat;
     private final String compressionMethod;
 
+    /**
+     * Returns license of RPM package.
+     * 
+     * @return license of RPM package
+     */
     public String getLicense() {
         return license;
     }
 
+    /**
+     * Returns source RPM from which given RPM package was built.
+     * 
+     * @return source RPM name of RPM package
+     */
     public String getSourceRPM() {
         return sourceRPM;
     }
 
+    /**
+     * Returns exclusive architectures of RPM package.
+     * 
+     * @return list of exclusive architectures of RPM package
+     */
     public List<String> getExclusiveArch() {
         return exclusiveArch;
     }
 
+    /**
+     * Returns build architectures of RPM package.
+     * 
+     * @return list of build architectures of RPM package
+     */
     public List<String> getBuildArchs() {
         return buildArchs;
     }
 
+    /**
+     * Returns name of RPM package.
+     * 
+     * @return name of RPM package
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Returns epoch of RPM package.
+     * 
+     * @return epoch of RPM package
+     */
     public Optional<Long> getEpoch() {
         return epoch;
     }
 
+    /**
+     * Returns version of RPM package.
+     * 
+     * @return version of RPM package
+     */
     public String getVersion() {
         return version;
     }
 
+    /**
+     * Returns release of RPM package.
+     * 
+     * @return release of RPM package
+     */
     public String getRelease() {
         return release;
     }
 
+    /**
+     * Returns architecture of RPM package.
+     * 
+     * @return architecture of RPM package
+     */
     public String getArch() {
         return arch;
     }
 
+    /**
+     * Determines whether RPM package is a source package (SRPM).
+     * 
+     * @return {@code true} iff the package is a source package
+     */
     public boolean isSourcePackage() {
         return sourcePackage;
     }
 
+    /**
+     * Returns list of Provides of RPM package.
+     * 
+     * @return list of Provides of RPM package
+     */
     public List<RpmDependency> getProvides() {
         return provides;
     }
 
+    /**
+     * Returns list of Requires of RPM package.
+     * 
+     * @return list of Requires of RPM package
+     */
     public List<RpmDependency> getRequires() {
         return requires;
     }
 
+    /**
+     * Returns list of Conflicts of RPM package.
+     * 
+     * @return list of Conflicts of RPM package
+     */
     public List<RpmDependency> getConflicts() {
         return conflicts;
     }
 
+    /**
+     * Returns list of Obsoletes of RPM package.
+     * 
+     * @return list of Obsoletes of RPM package
+     */
     public List<RpmDependency> getObsoletes() {
         return obsoletes;
     }
 
+    /**
+     * Returns list of Recommends of RPM package.
+     * 
+     * @return list of Recommends of RPM package
+     */
     public List<RpmDependency> getRecommends() {
         return recommends;
     }
 
+    /**
+     * Returns list of Suggests of RPM package.
+     * 
+     * @return list of Suggests of RPM package
+     */
     public List<RpmDependency> getSuggests() {
         return suggests;
     }
 
+    /**
+     * Returns list of Supplements of RPM package.
+     * 
+     * @return list of Supplements of RPM package
+     */
     public List<RpmDependency> getSupplements() {
         return supplements;
     }
 
+    /**
+     * Returns list of Enhances of RPM package.
+     * 
+     * @return list of Enhances of RPM package
+     */
     public List<RpmDependency> getEnhances() {
         return enhances;
     }
 
+    /**
+     * Returns list of OrderWithRequires of RPM package.
+     * 
+     * @return list of OrderWithRequires of RPM package
+     */
     public List<RpmDependency> getOrderWithRequires() {
         return orderWithRequires;
     }
 
-    public String getArchiveFormat() {
+    String getArchiveFormat() {
         return archiveFormat != null ? archiveFormat : "cpio";
     }
 
-    public String getCompressionMethod() {
+    String getCompressionMethod() {
         return compressionMethod != null ? compressionMethod : "gzip";
     }
 
