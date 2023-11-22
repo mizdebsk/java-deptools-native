@@ -18,6 +18,8 @@ package io.kojan.javadeptools.rpm;
 import static io.kojan.javadeptools.rpm.Rpm.*;
 
 /**
+ * RPM dependency with optional relation and version.
+ * 
  * @author Mikolaj Izdebski
  */
 public class RpmDependency {
@@ -37,18 +39,51 @@ public class RpmDependency {
         isRich = rpmdsIsRich(ds) != 0;
     }
 
+    /**
+     * Returns the name part of RPM dependency.
+     * <p>
+     * For example, for dependency {@code something >= 1.2-3}, it returns
+     * {@code something}.
+     * 
+     * @return name part of RPM dependency
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Returns the relation part of RPM dependency.
+     * <p>
+     * For example, for dependency {@code something >= 1.2-3}, it returns
+     * {@code >=}.
+     * 
+     * @return relation part of RPM dependency
+     */
     public String getSense() {
         return SENSES[(flags & 0xF) >> 1];
     }
 
+    /**
+     * Returns the version part of RPM dependency.
+     * <p>
+     * For example, for dependency {@code something >= 1.2-3}, it returns
+     * {@code 1.2-3}.
+     * 
+     * @return version part of RPM dependency
+     */
     public RpmVersion getVersion() {
         return version;
     }
 
+    /**
+     * Determines whether the RPM dependency is a rich dependency, also known as
+     * boolean dependency.
+     * 
+     * @return {@code true} iff RPM dependency is a rich (boolean) dependency
+     * @see <a href=
+     *      "https://rpm-software-management.github.io/rpm/manual/boolean_dependencies.html">RPM
+     *      documentation about boolean dependencies</a>
+     */
     public boolean isRich() {
         return isRich;
     }

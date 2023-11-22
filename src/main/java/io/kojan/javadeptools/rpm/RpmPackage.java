@@ -24,6 +24,9 @@ import io.kojan.javadeptools.nativ.Native;
 import io.kojan.javadeptools.nativ.NativePointer;
 
 /**
+ * Representation of a RPM package file that is present in the local file
+ * system.
+ * 
  * @author Mikolaj Izdebski
  */
 public class RpmPackage {
@@ -35,6 +38,13 @@ public class RpmPackage {
     private final RpmInfo info;
     private final long headerSize;
 
+    /**
+     * Read RPM package from disk.
+     * 
+     * @param path path to a file to read as RPM package
+     * @throws IOException when given file is not a RPM valid package or when I/O
+     *                     error occurs reading package from disk
+     */
     public RpmPackage(Path path) throws IOException {
         this.path = path;
         RpmTS ts = rpmtsCreate();
@@ -63,15 +73,25 @@ public class RpmPackage {
         }
     }
 
+    /**
+     * Returns path to RPM package in the file system.
+     * 
+     * @return path to RPM package
+     */
     public Path getPath() {
         return path;
     }
 
+    /**
+     * Returns detailed information about RPM package, extracted from RPM header.
+     * 
+     * @return {@link RpmInfo} for the RPM package
+     */
     public RpmInfo getInfo() {
         return info;
     }
 
-    public long getHeaderSize() {
+    long getHeaderSize() {
         return headerSize;
     }
 

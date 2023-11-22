@@ -23,18 +23,35 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * List installed RPM packages by given criteria.
+ * 
  * @author Mikolaj Izdebski
  */
 public class RpmQuery {
+
+    private RpmQuery() {}
 
     static {
         rpmReadConfigFiles(null, null);
     }
 
+    /**
+     * List RPM packages installed in the system that provide given file.
+     * 
+     * @param path provided file to query packages
+     * @return list of packages that provide given file
+     */
     public static List<RpmInfo> byFile(Path path) {
         return byFile(path, null);
     }
 
+    /**
+     * List RPM packages installed in a chroot that provide given file.
+     * 
+     * @param path provided file to query packages
+     * @param root path to chroot in which packages are installed
+     * @return list of packages that provide given file
+     */
     public static List<RpmInfo> byFile(Path path, Path root) {
         RpmTS ts = rpmtsCreate();
         try {

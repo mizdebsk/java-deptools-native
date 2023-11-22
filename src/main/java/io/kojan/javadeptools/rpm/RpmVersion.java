@@ -18,6 +18,8 @@ package io.kojan.javadeptools.rpm;
 import static io.kojan.javadeptools.rpm.Rpm.*;
 
 /**
+ * RPM compound version (EVR) that consists of epoch, version and release.
+ * 
  * @author Mikolaj Izdebski
  */
 public class RpmVersion {
@@ -26,6 +28,11 @@ public class RpmVersion {
     private final String version;
     private final String release;
 
+    /**
+     * Constructs {@link RpmVersion} by parsing RPM EVR string.
+     * 
+     * @param evr RPM EVR (epoch-version-release) string
+     */
     public RpmVersion(String evr) {
         this.evr = evr;
         RpmEVR v = rpmverParse(evr);
@@ -35,14 +42,29 @@ public class RpmVersion {
         rpmverFree(v);
     }
 
+    /**
+     * Returns epoch part of RPM version.
+     * 
+     * @return epoch part of RPM version
+     */
     public Long getEpoch() {
         return epoch;
     }
 
+    /**
+     * Returns version part of RPM version.
+     * 
+     * @return version part of RPM version
+     */
     public String getVersion() {
         return version;
     }
 
+    /**
+     * Returns release part of RPM version.
+     * 
+     * @return release part of RPM version
+     */
     public String getRelease() {
         return release;
     }
