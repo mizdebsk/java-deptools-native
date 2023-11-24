@@ -77,6 +77,7 @@ public class RpmInfoTest {
         assertEquals("1", info.getVersion());
         assertEquals("1.fc21", info.getRelease());
         assertEquals("x86_64", info.getArch());
+        assertEquals("foo-1-1.fc21.x86_64", info.toString());
 
         Iterator<RpmDependency> prov = info.getProvides().iterator();
         assertEquals("foo = 1-1.fc21", prov.next().toString());
@@ -99,6 +100,7 @@ public class RpmInfoTest {
         assertEquals("1", info.getVersion());
         assertEquals("1.fc21", info.getRelease());
         assertEquals("x86_64", info.getArch());
+        assertEquals("foo-1-1.fc21.src", info.toString());
 
         Iterator<RpmDependency> prov = info.getProvides().iterator();
         assertFalse(prov.hasNext());

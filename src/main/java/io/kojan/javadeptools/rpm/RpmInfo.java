@@ -96,7 +96,7 @@ public class RpmInfo {
         if (epoch.isPresent())
             sb.append(epoch.get() + ":");
         sb.append(version).append('-').append(release);
-        sb.append('.').append(arch);
+        sb.append('.').append(isSourcePackage() ? "src" : arch);
         nevra = sb.toString();
     }
 
@@ -304,7 +304,7 @@ public class RpmInfo {
 
     @Override
     public String toString() {
-        return nevra.toString();
+        return nevra;
     }
 
     @Override
@@ -314,6 +314,6 @@ public class RpmInfo {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof RpmInfo && ((RpmInfo) obj).nevra.equals(nevra);
+        return obj != null && obj instanceof RpmInfo ri && ri.nevra.equals(nevra);
     }
 }
