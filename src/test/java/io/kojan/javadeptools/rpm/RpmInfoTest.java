@@ -47,6 +47,7 @@ public class RpmInfoTest {
         assertFalse(buildArchIt.hasNext());
 
         assertEquals(null, info.getSourceRPM());
+        assertEquals(null, info.getSourceName());
         assertEquals(Optional.of(4242424242L), info.getEpoch());
         assertEquals("CC0", info.getLicense());
 
@@ -62,6 +63,7 @@ public class RpmInfoTest {
 
         assertEquals(Optional.of(4242424242L), info.getEpoch());
         assertEquals("rpmtags-1-1.src.rpm", info.getSourceRPM());
+        assertEquals("rpmtags", info.getSourceName());
         assertEquals("CC0", info.getLicense());
     }
 
@@ -72,6 +74,7 @@ public class RpmInfoTest {
 
         assertFalse(info.isSourcePackage());
         assertEquals("foo-1-1.fc21.src.rpm", info.getSourceRPM());
+        assertEquals("foo", info.getSourceName());
         assertEquals("foo", info.getName());
         assertEquals(Optional.empty(), info.getEpoch());
         assertEquals("1", info.getVersion());
@@ -95,6 +98,7 @@ public class RpmInfoTest {
 
         assertTrue(info.isSourcePackage());
         assertEquals(null, info.getSourceRPM());
+        assertEquals(null, info.getSourceName());
         assertEquals("foo", info.getName());
         assertEquals(Optional.empty(), info.getEpoch());
         assertEquals("1", info.getVersion());

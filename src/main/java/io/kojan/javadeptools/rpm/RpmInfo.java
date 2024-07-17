@@ -135,10 +135,23 @@ public class RpmInfo {
     /**
      * Returns source RPM from which given RPM package was built.
      * 
-     * @return source RPM name of RPM package
+     * @return source RPM of RPM package
      */
     public String getSourceRPM() {
         return sourceRPM;
+    }
+
+    /**
+     * Returns name part of source RPM from which given RPM package was built.
+     * 
+     * @return source RPM name of RPM package
+     */
+    public String getSourceName() {
+        if (sourceRPM == null) {
+            return null;
+        }
+        String nameVersion = sourceRPM.substring(0, sourceRPM.lastIndexOf('-'));
+        return nameVersion.substring(0, nameVersion.lastIndexOf('-'));
     }
 
     /**
