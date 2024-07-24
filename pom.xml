@@ -60,7 +60,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
           <artifactId>maven-javadoc-plugin</artifactId>
           <version>3.6.3</version>
           <configuration>
-            <release>21</release>
+            <release>22</release>
             <additionalOptions>--enable-preview</additionalOptions>
           </configuration>
         </plugin>
@@ -72,48 +72,13 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.13.0</version>
         <configuration>
-          <release>21</release>
+          <release>22</release>
         </configuration>
-        <executions>
-          <execution>
-            <id>default-compile</id>
-            <goals>
-              <goal>compile</goal>
-            </goals>
-            <configuration>
-              <excludes>
-                <exclude>**/DynamicLinker.java</exclude>
-                <exclude>**/NativeInvocationHandler.java</exclude>
-                <exclude>**/NativePointerImpl.java</exclude>
-              </excludes>
-            </configuration>
-          </execution>
-          <execution>
-            <id>compile-preview</id>
-            <goals>
-              <goal>compile</goal>
-            </goals>
-            <configuration>
-              <compilerArgs>
-                <arg>--enable-preview</arg>
-              </compilerArgs>
-              <includes>
-                <include>**/module-info.java</include>
-                <include>**/DynamicLinker.java</include>
-                <include>**/NativeInvocationHandler.java</include>
-                <include>**/NativePointerImpl.java</include>
-              </includes>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>3.2.5</version>
-        <configuration>
-          <argLine>--enable-preview --enable-native-access io.kojan.javadeptools.rpm</argLine>
-        </configuration>
       </plugin>
     </plugins>
   </build>
