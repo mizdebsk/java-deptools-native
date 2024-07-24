@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 2020-2023 Red Hat, Inc.
+ * Copyright (c) 2020-2024 Red Hat, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+
+import io.kojan.javadeptools.rpm.Rpm.RpmFI;
 
 /**
  * Information about RPM package, based on data from RPM header.
@@ -68,6 +70,19 @@ public class RpmInfo {
         return list;
     }
 
+    private static List<RpmFile> fileList(RpmHeader h) {
+        List<RpmFile> list = new ArrayList<>();
+        RpmStrPool pool = rpmstrPoolCreate();
+        RpmFiles files = rpmfilesNew(pool, h, 0, RPMFI_KEEPHEADER);
+        RpmFI fi = rpmfilesIter(files, RPMFI_ITER_FWD);
+        while (rpmfiNext(fi) >= 0) {
+            list.add(new RpmFile(fi));
+        }
+        rpmfilesFree(files);
+        rpmstrPoolFree(pool);
+        return list;
+    }
+
     RpmInfo(RpmHeader h) {
         name = headerGetString(h, RPMTAG_NAME);
         epoch = headerGetOptionalNumber(h, RPMTAG_EPOCH);
@@ -87,6 +102,7 @@ public class RpmInfo {
         supplements = dependencyList(h, RPMTAG_SUPPLEMENTNAME);
         enhances = dependencyList(h, RPMTAG_ENHANCENAME);
         orderWithRequires = dependencyList(h, RPMTAG_ORDERNAME);
+        files = fileList(h);
         archiveFormat = headerGetString(h, RPMTAG_PAYLOADFORMAT);
         compressionMethod = headerGetString(h, RPMTAG_PAYLOADCOMPRESSOR);
         sourcePackage = headerGetNumber(h, RPMTAG_SOURCEPACKAGE) != 0;
@@ -120,6 +136,7 @@ public class RpmInfo {
     private final List<RpmDependency> supplements;
     private final List<RpmDependency> enhances;
     private final List<RpmDependency> orderWithRequires;
+    private final List<RpmFile> files;
     private final String archiveFormat;
     private final String compressionMethod;
 
@@ -309,6 +326,15 @@ public class RpmInfo {
      */
     public List<RpmDependency> getOrderWithRequires() {
         return orderWithRequires;
+    }
+
+    /**
+     * Returns list of files of RPM package.
+     * 
+     * @return list of files of RPM package
+     */
+    public List<RpmFile> getFiles() {
+        return files;
     }
 
     String getArchiveFormat() {
