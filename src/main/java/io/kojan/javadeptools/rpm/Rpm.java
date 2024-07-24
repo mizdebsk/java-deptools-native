@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 2012-2023 Red Hat, Inc.
+ * Copyright (c) 2012-2024 Red Hat, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,6 +66,9 @@ final class Rpm {
 
     static final int RPMDBI_INSTFILENAMES = 5040;
 
+    static final int RPMFI_KEEPHEADER = 1 << 0;
+    static final int RPMFI_ITER_FWD = 0;
+
     static class RpmDS extends NativeDataStructure {}
     static class RpmEVR extends NativeDataStructure {}
     static class RpmFD extends NativeDataStructure {}
@@ -73,6 +76,9 @@ final class Rpm {
     static class RpmMI extends NativeDataStructure {}
     static class RpmTD extends NativeDataStructure {}
     static class RpmTS extends NativeDataStructure {}
+    static class RpmStrPool extends NativeDataStructure {}
+    static class RpmFiles extends NativeDataStructure {}
+    static class RpmFI extends NativeDataStructure {}
 
     private static interface RpmLib {
         int rpmReadConfigFiles(String file, String target);
@@ -102,6 +108,15 @@ final class Rpm {
         String rpmdsEVR(RpmDS ds);
         int rpmdsFlags(RpmDS ds);
         int rpmdsIsRich(RpmDS ds);
+        RpmStrPool rpmstrPoolCreate();
+        void rpmstrPoolFree(RpmStrPool pool);
+        RpmFiles rpmfilesNew(RpmStrPool pool, RpmHeader h, int tagN, int flags);
+        void rpmfilesFree(RpmFiles fi);
+        RpmFI rpmfilesIter(RpmFiles files, int itype);
+        void rpmfiFree(RpmFI fi);
+        int rpmfiNext(RpmFI fi);
+        String rpmfiBN(RpmFI fi);
+        String rpmfiDN(RpmFI fi);
     }
 
     private static interface RpmIO {
@@ -296,4 +311,39 @@ final class Rpm {
         return Lazy.RPM.rpmdsIsRich(ds);
     }
 
+    static final RpmStrPool rpmstrPoolCreate() {
+        return Lazy.RPM.rpmstrPoolCreate();
+    }
+
+    static final void rpmstrPoolFree(RpmStrPool pool) {
+        Lazy.RPM.rpmstrPoolFree(pool);
+    }
+
+    static final RpmFiles rpmfilesNew(RpmStrPool pool, RpmHeader h, int tagN, int flags) {
+        return Lazy.RPM.rpmfilesNew(pool, h, tagN, flags);
+    }
+
+    static final void rpmfilesFree(RpmFiles fi) {
+        Lazy.RPM.rpmfilesFree(fi);
+    }
+
+    static final RpmFI rpmfilesIter(RpmFiles files, int itype) {
+        return Lazy.RPM.rpmfilesIter(files, itype);
+    }
+
+    static final void rpmfiFree(RpmFI fi) {
+        Lazy.RPM.rpmfiFree(fi);
+    }
+
+    static final int rpmfiNext(RpmFI fi) {
+        return Lazy.RPM.rpmfiNext(fi);
+    }
+
+    static final String rpmfiBN(RpmFI fi) {
+        return Lazy.RPM.rpmfiBN(fi);
+    }
+
+    static final String rpmfiDN(RpmFI fi) {
+        return Lazy.RPM.rpmfiDN(fi);
+    }
 }
