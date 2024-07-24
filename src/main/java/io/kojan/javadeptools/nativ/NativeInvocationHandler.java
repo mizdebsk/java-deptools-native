@@ -41,7 +41,7 @@ class NativeInvocationHandler implements InvocationHandler {
         static DownConverter forType(Class<?> type) {
             return switch (type) {
             case Class<?> cls when String.class.isAssignableFrom(cls) ->
-                (obj, arena) -> arena.allocateUtf8String((String) obj);
+                (obj, arena) -> arena.allocateFrom((String) obj);
             case Class<?> cls when NativeDataStructure.class.isAssignableFrom(cls) ->
                 (obj, arena) -> ((NativeDataStructure) obj).ms;
             default -> (obj, arena) -> obj;
@@ -55,7 +55,7 @@ class NativeInvocationHandler implements InvocationHandler {
         static UpConverter forType(Class<?> type) throws ReflectiveOperationException {
             return switch (type) {
             case Class<?> cls when String.class.isAssignableFrom(cls) ->
-                ((UpConverter) ms -> ((MemorySegment) ms).getUtf8String(0));
+                ((UpConverter) ms -> ((MemorySegment) ms).getString(0));
             case Class<?> cls when NativeDataStructure.class.isAssignableFrom(cls) -> new NativeUpConverter(cls);
             default -> ((UpConverter) obj -> obj);
             };
@@ -111,7 +111,7 @@ class NativeInvocationHandler implements InvocationHandler {
     private static MemoryLayout selectLayout(Class<?> type) {
         return switch (type) {
         case Class<?> cls when String.class.isAssignableFrom(cls) ->
-            ValueLayout.ADDRESS.withTargetLayout(MemoryLayout.sequenceLayout(ValueLayout.JAVA_BYTE));
+            ValueLayout.ADDRESS.withTargetLayout(MemoryLayout.sequenceLayout(Long.MAX_VALUE, ValueLayout.JAVA_BYTE));
         case Class<?> cls when NativeDataStructure.class.isAssignableFrom(cls) -> ValueLayout.ADDRESS;
         case Class<?> cls when long.class.isAssignableFrom(cls) -> ValueLayout.JAVA_LONG;
         case Class<?> cls when int.class.isAssignableFrom(cls) -> ValueLayout.JAVA_INT;
