@@ -136,10 +136,6 @@ final class Rpm {
         return result;
     }
 
-    private static class Lazy {
-        static final RpmLib RPM = loadAny(RpmLib.class, "librpm.so.10", "librpm.so.9");
-    }
-
     private static class LazyIO {
         static final RpmIO RPMIO = loadAny(RpmIO.class, "librpmio.so.10", "librpmio.so.9");
     }
@@ -162,6 +158,34 @@ final class Rpm {
 
     static final String Fstrerror(RpmFD fd) {
         return LazyIO.RPMIO.Fstrerror(fd);
+    }
+
+    static final RpmEVR rpmverParse(String evr) {
+        return LazyIO.RPMIO.rpmverParse(evr);
+    }
+
+    static final void rpmverFree(RpmEVR rv) {
+        LazyIO.RPMIO.rpmverFree(rv);
+    }
+
+    static final long rpmverEVal(RpmEVR rv) {
+        return LazyIO.RPMIO.rpmverEVal(rv);
+    }
+
+    static final String rpmverE(RpmEVR rv) {
+        return LazyIO.RPMIO.rpmverE(rv);
+    }
+
+    static final String rpmverV(RpmEVR rv) {
+        return LazyIO.RPMIO.rpmverV(rv);
+    }
+
+    static final String rpmverR(RpmEVR rv) {
+        return LazyIO.RPMIO.rpmverR(rv);
+    }
+
+    private static class Lazy {
+        static final RpmLib RPM = loadAny(RpmLib.class, "librpm.so.10", "librpm.so.9");
     }
 
     static final int rpmReadConfigFiles(String file, String target) {
@@ -272,27 +296,4 @@ final class Rpm {
         return Lazy.RPM.rpmdsIsRich(ds);
     }
 
-    static final RpmEVR rpmverParse(String evr) {
-        return LazyIO.RPMIO.rpmverParse(evr);
-    }
-
-    static final void rpmverFree(RpmEVR rv) {
-        LazyIO.RPMIO.rpmverFree(rv);
-    }
-
-    static final long rpmverEVal(RpmEVR rv) {
-        return LazyIO.RPMIO.rpmverEVal(rv);
-    }
-
-    static final String rpmverE(RpmEVR rv) {
-        return LazyIO.RPMIO.rpmverE(rv);
-    }
-
-    static final String rpmverV(RpmEVR rv) {
-        return LazyIO.RPMIO.rpmverV(rv);
-    }
-
-    static final String rpmverR(RpmEVR rv) {
-        return LazyIO.RPMIO.rpmverR(rv);
-    }
 }
