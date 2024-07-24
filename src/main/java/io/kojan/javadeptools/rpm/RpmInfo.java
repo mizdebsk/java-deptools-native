@@ -142,11 +142,15 @@ public class RpmInfo {
     }
 
     /**
-     * Returns name part of source RPM from which given RPM package was built.
+     * Returns name part of the source RPM from which given RPM package was built.
+     * For source packages, return name of the source package itself.
      * 
      * @return source RPM name of RPM package
      */
     public String getSourceName() {
+        if (isSourcePackage()) {
+            return getName();
+        }
         if (sourceRPM == null) {
             return null;
         }
