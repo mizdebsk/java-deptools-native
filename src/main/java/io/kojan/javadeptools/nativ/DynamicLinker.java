@@ -61,6 +61,6 @@ class DynamicLinker implements SymbolLookup {
         if (sym == null) {
             return Optional.empty();
         }
-        return Optional.of((MemorySegment)sym.ms);
+        return Optional.of(sym.ms);
     }
 }

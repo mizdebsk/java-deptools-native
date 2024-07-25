@@ -31,8 +31,4 @@ public class Native {
     public static <T> T load(Class<T> type) {
         return load(type, null);
     }
-
-    public static <T extends NativeDataStructure> NativePointer<T> newPointer(Class<T> type) {
-        return (NativePointer<T>) new NativePointerImpl<>(type);
-    }
 }

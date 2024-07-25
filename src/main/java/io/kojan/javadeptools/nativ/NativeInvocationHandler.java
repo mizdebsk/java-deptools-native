@@ -76,7 +76,7 @@ class NativeInvocationHandler implements InvocationHandler {
 
         public NativeDataStructure convert(Object obj) throws Throwable {
             NativeDataStructure nativ = (NativeDataStructure) ctr.newInstance();
-            nativ.ms = obj;
+            nativ.ms = (MemorySegment) obj;
             return nativ;
         }
 
