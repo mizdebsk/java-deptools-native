@@ -52,7 +52,7 @@ class NativeInvocationHandler implements InvocationHandler {
     private static interface UpConverter {
         Object convert(Object obj) throws Throwable;
 
-        static UpConverter forType(Class<?> type) throws ReflectiveOperationException {
+        static UpConverter forType(Class<?> type) {
             return switch (type) {
             case Class<?> cls when String.class.isAssignableFrom(cls) ->
                 ((UpConverter) ms -> ((MemorySegment) ms).getString(0));
@@ -65,8 +65,12 @@ class NativeInvocationHandler implements InvocationHandler {
     private static class NativeUpConverter implements UpConverter {
         private Constructor<?> ctr;
 
-        NativeUpConverter(Class<?> type) throws ReflectiveOperationException {
-            ctr = type.getDeclaredConstructor();
+        NativeUpConverter(Class<?> type) {
+            try {
+                ctr = type.getDeclaredConstructor();
+            } catch (NoSuchMethodException | SecurityException e) {
+                throw new RuntimeException(e);
+            }
             ctr.setAccessible(true);
         }
 
@@ -119,7 +123,7 @@ class NativeInvocationHandler implements InvocationHandler {
         };
     }
 
-    public NativeInvocationHandler(Class<?> iface, String lib) throws ReflectiveOperationException {
+    public NativeInvocationHandler(Class<?> iface, String lib) {
 
         Linker linker = Linker.nativeLinker();
         SymbolLookup lookup = lib != null ? new DynamicLinker(lib) : linker.defaultLookup();

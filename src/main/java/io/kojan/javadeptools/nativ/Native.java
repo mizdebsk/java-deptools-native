@@ -16,7 +16,6 @@
 package io.kojan.javadeptools.nativ;
 
 import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Proxy;
 
 /**
@@ -24,41 +23,16 @@ import java.lang.reflect.Proxy;
  */
 public class Native {
 
-    private static final String INVOCATION_HANDLER_CLASS = "io.kojan.javadeptools.nativ.NativeInvocationHandler";
-    private static final String NATIVE_POINTER_IMPL_CLASS = "io.kojan.javadeptools.nativ.NativePointerImpl";
-
     public static <T> T load(Class<T> type, String lib) {
-        try {
-            Class<?> implClass = Native.class.getClassLoader().loadClass(INVOCATION_HANDLER_CLASS);
-            InvocationHandler ih = (InvocationHandler) implClass.getDeclaredConstructor(Class.class, String.class)
-                    .newInstance(type, lib);
-            return type.cast(Proxy.newProxyInstance(type.getClassLoader(), new Class<?>[] { type }, ih));
-        } catch (InvocationTargetException e) {
-            if (e.getCause() instanceof RuntimeException re) {
-                throw re;
-            }
-            throw new RuntimeException(e);
-        } catch (ReflectiveOperationException e) {
-            throw new RuntimeException(e);
-        }
+        InvocationHandler ih = new NativeInvocationHandler(type, lib);
+        return type.cast(Proxy.newProxyInstance(type.getClassLoader(), new Class<?>[] { type }, ih));
     }
 
     public static <T> T load(Class<T> type) {
         return load(type, null);
     }
 
-    @SuppressWarnings("unchecked")
     public static <T extends NativeDataStructure> NativePointer<T> newPointer(Class<T> type) {
-        try {
-            Class<?> implClass = Native.class.getClassLoader().loadClass(NATIVE_POINTER_IMPL_CLASS);
-            return (NativePointer<T>) implClass.getDeclaredConstructor(Class.class).newInstance(type);
-        } catch (InvocationTargetException e) {
-            if (e.getCause() instanceof RuntimeException re) {
-                throw re;
-            }
-            throw new RuntimeException(e);
-        } catch (ReflectiveOperationException e) {
-            throw new RuntimeException(e);
-        }
+        return (NativePointer<T>) new NativePointerImpl<>(type);
     }
 }
