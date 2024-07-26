@@ -34,6 +34,8 @@ class DynamicLinker implements SymbolLookup {
 
     private static final int RTLD_LAZY = 1;
 
+    private static final DynamicLibrary RTLD_DEFAULT = null;
+
     private static class Lazy {
         static final LibDL DL = Native.load(LibDL.class);
     }
@@ -47,6 +49,10 @@ class DynamicLinker implements SymbolLookup {
     }
 
     private final DynamicLibrary handle;
+
+    public DynamicLinker() {
+        handle = RTLD_DEFAULT;
+    }
 
     public DynamicLinker(String lib) {
         handle = dlopen(lib, RTLD_LAZY);

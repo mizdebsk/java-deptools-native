@@ -28,6 +28,20 @@ import org.junit.jupiter.api.Test;
 public class DynamicLinkerTest {
 
     @Test
+    public void testDefault() throws Exception {
+        DynamicLinker dl = new DynamicLinker();
+
+        // Basic libc functions should be available in default linker
+        assertTrue(dl.find("qsort").isPresent());
+
+        // Likewise libjvm functions
+        assertTrue(dl.find("JNI_CreateJavaVM").isPresent());
+
+        // libcurl is not part of JVM process and won't be bound unless dlopen-ed first
+        assertFalse(dl.find("curl_easy_init").isPresent());
+    }
+
+    @Test
     public void testCurl() throws Exception {
         DynamicLinker dl = new DynamicLinker("libcurl.so.4");
 
