@@ -50,6 +50,12 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
       <version>5.10.3</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.graalvm.sdk</groupId>
+      <artifactId>nativeimage</artifactId>
+      <version>24.0.2</version>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
 
   <build>

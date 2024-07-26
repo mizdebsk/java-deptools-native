@@ -26,6 +26,7 @@
  */
 module io.kojan.javadeptools.rpm {
     requires transitive org.apache.commons.compress;
+    requires static org.graalvm.nativeimage;
 
     exports io.kojan.javadeptools.rpm;
 }
