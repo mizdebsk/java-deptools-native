@@ -15,6 +15,8 @@
  */
 package io.kojan.javadeptools.nativ;
 
+import java.lang.foreign.Linker;
+import java.lang.foreign.SymbolLookup;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 
@@ -23,12 +25,31 @@ import java.lang.reflect.Proxy;
  */
 public class Native {
 
-    public static <T> T load(Class<T> type, String lib) {
-        InvocationHandler ih = new NativeInvocationHandler(type, lib);
+    protected static final Linker LINKER = Linker.nativeLinker();
+
+    public static <T> T load(Class<T> type, SymbolLookup lookup) {
+        InvocationHandler ih = new NativeInvocationHandler(type, lookup);
         return type.cast(Proxy.newProxyInstance(type.getClassLoader(), new Class<?>[] { type }, ih));
     }
 
-    public static <T> T load(Class<T> type) {
-        return load(type, null);
+    public static SymbolLookup jvmDefaultLookup() {
+        return LINKER.defaultLookup();
+    }
+
+    public static SymbolLookup dlsymDefaultLookup() {
+        return new DynamicLinker();
+    }
+
+    public static SymbolLookup dlopenLookup(String lib0, String... libs) {
+        try {
+            return new DynamicLinker(lib0);
+        } catch (RuntimeException e0) {
+            for (String lib : libs) {
+                try {
+                    return new DynamicLinker(lib);
+                } catch (RuntimeException e) {}
+            }
+            throw e0;
+        }
     }
 }

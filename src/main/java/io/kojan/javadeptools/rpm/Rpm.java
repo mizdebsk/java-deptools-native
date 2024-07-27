@@ -15,8 +15,6 @@
  */
 package io.kojan.javadeptools.rpm;
 
-import java.util.List;
-
 import io.kojan.javadeptools.nativ.Native;
 import io.kojan.javadeptools.nativ.NativeObject;
 import io.kojan.javadeptools.nativ.NativePointer;
@@ -133,26 +131,8 @@ final class Rpm {
         String rpmverR(RpmEVR rv);
     }
 
-    private static <T> T loadAny(Class<T> type, String... libs) {
-        T result = null;
-        Exception cause = null;
-        for (String lib : libs) {
-            try {
-                result = Native.load(type, lib);
-            } catch (Exception ex) {
-                cause = ex;
-                continue;
-            }
-            break;
-        }
-        if (result == null) {
-            throw new RuntimeException("None of the libraries " + List.of(libs) + " found", cause);
-        }
-        return result;
-    }
-
     private static class LazyIO {
-        static final RpmIO RPMIO = loadAny(RpmIO.class, "librpmio.so.10", "librpmio.so.9");
+        static final RpmIO RPMIO = Native.load(RpmIO.class, Native.dlopenLookup("librpmio.so.10", "librpmio.so.9"));
     }
 
     static final RpmFD Fopen(String path, String mode) {
@@ -200,7 +180,7 @@ final class Rpm {
     }
 
     private static class Lazy {
-        static final RpmLib RPM = loadAny(RpmLib.class, "librpm.so.10", "librpm.so.9");
+        static final RpmLib RPM = Native.load(RpmLib.class, Native.dlopenLookup("librpm.so.10", "librpm.so.9"));
     }
 
     static final int rpmReadConfigFiles(String file, String target) {

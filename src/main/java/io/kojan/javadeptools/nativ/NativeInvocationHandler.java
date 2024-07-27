@@ -123,10 +123,9 @@ class NativeInvocationHandler implements InvocationHandler {
         };
     }
 
-    public NativeInvocationHandler(Class<?> iface, String lib) {
+    public NativeInvocationHandler(Class<?> iface, SymbolLookup lookup) {
 
-        Linker linker = Linker.nativeLinker();
-        SymbolLookup lookup = lib != null ? new DynamicLinker(lib) : linker.defaultLookup();
+        Linker linker = Native.LINKER;
 
         for (Method method : iface.getDeclaredMethods()) {
             MemoryLayout[] argLayouts = new MemoryLayout[method.getParameterCount()];

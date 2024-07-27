@@ -30,7 +30,7 @@ public class NativeTest {
 
     @Test
     public void testSchedYield() throws Exception {
-        LibRt rt = Native.load(LibRt.class, "librt.so.1");
+        LibRt rt = Native.load(LibRt.class, Native.dlopenLookup("librt.so.1"));
         int ret = rt.sched_yield();
         assertEquals(0, ret);
     }
@@ -50,7 +50,7 @@ public class NativeTest {
 
     @Test
     public void testStringOps() throws Exception {
-        LibC C = Native.load(LibC.class);
+        LibC C = Native.load(LibC.class, Native.jvmDefaultLookup());
 
         Str s1 = C.strdup("hello");
         assertEquals(0, C.strcmp(s1, "hello"));
@@ -75,7 +75,7 @@ public class NativeTest {
     @Test
     public void testUnsupportedLayout() throws Exception {
         try {
-            Native.load(LibM.class);
+            Native.load(LibM.class, Native.jvmDefaultLookup());
             fail("IllegalStateException was expected to be thrown");
         } catch (IllegalStateException e) {
             assertEquals("data type is not supported: double", e.getMessage());
@@ -89,7 +89,7 @@ public class NativeTest {
     @Test
     public void testMissingLib() throws Exception {
         try {
-            Native.load(LibDummy.class, "this-lib-is-missing");
+            Native.dlopenLookup("this-lib-is-missing");
             fail("RuntimeException was expected to be thrown");
         } catch (RuntimeException e) {
             assertEquals("Unable to dlopen native library: this-lib-is-missing", e.getMessage());
@@ -99,7 +99,7 @@ public class NativeTest {
     @Test
     public void testMissingFunct() throws Exception {
         try {
-            Native.load(LibDummy.class);
+            Native.load(LibDummy.class, Native.dlsymDefaultLookup());
             fail("RuntimeException was expected to be thrown");
         } catch (RuntimeException e) {
             assertEquals("Native method was not bound: some_dummy_func_xx", e.getMessage());
