@@ -25,6 +25,8 @@ import java.lang.reflect.Proxy;
  */
 public class Native {
 
+    public static final boolean USE_DYNAMIC_GLUE = true;
+
     protected static final Linker LINKER = Linker.nativeLinker();
 
     public static <T> T load(Class<T> type, SymbolLookup lookup) {

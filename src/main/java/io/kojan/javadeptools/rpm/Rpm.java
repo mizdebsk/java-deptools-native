@@ -15,6 +15,8 @@
  */
 package io.kojan.javadeptools.rpm;
 
+import java.lang.foreign.SymbolLookup;
+
 import io.kojan.javadeptools.nativ.Native;
 import io.kojan.javadeptools.nativ.NativeObject;
 import io.kojan.javadeptools.nativ.NativePointer;
@@ -132,7 +134,8 @@ final class Rpm {
     }
 
     private static class LazyIO {
-        static final RpmIO RPMIO = Native.load(RpmIO.class, Native.dlopenLookup("librpmio.so.10", "librpmio.so.9"));
+        private static final SymbolLookup LOOKUP = Native.dlopenLookup("librpmio.so.10", "librpmio.so.9");
+        static final RpmIO RPMIO = Native.USE_DYNAMIC_GLUE ? Native.load(RpmIO.class, LOOKUP) : new RpmIO_Impl(LOOKUP);
     }
 
     static final RpmFD Fopen(String path, String mode) {
@@ -180,7 +183,8 @@ final class Rpm {
     }
 
     private static class Lazy {
-        static final RpmLib RPM = Native.load(RpmLib.class, Native.dlopenLookup("librpm.so.10", "librpm.so.9"));
+        private static final SymbolLookup LOOKUP = Native.dlopenLookup("librpm.so.10", "librpm.so.9");
+        static final RpmLib RPM = Native.USE_DYNAMIC_GLUE ? Native.load(RpmLib.class, LOOKUP) : new RpmLib_Impl(LOOKUP);
     }
 
     static final int rpmReadConfigFiles(String file, String target) {
