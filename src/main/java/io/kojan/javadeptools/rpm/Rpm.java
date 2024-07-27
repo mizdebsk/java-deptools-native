@@ -18,7 +18,7 @@ package io.kojan.javadeptools.rpm;
 import java.util.List;
 
 import io.kojan.javadeptools.nativ.Native;
-import io.kojan.javadeptools.nativ.NativeDataStructure;
+import io.kojan.javadeptools.nativ.NativeObject;
 import io.kojan.javadeptools.nativ.NativePointer;
 
 /**
@@ -69,16 +69,16 @@ final class Rpm {
     static final int RPMFI_KEEPHEADER = 1 << 0;
     static final int RPMFI_ITER_FWD = 0;
 
-    static class RpmDS extends NativeDataStructure {}
-    static class RpmEVR extends NativeDataStructure {}
-    static class RpmFD extends NativeDataStructure {}
-    static class RpmHeader extends NativeDataStructure {}
-    static class RpmMI extends NativeDataStructure {}
-    static class RpmTD extends NativeDataStructure {}
-    static class RpmTS extends NativeDataStructure {}
-    static class RpmStrPool extends NativeDataStructure {}
-    static class RpmFiles extends NativeDataStructure {}
-    static class RpmFI extends NativeDataStructure {}
+    static class RpmDS extends NativeObject {}
+    static class RpmEVR extends NativeObject {}
+    static class RpmFD extends NativeObject {}
+    static class RpmHeader extends NativeObject {}
+    static class RpmMI extends NativeObject {}
+    static class RpmTD extends NativeObject {}
+    static class RpmTS extends NativeObject {}
+    static class RpmStrPool extends NativeObject {}
+    static class RpmFiles extends NativeObject {}
+    static class RpmFI extends NativeObject {}
 
     private static interface RpmLib {
         int rpmReadConfigFiles(String file, String target);
@@ -89,7 +89,7 @@ final class Rpm {
         void rpmtsSetVSFlags(RpmTS ts, int vsflags);
         RpmHeader rpmdbNextIterator(RpmMI mi);
         void rpmdbFreeIterator(RpmMI mi);
-        int rpmReadPackageFile(RpmTS ts, RpmFD fd, String fn, NativePointer<RpmHeader> hdrp);
+        int rpmReadPackageFile(RpmTS ts, RpmFD fd, String fn, NativePointer hdrp);
         void headerFree(RpmHeader h);
         int headerGet(RpmHeader h, int tag, RpmTD td, int flags);
         String headerGetString(RpmHeader h, int tag);
@@ -235,7 +235,7 @@ final class Rpm {
         Lazy.RPM.rpmdbFreeIterator(mi);
     }
 
-    static final int rpmReadPackageFile(RpmTS ts, RpmFD fd, String fn, NativePointer<RpmHeader> hdrp) {
+    static final int rpmReadPackageFile(RpmTS ts, RpmFD fd, String fn, NativePointer hdrp) {
         return Lazy.RPM.rpmReadPackageFile(ts, fd, fn, hdrp);
     }
 

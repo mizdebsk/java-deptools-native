@@ -22,6 +22,14 @@ import java.lang.foreign.MemorySegment;
  * 
  * @author Mikolaj Izdebski
  */
-public abstract class NativeDataStructure {
-    MemorySegment ms;
+public abstract class NativeObject {
+    private MemorySegment ms;
+
+    MemorySegment getMemorySegment() {
+        return ms;
+    }
+
+    void setMemorySegment(MemorySegment ms) {
+        this.ms = ms;
+    }
 }

@@ -53,13 +53,13 @@ public class RpmPackage {
                 throw error(path, Fstrerror(fd));
             rpmtsSetVSFlags(ts, RPMVSF_NOHDRCHK | RPMVSF_NOSHA1HEADER | RPMVSF_NODSAHEADER | RPMVSF_NORSAHEADER
                     | RPMVSF_NOMD5 | RPMVSF_NODSA | RPMVSF_NORSA);
-            NativePointer<RpmHeader> ph = new NativePointer<>(RpmHeader::new);
+            NativePointer ph = new NativePointer();
             int rc = rpmReadPackageFile(ts, fd, null, ph);
             if (rc == RPMRC_NOTFOUND)
                 throw error(path, "Not a RPM file");
             if (rc != RPMRC_OK && rc != RPMRC_NOTTRUSTED && rc != RPMRC_NOKEY)
                 throw error(path, "Failed to parse RPM header");
-            RpmHeader h = ph.dereference();
+            RpmHeader h = ph.dereference(RpmHeader::new);
             try {
                 info = new RpmInfo(h);
             } finally {

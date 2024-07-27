@@ -42,8 +42,8 @@ class NativeInvocationHandler implements InvocationHandler {
             return switch (type) {
             case Class<?> cls when String.class.isAssignableFrom(cls) ->
                 (obj, arena) -> arena.allocateFrom((String) obj);
-            case Class<?> cls when NativeDataStructure.class.isAssignableFrom(cls) ->
-                (obj, arena) -> ((NativeDataStructure) obj).ms;
+            case Class<?> cls when NativeObject.class.isAssignableFrom(cls) ->
+                (obj, arena) -> ((NativeObject) obj).getMemorySegment();
             default -> (obj, arena) -> obj;
             };
         }
@@ -56,7 +56,7 @@ class NativeInvocationHandler implements InvocationHandler {
             return switch (type) {
             case Class<?> cls when String.class.isAssignableFrom(cls) ->
                 ((UpConverter) ms -> ((MemorySegment) ms).getString(0));
-            case Class<?> cls when NativeDataStructure.class.isAssignableFrom(cls) -> new NativeUpConverter(cls);
+            case Class<?> cls when NativeObject.class.isAssignableFrom(cls) -> new NativeUpConverter(cls);
             default -> ((UpConverter) obj -> obj);
             };
         }
@@ -74,9 +74,9 @@ class NativeInvocationHandler implements InvocationHandler {
             ctr.setAccessible(true);
         }
 
-        public NativeDataStructure convert(Object obj) throws Throwable {
-            NativeDataStructure nativ = (NativeDataStructure) ctr.newInstance();
-            nativ.ms = (MemorySegment) obj;
+        public NativeObject convert(Object obj) throws Throwable {
+            NativeObject nativ = (NativeObject) ctr.newInstance();
+            nativ.setMemorySegment((MemorySegment) obj);
             return nativ;
         }
 
@@ -116,7 +116,7 @@ class NativeInvocationHandler implements InvocationHandler {
         return switch (type) {
         case Class<?> cls when String.class.isAssignableFrom(cls) ->
             ValueLayout.ADDRESS.withTargetLayout(MemoryLayout.sequenceLayout(Long.MAX_VALUE, ValueLayout.JAVA_BYTE));
-        case Class<?> cls when NativeDataStructure.class.isAssignableFrom(cls) -> ValueLayout.ADDRESS;
+        case Class<?> cls when NativeObject.class.isAssignableFrom(cls) -> ValueLayout.ADDRESS;
         case Class<?> cls when long.class.isAssignableFrom(cls) -> ValueLayout.JAVA_LONG;
         case Class<?> cls when int.class.isAssignableFrom(cls) -> ValueLayout.JAVA_INT;
         default -> throw new IllegalStateException("data type is not supported: " + type);

@@ -25,22 +25,19 @@ import java.util.function.Supplier;
  * 
  * @author Mikolaj Izdebski
  */
-public class NativePointer<T extends NativeDataStructure> extends NativeDataStructure {
+public class NativePointer extends NativeObject {
 
-    private final Supplier<T> ctr;
-
-    public NativePointer(Supplier<T> ctr) {
-        this.ctr = ctr;
-        ms = Arena.ofAuto().allocate(ValueLayout.ADDRESS);
+    public NativePointer() {
+        setMemorySegment(Arena.ofAuto().allocate(ValueLayout.ADDRESS));
     }
 
-    public T dereference() {
-        MemorySegment address = ms.get(ValueLayout.ADDRESS, 0);
+    public <T extends NativeObject> T dereference(Supplier<T> ctr) {
+        MemorySegment address = getMemorySegment().get(ValueLayout.ADDRESS, 0);
         if (address.equals(MemorySegment.NULL)) {
             return null;
         }
         T obj = ctr.get();
-        obj.ms = address;
+        obj.setMemorySegment(address);
         return obj;
     }
 }

@@ -24,8 +24,8 @@ import java.util.Optional;
  */
 class DynamicLinker implements SymbolLookup {
 
-    private static class DynamicLibrary extends NativeDataStructure {}
-    private static class DynamicSymbol extends NativeDataStructure {}
+    private static class DynamicLibrary extends NativeObject {}
+    private static class DynamicSymbol extends NativeObject {}
 
     private static interface LibDL {
         DynamicLibrary dlopen(String filename, int flags);
@@ -67,6 +67,6 @@ class DynamicLinker implements SymbolLookup {
         if (sym == null) {
             return Optional.empty();
         }
-        return Optional.of(sym.ms);
+        return Optional.of(sym.getMemorySegment());
     }
 }

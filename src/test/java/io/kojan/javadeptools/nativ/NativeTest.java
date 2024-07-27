@@ -35,7 +35,7 @@ public class NativeTest {
         assertEquals(0, ret);
     }
 
-    static class Str extends NativeDataStructure {}
+    static class Str extends NativeObject {}
     static interface LibC {
         Str strdup(String s);
         int strcmp(String s1, String s2);
