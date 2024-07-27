@@ -22,12 +22,12 @@ import java.util.Optional;
 /**
  * @author Mikolaj Izdebski
  */
-class DynamicLinker implements SymbolLookup {
+public class DynamicLinker implements SymbolLookup {
 
-    private static class DynamicLibrary extends NativeObject {}
-    private static class DynamicSymbol extends NativeObject {}
+    public static class DynamicLibrary extends NativeObject {}
+    public static class DynamicSymbol extends NativeObject {}
 
-    private static interface LibDL {
+    public static interface LibDL {
         DynamicLibrary dlopen(String filename, int flags);
         DynamicSymbol dlsym(DynamicLibrary handle, String symbol);
     }

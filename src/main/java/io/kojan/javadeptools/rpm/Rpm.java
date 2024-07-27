@@ -80,7 +80,7 @@ final class Rpm {
     static class RpmFiles extends NativeObject {}
     static class RpmFI extends NativeObject {}
 
-    private static interface RpmLib {
+    static interface RpmLib {
         int rpmReadConfigFiles(String file, String target);
         RpmTS rpmtsCreate();
         void rpmtsFree(RpmTS ts);
@@ -119,7 +119,7 @@ final class Rpm {
         String rpmfiDN(RpmFI fi);
     }
 
-    private static interface RpmIO {
+    static interface RpmIO {
         RpmFD Fopen(String path, String mode);
         void Fclose(RpmFD fd);
         long Ftell(RpmFD fd);
