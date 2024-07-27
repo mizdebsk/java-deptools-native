@@ -22,7 +22,7 @@ import org.junit.jupiter.api.Test;
 /**
  * @author Mikolaj Izdebski
  */
-public class NativeTest {
+public class NativeReflectorTest {
 
     private static interface LibRt {
         int sched_yield();
@@ -30,7 +30,7 @@ public class NativeTest {
 
     @Test
     public void testSchedYield() throws Exception {
-        LibRt rt = Native.load(LibRt.class, Native.dlopenLookup("librt.so.1"));
+        LibRt rt = NativeReflector.dynamicGlue(LibRt.class, Native.dlopenLookup("librt.so.1"));
         int ret = rt.sched_yield();
         assertEquals(0, ret);
     }
@@ -50,7 +50,7 @@ public class NativeTest {
 
     @Test
     public void testStringOps() throws Exception {
-        LibC C = Native.load(LibC.class, Native.jvmDefaultLookup());
+        LibC C = NativeReflector.dynamicGlue(LibC.class, Native.jvmDefaultLookup());
 
         Str s1 = C.strdup("hello");
         assertEquals(0, C.strcmp(s1, "hello"));
@@ -75,7 +75,7 @@ public class NativeTest {
     @Test
     public void testUnsupportedLayout() throws Exception {
         try {
-            Native.load(LibM.class, Native.jvmDefaultLookup());
+            NativeReflector.dynamicGlue(LibM.class, Native.jvmDefaultLookup());
             fail("IllegalStateException was expected to be thrown");
         } catch (IllegalStateException e) {
             assertEquals("data type is not supported: double", e.getMessage());
@@ -99,7 +99,7 @@ public class NativeTest {
     @Test
     public void testMissingFunct() throws Exception {
         try {
-            Native.load(LibDummy.class, Native.dlsymDefaultLookup());
+            NativeReflector.dynamicGlue(LibDummy.class, Native.dlsymDefaultLookup());
             fail("RuntimeException was expected to be thrown");
         } catch (RuntimeException e) {
             assertEquals("Native method was not bound: some_dummy_func_xx", e.getMessage());

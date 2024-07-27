@@ -38,7 +38,8 @@ public class DynamicLinker implements SymbolLookup {
 
     private static class Lazy {
         private static final SymbolLookup LOOKUP = Native.jvmDefaultLookup();
-        static final LibDL DL = Native.USE_DYNAMIC_GLUE ? Native.load(LibDL.class, LOOKUP) : new LibDL_Impl(LOOKUP);
+        static final LibDL DL = new LibDL_Impl(LOOKUP);
+        // static final LibDL DL = NativeReflector.dynamicGlue(LibDL.class, LOOKUP);
     }
 
     private static final DynamicLibrary dlopen(String filename, int flags) {

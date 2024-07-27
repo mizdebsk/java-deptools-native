@@ -135,7 +135,8 @@ final class Rpm {
 
     private static class LazyIO {
         private static final SymbolLookup LOOKUP = Native.dlopenLookup("librpmio.so.10", "librpmio.so.9");
-        static final RpmIO RPMIO = Native.USE_DYNAMIC_GLUE ? Native.load(RpmIO.class, LOOKUP) : new RpmIO_Impl(LOOKUP);
+        static final RpmIO RPMIO = new RpmIO_Impl(LOOKUP);
+        // static final RpmIO RPMIO = NativeReflector.dynamicGlue(RpmIO.class, LOOKUP);
     }
 
     static final RpmFD Fopen(String path, String mode) {
@@ -184,7 +185,8 @@ final class Rpm {
 
     private static class Lazy {
         private static final SymbolLookup LOOKUP = Native.dlopenLookup("librpm.so.10", "librpm.so.9");
-        static final RpmLib RPM = Native.USE_DYNAMIC_GLUE ? Native.load(RpmLib.class, LOOKUP) : new RpmLib_Impl(LOOKUP);
+        static final RpmLib RPM = new RpmLib_Impl(LOOKUP);
+        // static final RpmLib RPM0 = NativeReflector.dynamicGlue(RpmLib.class, LOOKUP);
     }
 
     static final int rpmReadConfigFiles(String file, String target) {
