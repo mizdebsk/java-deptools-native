@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.nio.file.Paths;
 
 import io.kojan.javadeptools.nativ.generator.NativeGlueGenerator;
-import io.kojan.javadeptools.rpm.Rpm.RpmIO;
 import io.kojan.javadeptools.rpm.Rpm.RpmLib;
 
 class StaticGlueGenerator {
@@ -28,10 +27,5 @@ class StaticGlueGenerator {
         rpmGen.setNamespace("io.kojan.javadeptools.rpm");
         rpmGen.emitClass(RpmLib.class);
         rpmGen.write(Paths.get("src/main/java/io/kojan/javadeptools/rpm/RpmLib_Impl.java"));
-
-        NativeGlueGenerator rpmioGen = new NativeGlueGenerator();
-        rpmioGen.setNamespace("io.kojan.javadeptools.rpm");
-        rpmioGen.emitClass(RpmIO.class);
-        rpmioGen.write(Paths.get("src/main/java/io/kojan/javadeptools/rpm/RpmIO_Impl.java"));
     }
 }

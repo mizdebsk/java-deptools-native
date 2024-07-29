@@ -20,7 +20,6 @@ import org.graalvm.nativeimage.hosted.RuntimeForeignAccess;
 
 class NativeImageFeature implements Feature {
     public void duringSetup(DuringSetupAccess access) {
-        RpmIO_Impl.getFunctionLayouts().forEach(RuntimeForeignAccess::registerForDowncall);
         RpmLib_Impl.getFunctionLayouts().forEach(RuntimeForeignAccess::registerForDowncall);
     }
 }

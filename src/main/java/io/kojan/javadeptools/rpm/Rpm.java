@@ -117,9 +117,6 @@ final class Rpm {
         int rpmfiNext(RpmFI fi);
         String rpmfiBN(RpmFI fi);
         String rpmfiDN(RpmFI fi);
-    }
-
-    static interface RpmIO {
         RpmFD Fopen(String path, String mode);
         void Fclose(RpmFD fd);
         long Ftell(RpmFD fd);
@@ -133,60 +130,54 @@ final class Rpm {
         String rpmverR(RpmEVR rv);
     }
 
-    private static class LazyIO {
-        private static final SymbolLookup LOOKUP = Native.dlopenLookup("librpmio.so.10", "librpmio.so.9");
-        static final RpmIO RPMIO = new RpmIO_Impl(LOOKUP);
-        // static final RpmIO RPMIO = NativeReflector.dynamicGlue(RpmIO.class, LOOKUP);
-    }
-
-    static final RpmFD Fopen(String path, String mode) {
-        return LazyIO.RPMIO.Fopen(path, mode);
-    }
-
-    static final void Fclose(RpmFD fd) {
-        LazyIO.RPMIO.Fclose(fd);
-    }
-
-    static final long Ftell(RpmFD fd) {
-        return LazyIO.RPMIO.Ftell(fd);
-    }
-
-    static final int Ferror(RpmFD fd) {
-        return LazyIO.RPMIO.Ferror(fd);
-    }
-
-    static final String Fstrerror(RpmFD fd) {
-        return LazyIO.RPMIO.Fstrerror(fd);
-    }
-
-    static final RpmEVR rpmverParse(String evr) {
-        return LazyIO.RPMIO.rpmverParse(evr);
-    }
-
-    static final void rpmverFree(RpmEVR rv) {
-        LazyIO.RPMIO.rpmverFree(rv);
-    }
-
-    static final long rpmverEVal(RpmEVR rv) {
-        return LazyIO.RPMIO.rpmverEVal(rv);
-    }
-
-    static final String rpmverE(RpmEVR rv) {
-        return LazyIO.RPMIO.rpmverE(rv);
-    }
-
-    static final String rpmverV(RpmEVR rv) {
-        return LazyIO.RPMIO.rpmverV(rv);
-    }
-
-    static final String rpmverR(RpmEVR rv) {
-        return LazyIO.RPMIO.rpmverR(rv);
-    }
-
     private static class Lazy {
         private static final SymbolLookup LOOKUP = Native.dlopenLookup("librpm.so.10", "librpm.so.9");
         static final RpmLib RPM = new RpmLib_Impl(LOOKUP);
         // static final RpmLib RPM0 = NativeReflector.dynamicGlue(RpmLib.class, LOOKUP);
+    }
+
+    static final RpmFD Fopen(String path, String mode) {
+        return Lazy.RPM.Fopen(path, mode);
+    }
+
+    static final void Fclose(RpmFD fd) {
+        Lazy.RPM.Fclose(fd);
+    }
+
+    static final long Ftell(RpmFD fd) {
+        return Lazy.RPM.Ftell(fd);
+    }
+
+    static final int Ferror(RpmFD fd) {
+        return Lazy.RPM.Ferror(fd);
+    }
+
+    static final String Fstrerror(RpmFD fd) {
+        return Lazy.RPM.Fstrerror(fd);
+    }
+
+    static final RpmEVR rpmverParse(String evr) {
+        return Lazy.RPM.rpmverParse(evr);
+    }
+
+    static final void rpmverFree(RpmEVR rv) {
+        Lazy.RPM.rpmverFree(rv);
+    }
+
+    static final long rpmverEVal(RpmEVR rv) {
+        return Lazy.RPM.rpmverEVal(rv);
+    }
+
+    static final String rpmverE(RpmEVR rv) {
+        return Lazy.RPM.rpmverE(rv);
+    }
+
+    static final String rpmverV(RpmEVR rv) {
+        return Lazy.RPM.rpmverV(rv);
+    }
+
+    static final String rpmverR(RpmEVR rv) {
+        return Lazy.RPM.rpmverR(rv);
     }
 
     static final int rpmReadConfigFiles(String file, String target) {
