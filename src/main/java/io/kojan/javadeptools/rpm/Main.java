@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -32,21 +34,32 @@ import java.util.stream.Collectors;
  */
 public class Main {
 
-    private Main() {}
+    private final String[] args;
+    private String currentArg;
+    private Iterator<String> argsIterator;
+
+    private Main(String[] args) {
+        this.args = args;
+    }
 
     private Path root;
     private Path pack;
     private Path file;
+    private String actionName;
     private Consumer<RpmInfo> action = this::nvrAction;
 
-    private Path parsePathArg(String[] args, int i) {
-        if (i == args.length) {
-            throw new IllegalArgumentException("Option " + args[i - 1] + " requires an argument");
+    private Path parsePathArg() {
+        if (!argsIterator.hasNext()) {
+            throw new IllegalArgumentException("Option " + currentArg + " requires an argument");
         }
-        return Paths.get(args[i]);
+        return Paths.get(argsIterator.next());
     }
 
     private void setAction(Consumer<RpmInfo> action) {
+        if (actionName != null) {
+            throw new IllegalArgumentException("Action " + currentArg + " conflict with previously-set " + actionName);
+        }
+        actionName = currentArg;
         this.action = action;
     }
 
@@ -55,16 +68,17 @@ public class Main {
     }
 
     private void parseArgs(String[] args) {
-        for (int i = 0; i < args.length; i++) {
-            switch (args[i]) {
+        for (argsIterator = Arrays.asList(args).iterator(); argsIterator.hasNext();) {
+            currentArg = argsIterator.next();
+            switch (currentArg) {
             case "-r":
-                root = parsePathArg(args, ++i);
+                root = parsePathArg();
                 break;
             case "-p":
-                pack = parsePathArg(args, ++i);
+                pack = parsePathArg();
                 break;
             case "-f":
-                file = parsePathArg(args, ++i);
+                file = parsePathArg();
                 break;
             case "-i":
                 setAction(this::infoAction);
@@ -100,7 +114,7 @@ public class Main {
                 setDepsAction(RpmInfo::getOrderWithRequires);
                 break;
             default:
-                throw new IllegalArgumentException("Unknown option: " + args[i]);
+                throw new IllegalArgumentException("Unknown option: " + currentArg);
             }
         }
     }
@@ -152,7 +166,7 @@ public class Main {
         }
     }
 
-    private int run(String[] args) {
+    private int run() {
         try {
             parseArgs(args);
             List<RpmInfo> rpms = new ArrayList<>();
@@ -178,8 +192,8 @@ public class Main {
      * @param args command-line arguments
      */
     public static void main(String[] args) {
-        Main main = new Main();
-        System.exit(main.run(args));
+        Main main = new Main(args);
+        System.exit(main.run());
     }
 
 }
