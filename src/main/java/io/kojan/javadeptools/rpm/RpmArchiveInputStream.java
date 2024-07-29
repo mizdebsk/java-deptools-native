@@ -108,7 +108,7 @@ public class RpmArchiveInputStream extends ArchiveInputStream<CpioArchiveEntry> 
         }
         final CpioArchiveEntry cpio = new CpioArchiveEntry(CpioConstants.FORMAT_NEW);
         cpio.setInode(rpmfiFInode(fi));
-        // cpio.setMode(rpmfiFMode(fi));
+        cpio.setMode(rpmfiFMode(fi));
         // TODO rpmfiFUser
         // TODO rpmfiFGroup
         // TODO rpmfiFLink
