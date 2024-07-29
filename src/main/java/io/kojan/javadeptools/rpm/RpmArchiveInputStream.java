@@ -35,12 +35,14 @@ import io.kojan.javadeptools.nativ.NativePointer;
  */
 public class RpmArchiveInputStream extends ArchiveInputStream<CpioArchiveEntry> {
     private RpmFI fi;
+    private RpmFI cpioFi;
     private RpmFiles files;
     private RpmFD fd;
     private RpmTS ts;
     private RpmHeader h;
     private long avail;
     private ByteArrayInputStream linkBytes;
+    private boolean ghost;
 
     /**
      * Opens RPM package from disk as {@link ArchiveInputStream}
@@ -71,11 +73,13 @@ public class RpmArchiveInputStream extends ArchiveInputStream<CpioArchiveEntry> 
             }
             fd = Fdopen(fd, "r." + compr);
             files = rpmfilesNew(null, h, 0, RPMFI_KEEPHEADER);
-            fi = rpmfiNewArchiveReader(fd, files, RPMFI_ITER_READ_ARCHIVE);
+            fi = rpmfilesIter(files, RPMFI_ITER_FWD);
+            cpioFi = rpmfiNewArchiveReader(fd, files, RPMFI_ITER_READ_ARCHIVE);
             ok = true;
         } finally {
             if (!ok) {
-                rpmfiArchiveClose(fi);
+                rpmfiArchiveClose(cpioFi);
+                rpmfiFree(fi);
                 rpmfilesFree(files);
                 headerFree(h);
                 Fclose(fd);
@@ -97,7 +101,8 @@ public class RpmArchiveInputStream extends ArchiveInputStream<CpioArchiveEntry> 
 
     @Override
     public void close() throws IOException {
-        rpmfiArchiveClose(fi);
+        rpmfiArchiveClose(cpioFi);
+        rpmfiFree(fi);
         rpmfilesFree(files);
         headerFree(h);
         Fclose(fd);
@@ -109,7 +114,15 @@ public class RpmArchiveInputStream extends ArchiveInputStream<CpioArchiveEntry> 
         if (rpmfiNext(fi) < 0) {
             return null;
         }
-        avail = rpmfiArchiveHasContent(fi) != 0 ? rpmfiFSize(fi) : 0;
+        if (!ghost) {
+            rpmfiNext(cpioFi);
+        }
+        ghost = !(rpmfiDN(fi).equals(rpmfiDN(cpioFi)) && rpmfiBN(fi).equals(rpmfiBN(cpioFi)));
+        if (!ghost && rpmfiArchiveHasContent(cpioFi) != 0) {
+            avail = rpmfiFSize(fi);
+        } else {
+            avail = 0;
+        }
         final int S_IFMT = 0170000;
         final int C_ISLNK = 0120000;
         if ((rpmfiFMode(fi) & S_IFMT) == C_ISLNK) {
@@ -140,7 +153,7 @@ public class RpmArchiveInputStream extends ArchiveInputStream<CpioArchiveEntry> 
             return -1;
         }
         ByteBuffer nativeBuffer = ByteBuffer.allocateDirect(len);
-        int n = (int) rpmfiArchiveRead(fi, nativeBuffer, len);
+        int n = (int) rpmfiArchiveRead(cpioFi, nativeBuffer, len);
         nativeBuffer.position(n);
         nativeBuffer.flip();
         ByteBuffer arrayBuffer = ByteBuffer.wrap(buf, off, len);

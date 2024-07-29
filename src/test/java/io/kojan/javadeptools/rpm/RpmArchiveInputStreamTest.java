@@ -187,8 +187,13 @@ public class RpmArchiveInputStreamTest {
         assertEquals(8, e7.getSize());
         assertArrayEquals("content\n".getBytes(), ais.readAllBytes());
 
-        // e8 is /gh/ost
-        // Ghosts are not present in CPIO archive.
+        CpioArchiveEntry e8 = ais.getNextEntry();
+        assertNotNull(e8);
+        assertEquals("/gh/ost", e8.getName());
+        assertFalse(e8.isDirectory());
+        assertFalse(e8.isSymbolicLink());
+        assertEquals(0, e8.getSize());
+        assertEquals(-1, ais.read());
 
         CpioArchiveEntry e9 = ais.getNextEntry();
         assertNotNull(e9);
