@@ -21,6 +21,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -35,13 +37,21 @@ public class Main {
     private Path root;
     private Path pack;
     private Path file;
-    private boolean info;
+    private Consumer<RpmInfo> action = this::nvrAction;
 
     private Path parsePathArg(String[] args, int i) {
         if (i == args.length) {
             throw new IllegalArgumentException("Option " + args[i - 1] + " requires an argument");
         }
         return Paths.get(args[i]);
+    }
+
+    private void setAction(Consumer<RpmInfo> action) {
+        this.action = action;
+    }
+
+    private void setDepsAction(Function<RpmInfo, List<RpmDependency>> depsGetter) {
+        setAction(rpm -> printDeps(depsGetter.apply(rpm)));
     }
 
     private void parseArgs(String[] args) {
@@ -57,12 +67,46 @@ public class Main {
                 file = parsePathArg(args, ++i);
                 break;
             case "-i":
-                info = true;
+                setAction(this::infoAction);
+                break;
+            case "-l":
+                setAction(this::filesAction);
+                break;
+            case "--provides":
+                setDepsAction(RpmInfo::getProvides);
+                break;
+            case "--requires":
+                setDepsAction(RpmInfo::getRequires);
+                break;
+            case "--conflicts":
+                setDepsAction(RpmInfo::getConflicts);
+                break;
+            case "--obsoletes":
+                setDepsAction(RpmInfo::getObsoletes);
+                break;
+            case "--recommends":
+                setDepsAction(RpmInfo::getRecommends);
+                break;
+            case "--suggests":
+                setDepsAction(RpmInfo::getSuggests);
+                break;
+            case "--supplements":
+                setDepsAction(RpmInfo::getSupplements);
+                break;
+            case "--enhances":
+                setDepsAction(RpmInfo::getEnhances);
+                break;
+            case "--orderWithRequires":
+                setDepsAction(RpmInfo::getOrderWithRequires);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown option: " + args[i]);
             }
         }
+    }
+
+    private void nvrAction(RpmInfo rpm) {
+        System.out.println(rpm.toString());
     }
 
     private String infoOptional(Optional<?> opt) {
@@ -72,6 +116,7 @@ public class Main {
         return opt.get().toString();
 
     }
+
     private String infoList(List<?> list) {
         if (list.isEmpty()) {
             return "(empty list)";
@@ -79,7 +124,7 @@ public class Main {
         return list.stream().map(Object::toString).collect(Collectors.joining(" "));
     }
 
-    private void info(RpmInfo rpm) {
+    private void infoAction(RpmInfo rpm) {
         System.out.println("Name               : " + rpm.getName());
         System.out.println("Epoch              : " + infoOptional(rpm.getEpoch()));
         System.out.println("Version            : " + rpm.getVersion());
@@ -95,6 +140,18 @@ public class Main {
         System.out.println("Compression method : " + rpm.getCompressionMethod());
     }
 
+    private void printDeps(List<RpmDependency> deps) {
+        for (RpmDependency dep : deps) {
+            System.out.println(dep.toString());
+        }
+    }
+
+    private void filesAction(RpmInfo rpm) {
+        for (RpmFile file : rpm.getFiles()) {
+            System.out.println(file.toString());
+        }
+    }
+
     private int run(String[] args) {
         try {
             parseArgs(args);
@@ -106,11 +163,7 @@ public class Main {
                 rpms.addAll(RpmQuery.byFile(file, root));
             }
             for (RpmInfo rpm : rpms) {
-                if (info) {
-                    info(rpm);
-                } else {
-                    System.out.println(rpm);
-                }
+                action.accept(rpm);
             }
             return 0;
         } catch (IOException e) {
