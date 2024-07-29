@@ -51,9 +51,9 @@ public class RpmArchiveInputStream extends ArchiveInputStream<CpioArchiveEntry> 
      */
     public RpmArchiveInputStream(Path path) throws IOException {
         boolean ok = false;
-        ts = rpmtsCreate();
-        fd = Fopen(path.toString(), "r");
         try {
+            ts = rpmtsCreate();
+            fd = Fopen(path.toString(), "r");
             if (Ferror(fd) != 0)
                 throw error(path, Fstrerror(fd));
             rpmtsSetVSFlags(ts, RPMVSF_NOHDRCHK | RPMVSF_NOSHA1HEADER | RPMVSF_NODSAHEADER | RPMVSF_NORSAHEADER
