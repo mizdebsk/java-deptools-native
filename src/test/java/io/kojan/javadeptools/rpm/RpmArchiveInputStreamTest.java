@@ -22,6 +22,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.apache.commons.compress.archivers.ArchiveEntry;
+import org.apache.commons.compress.archivers.cpio.CpioArchiveEntry;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -109,6 +110,101 @@ public class RpmArchiveInputStreamTest {
 
         RpmArchiveInputStream ais = new RpmArchiveInputStream(path);
         assertNotNull(ais.getNextEntry());
+        assertNull(ais.getNextEntry());
+        ais.close();
+    }
+
+    @Test
+    public void testFilesWithNoContent() throws Exception {
+        Path path = getResource("rpmfiles-1-1.noarch.rpm");
+
+        RpmArchiveInputStream ais = new RpmArchiveInputStream(path);
+
+        // Files in the package are:
+        // e1 /a/directory
+        // e2 /a/directory/conf1
+        // e3 /a/directory/conf2
+        // e4 /b
+        // e5 /b/a
+        // e6 /b/a/se
+        // e7 /b/a/se/file.txt
+        // e8 /gh/ost
+        // e9 /symlink
+
+        CpioArchiveEntry e1 = ais.getNextEntry();
+        assertNotNull(e1);
+        assertEquals("/a/directory", e1.getName());
+        assertTrue(e1.isDirectory());
+        assertFalse(e1.isSymbolicLink());
+        assertEquals(0, e1.getSize());
+        assertEquals(-1, ais.read());
+
+        CpioArchiveEntry e2 = ais.getNextEntry();
+        assertNotNull(e2);
+        assertEquals("/a/directory/conf1", e2.getName());
+        assertFalse(e2.isDirectory());
+        assertFalse(e2.isSymbolicLink());
+        assertEquals(0, e2.getSize());
+        assertEquals(-1, ais.read());
+
+        CpioArchiveEntry e3 = ais.getNextEntry();
+        assertNotNull(e3);
+        assertEquals("/a/directory/conf2", e3.getName());
+        assertFalse(e3.isDirectory());
+        assertFalse(e3.isSymbolicLink());
+        assertEquals(0, e3.getSize());
+        assertEquals(-1, ais.read());
+
+        CpioArchiveEntry e4 = ais.getNextEntry();
+        assertNotNull(e4);
+        assertEquals("/b", e4.getName());
+        assertTrue(e4.isDirectory());
+        assertFalse(e4.isSymbolicLink());
+        assertEquals(0, e4.getSize());
+        assertEquals(-1, ais.read());
+
+        CpioArchiveEntry e5 = ais.getNextEntry();
+        assertNotNull(e5);
+        assertEquals("/b/a", e5.getName());
+        assertTrue(e5.isDirectory());
+        assertFalse(e5.isSymbolicLink());
+        assertEquals(0, e5.getSize());
+        assertEquals(-1, ais.read());
+
+        CpioArchiveEntry e6 = ais.getNextEntry();
+        assertNotNull(e6);
+        assertEquals("/b/a/se", e6.getName());
+        assertTrue(e6.isDirectory());
+        assertFalse(e6.isSymbolicLink());
+        assertEquals(0, e6.getSize());
+        assertEquals(-1, ais.read());
+
+        CpioArchiveEntry e7 = ais.getNextEntry();
+        assertNotNull(e7);
+        assertEquals("/b/a/se/file.txt", e7.getName());
+        assertFalse(e7.isDirectory());
+        assertFalse(e7.isSymbolicLink());
+        assertEquals(8, e7.getSize());
+        assertArrayEquals("content\n".getBytes(), ais.readAllBytes());
+
+        /*
+        CpioArchiveEntry e8 = ais.getNextEntry();
+        assertNotNull(e8);
+        assertEquals("/gh/ost", e8.getName());
+        assertFalse(e8.isDirectory());
+        assertFalse(e8.isSymbolicLink());
+        assertEquals(0, e8.getSize());
+        assertEquals("", new String(ais.readAllBytes()));
+        */
+
+        CpioArchiveEntry e9 = ais.getNextEntry();
+        assertNotNull(e9);
+        assertEquals("/symlink", e9.getName());
+        assertFalse(e9.isDirectory());
+        assertTrue(e9.isSymbolicLink());
+        assertEquals(9, e9.getSize());
+        assertArrayEquals("something".getBytes(), ais.readAllBytes());
+
         assertNull(ais.getNextEntry());
         ais.close();
     }

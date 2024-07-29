@@ -16,6 +16,7 @@ mkdir -p b/a/se
 echo content >b/a/se/file.txt
 mkdir -p a/directory
 touch a/directory/conf{1,2}
+ln -s something symlink
 
 %files
 %dir /a/directory
@@ -23,5 +24,6 @@ touch a/directory/conf{1,2}
 %config(noreplace) /a/directory/conf2
 /b
 %ghost /gh/ost
+/symlink
 
 %changelog
