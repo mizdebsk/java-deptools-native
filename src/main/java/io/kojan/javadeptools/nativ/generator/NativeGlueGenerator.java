@@ -22,6 +22,7 @@ import java.lang.foreign.SymbolLookup;
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.nio.Buffer;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -63,6 +64,8 @@ public class NativeGlueGenerator extends JavaCodeGenerator {
             return "LONG";
         } else if (int.class.isAssignableFrom(type)) {
             return "INT";
+        } else if (Buffer.class.isAssignableFrom(type)) {
+            return "BUFF";
         }
         throw new IllegalStateException("data type is not supported: " + type);
     }
@@ -73,6 +76,8 @@ public class NativeGlueGenerator extends JavaCodeGenerator {
             pn("downConvertString(", jName, ", arena)");
         } else if (NativeObject.class.isAssignableFrom(jType)) {
             pn("downConvertObject(", jName, ")");
+        } else if (Buffer.class.isAssignableFrom(jType)) {
+            pn("downConvertBuffer(", jName, ")");
         } else {
             pn(jName);
         }

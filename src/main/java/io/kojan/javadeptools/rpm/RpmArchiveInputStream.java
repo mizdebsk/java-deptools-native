@@ -15,20 +15,17 @@
  */
 package io.kojan.javadeptools.rpm;
 
-import java.io.BufferedInputStream;
+import static io.kojan.javadeptools.rpm.Rpm.*;
+
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
+import java.nio.ByteBuffer;
 import java.nio.file.Path;
 
 import org.apache.commons.compress.archivers.ArchiveInputStream;
 import org.apache.commons.compress.archivers.cpio.CpioArchiveEntry;
-import org.apache.commons.compress.archivers.cpio.CpioArchiveInputStream;
-import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
-import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
-import org.apache.commons.compress.compressors.lzma.LZMACompressorInputStream;
-import org.apache.commons.compress.compressors.xz.XZCompressorInputStream;
-import org.apache.commons.compress.compressors.zstandard.ZstdCompressorInputStream;
+import org.apache.commons.compress.archivers.cpio.CpioConstants;
+
+import io.kojan.javadeptools.nativ.NativePointer;
 
 /**
  * A class for reading RPM package as an archive.
@@ -36,7 +33,11 @@ import org.apache.commons.compress.compressors.zstandard.ZstdCompressorInputStre
  * @author Mikolaj Izdebski
  */
 public class RpmArchiveInputStream extends ArchiveInputStream<CpioArchiveEntry> {
-    private final CpioArchiveInputStream delegate;
+    private RpmFI fi;
+    private RpmFiles files;
+    private RpmFD fd;
+    private RpmTS ts;
+    private RpmHeader h;
 
     /**
      * Opens RPM package from disk as {@link ArchiveInputStream}
@@ -46,7 +47,38 @@ public class RpmArchiveInputStream extends ArchiveInputStream<CpioArchiveEntry> 
      *                     error occurs reading package from disk
      */
     public RpmArchiveInputStream(Path path) throws IOException {
-        this(new RpmPackage(path));
+        boolean ok = false;
+        ts = rpmtsCreate();
+        fd = Fopen(path.toString(), "r");
+        try {
+            if (Ferror(fd) != 0)
+                throw error(path, Fstrerror(fd));
+            rpmtsSetVSFlags(ts, RPMVSF_NOHDRCHK | RPMVSF_NOSHA1HEADER | RPMVSF_NODSAHEADER | RPMVSF_NORSAHEADER
+                    | RPMVSF_NOMD5 | RPMVSF_NODSA | RPMVSF_NORSA);
+            NativePointer ph = new NativePointer();
+            int rc = rpmReadPackageFile(ts, fd, null, ph);
+            if (rc == RPMRC_NOTFOUND)
+                throw error(path, "Not a RPM file");
+            if (rc != RPMRC_OK && rc != RPMRC_NOTTRUSTED && rc != RPMRC_NOKEY)
+                throw error(path, "Failed to parse RPM header");
+            h = ph.dereference(RpmHeader::new);
+            String compr = headerGetString(h, RPMTAG_PAYLOADCOMPRESSOR);
+            if (compr == null) {
+                compr = "gzip";
+            }
+            fd = Fdopen(fd, "r." + compr);
+            files = rpmfilesNew(null, h, 0, RPMFI_KEEPHEADER);
+            fi = rpmfiNewArchiveReader(fd, files, RPMFI_ITER_READ_ARCHIVE);
+            ok = true;
+        } finally {
+            if (!ok) {
+                rpmfiArchiveClose(fi);
+                rpmfilesFree(files);
+                headerFree(h);
+                Fclose(fd);
+                rpmtsFree(ts);
+            }
+        }
     }
 
     /**
@@ -57,70 +89,50 @@ public class RpmArchiveInputStream extends ArchiveInputStream<CpioArchiveEntry> 
      *                     error occurs reading package from disk
      */
     public RpmArchiveInputStream(RpmPackage rpm) throws IOException {
-        this.delegate = wrapFile(rpm);
+        this(rpm.getPath());
     }
 
     @Override
     public void close() throws IOException {
-        delegate.close();
+        rpmfiArchiveClose(fi);
+        rpmfilesFree(files);
+        headerFree(h);
+        Fclose(fd);
+        rpmtsFree(ts);
     }
 
     @Override
     public CpioArchiveEntry getNextEntry() throws IOException {
-        return delegate.getNextEntry();
-    }
-
-    @Override
-    public int read() throws IOException {
-        return delegate.read();
-    }
-
-    @Override
-    public int read(byte[] buf) throws IOException {
-        return delegate.read(buf);
+        if (rpmfiNext(fi) < 0) {
+            return null;
+        }
+        final CpioArchiveEntry cpio = new CpioArchiveEntry(CpioConstants.FORMAT_NEW);
+        cpio.setInode(rpmfiFInode(fi));
+        // cpio.setMode(rpmfiFMode(fi));
+        // TODO rpmfiFUser
+        // TODO rpmfiFGroup
+        // TODO rpmfiFLink
+        cpio.setNumberOfLinks(rpmfiFNlink(fi));
+        cpio.setTime(rpmfiFMtime(fi));
+        cpio.setSize(rpmfiFSize(fi));
+        cpio.setRemoteDeviceMaj(gnu_dev_major(rpmfiFRdev(fi)));
+        cpio.setRemoteDeviceMin(gnu_dev_minor(rpmfiFRdev(fi)));
+        cpio.setName(rpmfiDN(fi) + rpmfiBN(fi));
+        return cpio;
     }
 
     @Override
     public int read(byte[] buf, int off, int len) throws IOException {
-        return delegate.read(buf, off, len);
+        ByteBuffer nativeBuffer = ByteBuffer.allocateDirect(len);
+        int n = (int) rpmfiArchiveRead(fi, nativeBuffer, len);
+        nativeBuffer.position(n);
+        nativeBuffer.flip();
+        ByteBuffer arrayBuffer = ByteBuffer.wrap(buf, off, len);
+        arrayBuffer.put(nativeBuffer);
+        return n;
     }
 
     private static IOException error(Path path, String message) throws IOException {
         throw new IOException("Unable to open RPM file " + path + ": " + message);
     }
-
-    private static boolean hasGzipMagic(InputStream fis) throws IOException {
-        try {
-            fis.mark(2);
-            return fis.read() == 31 && fis.read() == 139;
-        } finally {
-            fis.reset();
-        }
-    }
-
-    private static CpioArchiveInputStream wrapFile(RpmPackage rpm) throws IOException {
-        RpmInfo info = rpm.getInfo();
-        InputStream fis = new BufferedInputStream(Files.newInputStream(rpm.getPath()));
-        fis.skip(rpm.getHeaderSize());
-
-        InputStream cis = switch (info.getCompressionMethod()) {
-        case "gzip" -> hasGzipMagic(fis) ? new GzipCompressorInputStream(fis, true) : fis;
-        case "bzip2" -> new BZip2CompressorInputStream(fis);
-        case "xz" -> cis = new XZCompressorInputStream(fis);
-        case "lzma" -> cis = new LZMACompressorInputStream(fis);
-        case "zstd" -> cis = new ZstdCompressorInputStream(fis);
-        default -> {
-            fis.close();
-            throw error(rpm.getPath(), "Unsupported compression method: " + info.getCompressionMethod());
-        }
-        };
-
-        if (!info.getArchiveFormat().equals("cpio")) {
-            cis.close();
-            throw error(rpm.getPath(), "Unsupported archive format: " + info.getArchiveFormat());
-        }
-
-        return new CpioArchiveInputStream(cis);
-    }
-
 }

@@ -15,6 +15,8 @@
  */
 package io.kojan.javadeptools.rpm;
 
+import java.nio.Buffer;
+
 import io.kojan.javadeptools.nativ.NativeObject;
 import io.kojan.javadeptools.nativ.NativePointer;
 
@@ -65,6 +67,7 @@ final class Rpm extends RpmLib_Static {
 
     static final int RPMFI_KEEPHEADER = 1 << 0;
     static final int RPMFI_ITER_FWD = 0;
+    static final int RPMFI_ITER_READ_ARCHIVE = 3;
 
     static class RpmDS extends NativeObject {}
     static class RpmEVR extends NativeObject {}
@@ -114,7 +117,17 @@ final class Rpm extends RpmLib_Static {
         int rpmfiNext(RpmFI fi);
         String rpmfiBN(RpmFI fi);
         String rpmfiDN(RpmFI fi);
+        int rpmfiFInode(RpmFI fi);
+        int rpmfiFMode(RpmFI fi);
+        int rpmfiFNlink(RpmFI fi);
+        int rpmfiFMtime(RpmFI fi);
+        long rpmfiFSize(RpmFI fi);
+        int rpmfiFRdev(RpmFI fi);
+        RpmFI rpmfiNewArchiveReader(RpmFD fd, RpmFiles files, int itype);
+        void rpmfiArchiveClose(RpmFI fi);
+        long rpmfiArchiveRead(RpmFI fi, Buffer buf, long size);
         RpmFD Fopen(String path, String mode);
+        RpmFD Fdopen(RpmFD ofd, String mode);
         void Fclose(RpmFD fd);
         long Ftell(RpmFD fd);
         int Ferror(RpmFD fd);
@@ -125,5 +138,7 @@ final class Rpm extends RpmLib_Static {
         String rpmverE(RpmEVR rv);
         String rpmverV(RpmEVR rv);
         String rpmverR(RpmEVR rv);
+        int gnu_dev_major(int dev);
+        int gnu_dev_minor(int dev);
     }
 }

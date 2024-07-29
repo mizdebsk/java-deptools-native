@@ -22,6 +22,7 @@ import java.lang.foreign.MemorySegment;
 import java.lang.foreign.SymbolLookup;
 import java.lang.foreign.ValueLayout;
 import java.lang.invoke.MethodHandle;
+import java.nio.Buffer;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -38,6 +39,8 @@ public abstract class AbstractNativeProxy extends Native {
     protected static final ValueLayout OBJ = ValueLayout.ADDRESS;
     protected static final ValueLayout LONG = ValueLayout.JAVA_LONG;
     protected static final ValueLayout INT = ValueLayout.JAVA_INT;
+    protected static final ValueLayout BUFF = ValueLayout.ADDRESS
+            .withTargetLayout(MemoryLayout.sequenceLayout(Long.MAX_VALUE, ValueLayout.JAVA_BYTE));
 
     private final SymbolLookup lookup;
 
@@ -57,6 +60,13 @@ public abstract class AbstractNativeProxy extends Native {
             return MemorySegment.NULL;
         }
         return arena.allocateFrom(str);
+    }
+
+    protected static MemorySegment downConvertBuffer(Buffer buffer) {
+        if (buffer == null) {
+            return MemorySegment.NULL;
+        }
+        return MemorySegment.ofBuffer(buffer);
     }
 
     protected static <T extends NativeObject> T upConvertObject(Supplier<T> ctr, MemorySegment ms) {
