@@ -23,12 +23,27 @@ import static io.kojan.javadeptools.rpm.Rpm.*;
  * @author Mikolaj Izdebski
  */
 public class RpmFile {
+    private final String name;
     private final String dn;
     private final String bn;
+    private final int mode;
+    private final long size;
 
     RpmFile(RpmFI fi) {
         bn = rpmfiBN(fi);
         dn = rpmfiDN(fi);
+        name = dn + bn;
+        size = rpmfiFSize(fi);
+        mode = rpmfiFMode(fi);
+    }
+
+    /**
+     * Returns the name of RPM file.
+     * 
+     * @return name of RPM file
+     */
+    public String getName() {
+        return name;
     }
 
     /**
@@ -53,8 +68,59 @@ public class RpmFile {
         return dn;
     }
 
+    /**
+     * Returns size of RPM file.
+     * 
+     * @return size of RPM file
+     */
+    public long getSize() {
+        return size;
+    }
+
+    /**
+     * Returns mode of RPM file.
+     * 
+     * @return mode of RPM file
+     */
+    public int getMode() {
+        return mode;
+    }
+
+    /**
+     * Determines whether the file is a directory.
+     *
+     * @return true iff RPM file is a directory
+     */
+    public boolean isDirectory() {
+        return (mode & S_IFMT) == S_IFDIR;
+    }
+
+    /**
+     * Determines whether the file is a regular file.
+     *
+     * @return true iff RPM file is a regular file
+     */
+    public boolean isRegularFile() {
+        return (mode & S_IFMT) == S_IFREG;
+    }
+
+    /**
+     * Determines whether the file is a symbolic link.
+     *
+     * @return true iff RPM file is a symbolic link
+     */
+    public boolean isSymbolicLink() {
+        return (mode & S_IFMT) == S_IFLNK;
+    }
+
+    // From /usr/include/linux/stat.h
+    private static final int S_IFMT = 00170000;
+    private static final int S_IFLNK = 0120000;
+    private static final int S_IFREG = 0100000;
+    private static final int S_IFDIR = 0040000;
+
     @Override
     public String toString() {
-        return dn + bn;
+        return name;
     }
 }
