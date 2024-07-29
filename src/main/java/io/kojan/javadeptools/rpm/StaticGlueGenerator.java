@@ -26,6 +26,8 @@ class StaticGlueGenerator {
         NativeGlueGenerator rpmGen = new NativeGlueGenerator();
         rpmGen.setNamespace("io.kojan.javadeptools.rpm");
         rpmGen.emitClass(RpmLib.class);
+        rpmGen.setDlopenLookup("librpm.so.10", "librpm.so.9");
+        rpmGen.emitTrampoline(RpmLib.class);
         rpmGen.write(Paths.get("src/main/java/io/kojan/javadeptools/rpm/RpmLib_Impl.java"));
     }
 }

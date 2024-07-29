@@ -22,7 +22,7 @@ import java.util.Optional;
 /**
  * @author Mikolaj Izdebski
  */
-public class DynamicLinker implements SymbolLookup {
+public class DynamicLinker extends LibDL_Static implements SymbolLookup {
 
     public static class DynamicLibrary extends NativeObject {}
     public static class DynamicSymbol extends NativeObject {}
@@ -35,20 +35,6 @@ public class DynamicLinker implements SymbolLookup {
     private static final int RTLD_LAZY = 1;
 
     private static final DynamicLibrary RTLD_DEFAULT = null;
-
-    private static class Lazy {
-        private static final SymbolLookup LOOKUP = Native.jvmDefaultLookup();
-        static final LibDL DL = new LibDL_Impl(LOOKUP);
-        // static final LibDL DL = NativeReflector.dynamicGlue(LibDL.class, LOOKUP);
-    }
-
-    private static final DynamicLibrary dlopen(String filename, int flags) {
-        return Lazy.DL.dlopen(filename, flags);
-    }
-
-    private static final DynamicSymbol dlsym(DynamicLibrary handle, String symbol) {
-        return Lazy.DL.dlsym(handle, symbol);
-    }
 
     private final DynamicLibrary handle;
 

@@ -25,6 +25,8 @@ class StaticGlueGenerator {
         NativeGlueGenerator dl = new NativeGlueGenerator();
         dl.setNamespace("io.kojan.javadeptools.nativ");
         dl.emitClass(DynamicLinker.LibDL.class);
+        dl.setJvmDefaultLookup();
+        dl.emitTrampoline(DynamicLinker.LibDL.class);
         dl.write(Paths.get("src/main/java/io/kojan/javadeptools/nativ/LibDL_Impl.java"));
     }
 }

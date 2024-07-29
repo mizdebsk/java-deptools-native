@@ -1,6 +1,7 @@
 package io.kojan.javadeptools.rpm;
 
 import io.kojan.javadeptools.nativ.AbstractNativeProxy;
+import io.kojan.javadeptools.nativ.Native;
 import io.kojan.javadeptools.nativ.NativePointer;
 import io.kojan.javadeptools.rpm.Rpm.RpmDS;
 import io.kojan.javadeptools.rpm.Rpm.RpmEVR;
@@ -921,5 +922,445 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
                 FunctionDescriptor.ofVoid(OBJ),
                 FunctionDescriptor.ofVoid(OBJ, INT)
         );
+    }
+}
+
+/**
+ * Trampoline class that contains methods of RpmLib as static methods.
+ */
+class RpmLib_Static {
+    private static class Lazy {
+        static final SymbolLookup LOOKUP = Native.dlopenLookup("librpm.so.10", "librpm.so.9");
+        static final RpmLib LIB = new RpmLib_Impl(LOOKUP);
+    }
+
+    /**
+     * Method stub that invokes native method {@code Fclose}.
+     * @param fd RpmFD
+     */
+    public static final void Fclose(RpmFD fd) {
+        Lazy.LIB.Fclose(fd);
+    }
+
+    /**
+     * Method stub that invokes native method {@code Ferror}.
+     * @param fd RpmFD
+     * @return int
+     */
+    public static final int Ferror(RpmFD fd) {
+        return Lazy.LIB.Ferror(fd);
+    }
+
+    /**
+     * Method stub that invokes native method {@code Fopen}.
+     * @param path String
+     * @param mode String
+     * @return RpmFD
+     */
+    public static final RpmFD Fopen(String path, String mode) {
+        return Lazy.LIB.Fopen(path, mode);
+    }
+
+    /**
+     * Method stub that invokes native method {@code Fstrerror}.
+     * @param fd RpmFD
+     * @return String
+     */
+    public static final String Fstrerror(RpmFD fd) {
+        return Lazy.LIB.Fstrerror(fd);
+    }
+
+    /**
+     * Method stub that invokes native method {@code Ftell}.
+     * @param fd RpmFD
+     * @return long
+     */
+    public static final long Ftell(RpmFD fd) {
+        return Lazy.LIB.Ftell(fd);
+    }
+
+    /**
+     * Method stub that invokes native method {@code headerFree}.
+     * @param h RpmHeader
+     */
+    public static final void headerFree(RpmHeader h) {
+        Lazy.LIB.headerFree(h);
+    }
+
+    /**
+     * Method stub that invokes native method {@code headerGet}.
+     * @param h RpmHeader
+     * @param tag int
+     * @param td RpmTD
+     * @param flags int
+     * @return int
+     */
+    public static final int headerGet(RpmHeader h, int tag, RpmTD td, int flags) {
+        return Lazy.LIB.headerGet(h, tag, td, flags);
+    }
+
+    /**
+     * Method stub that invokes native method {@code headerGetNumber}.
+     * @param h RpmHeader
+     * @param tag int
+     * @return long
+     */
+    public static final long headerGetNumber(RpmHeader h, int tag) {
+        return Lazy.LIB.headerGetNumber(h, tag);
+    }
+
+    /**
+     * Method stub that invokes native method {@code headerGetString}.
+     * @param h RpmHeader
+     * @param tag int
+     * @return String
+     */
+    public static final String headerGetString(RpmHeader h, int tag) {
+        return Lazy.LIB.headerGetString(h, tag);
+    }
+
+    /**
+     * Method stub that invokes native method {@code rpmReadConfigFiles}.
+     * @param file String
+     * @param target String
+     * @return int
+     */
+    public static final int rpmReadConfigFiles(String file, String target) {
+        return Lazy.LIB.rpmReadConfigFiles(file, target);
+    }
+
+    /**
+     * Method stub that invokes native method {@code rpmReadPackageFile}.
+     * @param ts RpmTS
+     * @param fd RpmFD
+     * @param fn String
+     * @param hdrp NativePointer
+     * @return int
+     */
+    public static final int rpmReadPackageFile(RpmTS ts, RpmFD fd, String fn, NativePointer hdrp) {
+        return Lazy.LIB.rpmReadPackageFile(ts, fd, fn, hdrp);
+    }
+
+    /**
+     * Method stub that invokes native method {@code rpmdbFreeIterator}.
+     * @param mi RpmMI
+     */
+    public static final void rpmdbFreeIterator(RpmMI mi) {
+        Lazy.LIB.rpmdbFreeIterator(mi);
+    }
+
+    /**
+     * Method stub that invokes native method {@code rpmdbNextIterator}.
+     * @param mi RpmMI
+     * @return RpmHeader
+     */
+    public static final RpmHeader rpmdbNextIterator(RpmMI mi) {
+        return Lazy.LIB.rpmdbNextIterator(mi);
+    }
+
+    /**
+     * Method stub that invokes native method {@code rpmdsDNEVR}.
+     * @param ds RpmDS
+     * @return String
+     */
+    public static final String rpmdsDNEVR(RpmDS ds) {
+        return Lazy.LIB.rpmdsDNEVR(ds);
+    }
+
+    /**
+     * Method stub that invokes native method {@code rpmdsEVR}.
+     * @param ds RpmDS
+     * @return String
+     */
+    public static final String rpmdsEVR(RpmDS ds) {
+        return Lazy.LIB.rpmdsEVR(ds);
+    }
+
+    /**
+     * Method stub that invokes native method {@code rpmdsFlags}.
+     * @param ds RpmDS
+     * @return int
+     */
+    public static final int rpmdsFlags(RpmDS ds) {
+        return Lazy.LIB.rpmdsFlags(ds);
+    }
+
+    /**
+     * Method stub that invokes native method {@code rpmdsFree}.
+     * @param ds RpmDS
+     */
+    public static final void rpmdsFree(RpmDS ds) {
+        Lazy.LIB.rpmdsFree(ds);
+    }
+
+    /**
+     * Method stub that invokes native method {@code rpmdsIsRich}.
+     * @param ds RpmDS
+     * @return int
+     */
+    public static final int rpmdsIsRich(RpmDS ds) {
+        return Lazy.LIB.rpmdsIsRich(ds);
+    }
+
+    /**
+     * Method stub that invokes native method {@code rpmdsN}.
+     * @param ds RpmDS
+     * @return String
+     */
+    public static final String rpmdsN(RpmDS ds) {
+        return Lazy.LIB.rpmdsN(ds);
+    }
+
+    /**
+     * Method stub that invokes native method {@code rpmdsNew}.
+     * @param h RpmHeader
+     * @param tagN int
+     * @param flags int
+     * @return RpmDS
+     */
+    public static final RpmDS rpmdsNew(RpmHeader h, int tagN, int flags) {
+        return Lazy.LIB.rpmdsNew(h, tagN, flags);
+    }
+
+    /**
+     * Method stub that invokes native method {@code rpmdsNext}.
+     * @param ds RpmDS
+     * @return int
+     */
+    public static final int rpmdsNext(RpmDS ds) {
+        return Lazy.LIB.rpmdsNext(ds);
+    }
+
+    /**
+     * Method stub that invokes native method {@code rpmfiBN}.
+     * @param fi RpmFI
+     * @return String
+     */
+    public static final String rpmfiBN(RpmFI fi) {
+        return Lazy.LIB.rpmfiBN(fi);
+    }
+
+    /**
+     * Method stub that invokes native method {@code rpmfiDN}.
+     * @param fi RpmFI
+     * @return String
+     */
+    public static final String rpmfiDN(RpmFI fi) {
+        return Lazy.LIB.rpmfiDN(fi);
+    }
+
+    /**
+     * Method stub that invokes native method {@code rpmfiFree}.
+     * @param fi RpmFI
+     */
+    public static final void rpmfiFree(RpmFI fi) {
+        Lazy.LIB.rpmfiFree(fi);
+    }
+
+    /**
+     * Method stub that invokes native method {@code rpmfiNext}.
+     * @param fi RpmFI
+     * @return int
+     */
+    public static final int rpmfiNext(RpmFI fi) {
+        return Lazy.LIB.rpmfiNext(fi);
+    }
+
+    /**
+     * Method stub that invokes native method {@code rpmfilesFree}.
+     * @param fi RpmFiles
+     */
+    public static final void rpmfilesFree(RpmFiles fi) {
+        Lazy.LIB.rpmfilesFree(fi);
+    }
+
+    /**
+     * Method stub that invokes native method {@code rpmfilesIter}.
+     * @param files RpmFiles
+     * @param itype int
+     * @return RpmFI
+     */
+    public static final RpmFI rpmfilesIter(RpmFiles files, int itype) {
+        return Lazy.LIB.rpmfilesIter(files, itype);
+    }
+
+    /**
+     * Method stub that invokes native method {@code rpmfilesNew}.
+     * @param pool RpmStrPool
+     * @param h RpmHeader
+     * @param tagN int
+     * @param flags int
+     * @return RpmFiles
+     */
+    public static final RpmFiles rpmfilesNew(RpmStrPool pool, RpmHeader h, int tagN, int flags) {
+        return Lazy.LIB.rpmfilesNew(pool, h, tagN, flags);
+    }
+
+    /**
+     * Method stub that invokes native method {@code rpmstrPoolCreate}.
+     * @return RpmStrPool
+     */
+    public static final RpmStrPool rpmstrPoolCreate() {
+        return Lazy.LIB.rpmstrPoolCreate();
+    }
+
+    /**
+     * Method stub that invokes native method {@code rpmstrPoolFree}.
+     * @param pool RpmStrPool
+     */
+    public static final void rpmstrPoolFree(RpmStrPool pool) {
+        Lazy.LIB.rpmstrPoolFree(pool);
+    }
+
+    /**
+     * Method stub that invokes native method {@code rpmtdCount}.
+     * @param td RpmTD
+     * @return int
+     */
+    public static final int rpmtdCount(RpmTD td) {
+        return Lazy.LIB.rpmtdCount(td);
+    }
+
+    /**
+     * Method stub that invokes native method {@code rpmtdFree}.
+     * @param td RpmTD
+     */
+    public static final void rpmtdFree(RpmTD td) {
+        Lazy.LIB.rpmtdFree(td);
+    }
+
+    /**
+     * Method stub that invokes native method {@code rpmtdGetNumber}.
+     * @param td RpmTD
+     * @return long
+     */
+    public static final long rpmtdGetNumber(RpmTD td) {
+        return Lazy.LIB.rpmtdGetNumber(td);
+    }
+
+    /**
+     * Method stub that invokes native method {@code rpmtdGetString}.
+     * @param td RpmTD
+     * @return String
+     */
+    public static final String rpmtdGetString(RpmTD td) {
+        return Lazy.LIB.rpmtdGetString(td);
+    }
+
+    /**
+     * Method stub that invokes native method {@code rpmtdNew}.
+     * @return RpmTD
+     */
+    public static final RpmTD rpmtdNew() {
+        return Lazy.LIB.rpmtdNew();
+    }
+
+    /**
+     * Method stub that invokes native method {@code rpmtdNext}.
+     * @param td RpmTD
+     * @return int
+     */
+    public static final int rpmtdNext(RpmTD td) {
+        return Lazy.LIB.rpmtdNext(td);
+    }
+
+    /**
+     * Method stub that invokes native method {@code rpmtsCreate}.
+     * @return RpmTS
+     */
+    public static final RpmTS rpmtsCreate() {
+        return Lazy.LIB.rpmtsCreate();
+    }
+
+    /**
+     * Method stub that invokes native method {@code rpmtsFree}.
+     * @param ts RpmTS
+     */
+    public static final void rpmtsFree(RpmTS ts) {
+        Lazy.LIB.rpmtsFree(ts);
+    }
+
+    /**
+     * Method stub that invokes native method {@code rpmtsInitIterator}.
+     * @param ts RpmTS
+     * @param rpmtag int
+     * @param keyp String
+     * @param keylen long
+     * @return RpmMI
+     */
+    public static final RpmMI rpmtsInitIterator(RpmTS ts, int rpmtag, String keyp, long keylen) {
+        return Lazy.LIB.rpmtsInitIterator(ts, rpmtag, keyp, keylen);
+    }
+
+    /**
+     * Method stub that invokes native method {@code rpmtsSetRootDir}.
+     * @param ts RpmTS
+     * @param rootDir String
+     * @return int
+     */
+    public static final int rpmtsSetRootDir(RpmTS ts, String rootDir) {
+        return Lazy.LIB.rpmtsSetRootDir(ts, rootDir);
+    }
+
+    /**
+     * Method stub that invokes native method {@code rpmtsSetVSFlags}.
+     * @param ts RpmTS
+     * @param vsflags int
+     */
+    public static final void rpmtsSetVSFlags(RpmTS ts, int vsflags) {
+        Lazy.LIB.rpmtsSetVSFlags(ts, vsflags);
+    }
+
+    /**
+     * Method stub that invokes native method {@code rpmverE}.
+     * @param rv RpmEVR
+     * @return String
+     */
+    public static final String rpmverE(RpmEVR rv) {
+        return Lazy.LIB.rpmverE(rv);
+    }
+
+    /**
+     * Method stub that invokes native method {@code rpmverEVal}.
+     * @param rv RpmEVR
+     * @return long
+     */
+    public static final long rpmverEVal(RpmEVR rv) {
+        return Lazy.LIB.rpmverEVal(rv);
+    }
+
+    /**
+     * Method stub that invokes native method {@code rpmverFree}.
+     * @param rv RpmEVR
+     */
+    public static final void rpmverFree(RpmEVR rv) {
+        Lazy.LIB.rpmverFree(rv);
+    }
+
+    /**
+     * Method stub that invokes native method {@code rpmverParse}.
+     * @param evr String
+     * @return RpmEVR
+     */
+    public static final RpmEVR rpmverParse(String evr) {
+        return Lazy.LIB.rpmverParse(evr);
+    }
+
+    /**
+     * Method stub that invokes native method {@code rpmverR}.
+     * @param rv RpmEVR
+     * @return String
+     */
+    public static final String rpmverR(RpmEVR rv) {
+        return Lazy.LIB.rpmverR(rv);
+    }
+
+    /**
+     * Method stub that invokes native method {@code rpmverV}.
+     * @param rv RpmEVR
+     * @return String
+     */
+    public static final String rpmverV(RpmEVR rv) {
+        return Lazy.LIB.rpmverV(rv);
     }
 }

@@ -65,3 +65,33 @@ final class LibDL_Impl extends AbstractNativeProxy implements LibDL {
         );
     }
 }
+
+/**
+ * Trampoline class that contains methods of LibDL as static methods.
+ */
+class LibDL_Static {
+    private static class Lazy {
+        static final SymbolLookup LOOKUP = Native.jvmDefaultLookup();
+        static final LibDL LIB = new LibDL_Impl(LOOKUP);
+    }
+
+    /**
+     * Method stub that invokes native method {@code dlopen}.
+     * @param filename String
+     * @param flags int
+     * @return DynamicLibrary
+     */
+    public static final DynamicLibrary dlopen(String filename, int flags) {
+        return Lazy.LIB.dlopen(filename, flags);
+    }
+
+    /**
+     * Method stub that invokes native method {@code dlsym}.
+     * @param handle DynamicLibrary
+     * @param symbol String
+     * @return DynamicSymbol
+     */
+    public static final DynamicSymbol dlsym(DynamicLibrary handle, String symbol) {
+        return Lazy.LIB.dlsym(handle, symbol);
+    }
+}

@@ -32,6 +32,7 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import io.kojan.javadeptools.nativ.AbstractNativeProxy;
+import io.kojan.javadeptools.nativ.Native;
 import io.kojan.javadeptools.nativ.NativeObject;
 
 public class NativeGlueGenerator extends JavaCodeGenerator {
@@ -213,6 +214,73 @@ public class NativeGlueGenerator extends JavaCodeGenerator {
         }
 
         emitLayoutsGetter(methods);
+
+        pa("}");
+    }
+
+    private String lookup;
+
+    public void setJvmDefaultLookup() {
+        lookup = ps(Native.class, ".jvmDefaultLookup()");
+    }
+
+    public void setDlsymDefaultLookup() {
+        lookup = ps(Native.class, ".dlsymDefaultLookup()");
+    }
+
+    public void setDlopenLookup(String lib0, String... libs) {
+        lookup = ps(Native.class, ".dlopenLookup(\"", lib0, "\"",
+                Arrays.asList(libs).stream().map(lib -> ", \"" + lib + "\"").collect(Collectors.joining()), ")");
+    }
+
+    /** Generate code for trampoline class with static methods. */
+    public void emitTrampoline(Class<?> iface) {
+        pa();
+        if (javadoc) {
+            pa("/**");
+            pa(" * Trampoline class that contains methods of ", iface, " as static methods.");
+            pa(" */");
+        }
+        pa("class ", iface.getSimpleName() + "_Static {");
+
+        pa("private static class Lazy {");
+        pa("static final ", SymbolLookup.class, " LOOKUP = ", lookup, ";");
+        pa("static final ", iface.getSimpleName(), " LIB = new ", iface.getSimpleName(), "_Impl(LOOKUP);");
+        pa("}");
+
+        // The order of methods returned by reflection is not stable and can vary.
+        // Therefore sort methods by name for stable, reproducible output.
+        List<Method> methods = Arrays.asList(iface.getMethods());
+        Collections.sort(methods, Comparator.comparing(Method::getName));
+
+        for (Method method : methods) {
+            List<Parameter> params = Arrays.asList(method.getParameters());
+            Class<?> retType = method.getReturnType();
+            boolean ret = !retType.equals(Void.TYPE);
+
+            pa();
+            if (javadoc) {
+                pa("/**");
+                pa(" * Method stub that invokes native method {@code ", method.getName(), "}.");
+                for (Parameter param : params) {
+                    pa(" * @param ", param.getName(), " ", param.getType());
+                }
+                if (ret) {
+                    pa(" * @return ", retType);
+                }
+                pa(" */");
+            }
+            pn("public static final ", retType, " ", method.getName() + "(");
+            pj(params.stream().map(param -> javaType(param.getType()) + " " + param.getName()));
+            pa(") {");
+            if (ret) {
+                pn("return ");
+            }
+            pn("Lazy.LIB.", method.getName(), "(");
+            pj(params.stream().map(Parameter::getName));
+            pa(");");
+            pa("}");
+        }
 
         pa("}");
     }
