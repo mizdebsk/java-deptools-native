@@ -125,6 +125,7 @@ final class Rpm extends RpmLib_Static {
         int rpmfiFRdev(RpmFI fi);
         RpmFI rpmfiNewArchiveReader(RpmFD fd, RpmFiles files, int itype);
         void rpmfiArchiveClose(RpmFI fi);
+        int rpmfiArchiveHasContent(RpmFI fi);
         long rpmfiArchiveRead(RpmFI fi, Buffer buf, long size);
         RpmFD Fopen(String path, String mode);
         RpmFD Fdopen(RpmFD ofd, String mode);

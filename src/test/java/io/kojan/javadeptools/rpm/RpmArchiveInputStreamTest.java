@@ -54,6 +54,8 @@ public class RpmArchiveInputStreamTest {
         assertEquals(5, rc);
         assertEquals("test\n\0", new String(buf));
 
+        assertEquals(-1, ais.read(buf));
+
         assertNull(ais.getNextEntry());
 
         ais.close();

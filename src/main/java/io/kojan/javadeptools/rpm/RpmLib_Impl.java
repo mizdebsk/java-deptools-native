@@ -502,6 +502,24 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
     private final MethodHandle mh_rpmfiArchiveClose = makeMethodHandle(VOID, "rpmfiArchiveClose", OBJ);
 
     /**
+     * Method stub that invokes native method {@code rpmfiArchiveHasContent}.
+     * @param fi RpmFI
+     * @return int
+     */
+    @Override
+    public int rpmfiArchiveHasContent(RpmFI fi) {
+        try {
+            return (int)mh_rpmfiArchiveHasContent.invokeExact(
+                    downConvertObject(fi)
+            );
+        } catch (Throwable _t) {
+            throw new RuntimeException("Failed to invoke native function rpmfiArchiveHasContent", _t);
+        }
+    }
+
+    private final MethodHandle mh_rpmfiArchiveHasContent = makeMethodHandle(INT, "rpmfiArchiveHasContent", OBJ);
+
+    /**
      * Method stub that invokes native method {@code rpmfiArchiveRead}.
      * @param fi RpmFI
      * @param buf Buffer
@@ -1395,6 +1413,15 @@ class RpmLib_Static {
      */
     public static final void rpmfiArchiveClose(RpmFI fi) {
         Lazy.LIB.rpmfiArchiveClose(fi);
+    }
+
+    /**
+     * Method stub that invokes native method {@code rpmfiArchiveHasContent}.
+     * @param fi RpmFI
+     * @return int
+     */
+    public static final int rpmfiArchiveHasContent(RpmFI fi) {
+        return Lazy.LIB.rpmfiArchiveHasContent(fi);
     }
 
     /**

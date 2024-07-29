@@ -38,6 +38,7 @@ public class RpmArchiveInputStream extends ArchiveInputStream<CpioArchiveEntry> 
     private RpmFD fd;
     private RpmTS ts;
     private RpmHeader h;
+    private long avail;
 
     /**
      * Opens RPM package from disk as {@link ArchiveInputStream}
@@ -106,6 +107,7 @@ public class RpmArchiveInputStream extends ArchiveInputStream<CpioArchiveEntry> 
         if (rpmfiNext(fi) < 0) {
             return null;
         }
+        avail = rpmfiArchiveHasContent(fi) != 0 ? rpmfiFSize(fi) : 0;
         final CpioArchiveEntry cpio = new CpioArchiveEntry(CpioConstants.FORMAT_NEW);
         cpio.setInode(rpmfiFInode(fi));
         cpio.setMode(rpmfiFMode(fi));
@@ -123,12 +125,16 @@ public class RpmArchiveInputStream extends ArchiveInputStream<CpioArchiveEntry> 
 
     @Override
     public int read(byte[] buf, int off, int len) throws IOException {
+        if (avail == 0) {
+            return -1;
+        }
         ByteBuffer nativeBuffer = ByteBuffer.allocateDirect(len);
         int n = (int) rpmfiArchiveRead(fi, nativeBuffer, len);
         nativeBuffer.position(n);
         nativeBuffer.flip();
         ByteBuffer arrayBuffer = ByteBuffer.wrap(buf, off, len);
         arrayBuffer.put(nativeBuffer);
+        avail -= n;
         return n;
     }
 
