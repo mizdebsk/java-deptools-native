@@ -596,6 +596,24 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
     private final MethodHandle mh_rpmfiFInode = makeMethodHandle(INT, "rpmfiFInode", OBJ);
 
     /**
+     * Method stub that invokes native method {@code rpmfiFLink}.
+     * @param fi RpmFI
+     * @return String
+     */
+    @Override
+    public String rpmfiFLink(RpmFI fi) {
+        try {
+            return upConvertString((MemorySegment)mh_rpmfiFLink.invokeExact(
+                    downConvertObject(fi)
+            ));
+        } catch (Throwable _t) {
+            throw new RuntimeException("Failed to invoke native function rpmfiFLink", _t);
+        }
+    }
+
+    private final MethodHandle mh_rpmfiFLink = makeMethodHandle(STR, "rpmfiFLink", OBJ);
+
+    /**
      * Method stub that invokes native method {@code rpmfiFMode}.
      * @param fi RpmFI
      * @return int
@@ -1460,6 +1478,15 @@ class RpmLib_Static {
      */
     public static final int rpmfiFInode(RpmFI fi) {
         return Lazy.LIB.rpmfiFInode(fi);
+    }
+
+    /**
+     * Method stub that invokes native method {@code rpmfiFLink}.
+     * @param fi RpmFI
+     * @return String
+     */
+    public static final String rpmfiFLink(RpmFI fi) {
+        return Lazy.LIB.rpmfiFLink(fi);
     }
 
     /**

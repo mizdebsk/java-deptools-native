@@ -123,6 +123,7 @@ final class Rpm extends RpmLib_Static {
         int rpmfiFMtime(RpmFI fi);
         long rpmfiFSize(RpmFI fi);
         int rpmfiFRdev(RpmFI fi);
+        String rpmfiFLink(RpmFI fi);
         RpmFI rpmfiNewArchiveReader(RpmFD fd, RpmFiles files, int itype);
         void rpmfiArchiveClose(RpmFI fi);
         int rpmfiArchiveHasContent(RpmFI fi);

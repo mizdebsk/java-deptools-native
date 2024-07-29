@@ -17,6 +17,7 @@ package io.kojan.javadeptools.rpm;
 
 import static io.kojan.javadeptools.rpm.Rpm.*;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.file.Path;
@@ -39,6 +40,7 @@ public class RpmArchiveInputStream extends ArchiveInputStream<CpioArchiveEntry> 
     private RpmTS ts;
     private RpmHeader h;
     private long avail;
+    private ByteArrayInputStream linkBytes;
 
     /**
      * Opens RPM package from disk as {@link ArchiveInputStream}
@@ -108,12 +110,18 @@ public class RpmArchiveInputStream extends ArchiveInputStream<CpioArchiveEntry> 
             return null;
         }
         avail = rpmfiArchiveHasContent(fi) != 0 ? rpmfiFSize(fi) : 0;
+        final int S_IFMT = 0170000;
+        final int C_ISLNK = 0120000;
+        if ((rpmfiFMode(fi) & S_IFMT) == C_ISLNK) {
+            linkBytes = new ByteArrayInputStream(rpmfiFLink(fi).getBytes());
+        } else {
+            linkBytes = null;
+        }
         final CpioArchiveEntry cpio = new CpioArchiveEntry(CpioConstants.FORMAT_NEW);
         cpio.setInode(rpmfiFInode(fi));
         cpio.setMode(rpmfiFMode(fi));
         // TODO rpmfiFUser
         // TODO rpmfiFGroup
-        // TODO rpmfiFLink
         cpio.setNumberOfLinks(rpmfiFNlink(fi));
         cpio.setTime(rpmfiFMtime(fi));
         cpio.setSize(rpmfiFSize(fi));
@@ -125,6 +133,9 @@ public class RpmArchiveInputStream extends ArchiveInputStream<CpioArchiveEntry> 
 
     @Override
     public int read(byte[] buf, int off, int len) throws IOException {
+        if (linkBytes != null) {
+            return linkBytes.read(buf, off, len);
+        }
         if (avail == 0) {
             return -1;
         }

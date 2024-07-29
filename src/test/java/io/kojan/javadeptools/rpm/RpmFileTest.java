@@ -66,6 +66,10 @@ public class RpmFileTest {
         assertEquals("/gh/", ghost.getDirectoryName());
         assertEquals("ost", ghost.getBaseName());
 
+        RpmFile symlink = it.next();
+        assertEquals("/", symlink.getDirectoryName());
+        assertEquals("symlink", symlink.getBaseName());
+
         assertFalse(it.hasNext());
     }
 }
