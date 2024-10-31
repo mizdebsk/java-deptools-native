@@ -24,7 +24,7 @@ import java.util.List;
 
 /**
  * List installed RPM packages by given criteria.
- * 
+ *
  * @author Mikolaj Izdebski
  */
 public class RpmQuery {
@@ -37,7 +37,7 @@ public class RpmQuery {
 
     /**
      * List RPM packages installed in the system that provide given file.
-     * 
+     *
      * @param path provided file to query packages
      * @return list of packages that provide given file
      */
@@ -47,7 +47,7 @@ public class RpmQuery {
 
     /**
      * List RPM packages installed in a chroot that provide given file.
-     * 
+     *
      * @param path provided file to query packages
      * @param root path to chroot in which packages are installed
      * @return list of packages that provide given file
@@ -60,7 +60,9 @@ public class RpmQuery {
                     return Collections.emptyList();
                 }
             }
-            RpmMI mi = rpmtsInitIterator(ts, RPMDBI_INSTFILENAMES, path.toAbsolutePath().toString(), 0);
+            RpmMI mi =
+                    rpmtsInitIterator(
+                            ts, RPMDBI_INSTFILENAMES, path.toAbsolutePath().toString(), 0);
             try {
                 List<RpmInfo> providers = new ArrayList<>();
                 RpmHeader h;
@@ -75,5 +77,4 @@ public class RpmQuery {
             rpmtsFree(ts);
         }
     }
-
 }

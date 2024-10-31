@@ -19,11 +19,14 @@ import static io.kojan.javadeptools.rpm.Rpm.*;
 
 /**
  * RPM dependency with optional relation and version.
- * 
+ *
  * @author Mikolaj Izdebski
  */
 public class RpmDependency {
-    private static final String[] SENSES = new String[] { "", "<", ">", "<>", "=", "<=", ">=", "<>=", };
+    private static final String[] SENSES =
+            new String[] {
+                "", "<", ">", "<>", "=", "<=", ">=", "<>=",
+            };
 
     private final String dnevr;
     private final String name;
@@ -41,10 +44,9 @@ public class RpmDependency {
 
     /**
      * Returns the name part of RPM dependency.
-     * <p>
-     * For example, for dependency {@code something >= 1.2-3}, it returns
-     * {@code something}.
-     * 
+     *
+     * <p>For example, for dependency {@code something >= 1.2-3}, it returns {@code something}.
+     *
      * @return name part of RPM dependency
      */
     public String getName() {
@@ -53,10 +55,9 @@ public class RpmDependency {
 
     /**
      * Returns the relation part of RPM dependency.
-     * <p>
-     * For example, for dependency {@code something >= 1.2-3}, it returns
-     * {@code >=}.
-     * 
+     *
+     * <p>For example, for dependency {@code something >= 1.2-3}, it returns {@code >=}.
+     *
      * @return relation part of RPM dependency
      */
     public String getSense() {
@@ -65,10 +66,9 @@ public class RpmDependency {
 
     /**
      * Returns the version part of RPM dependency.
-     * <p>
-     * For example, for dependency {@code something >= 1.2-3}, it returns
-     * {@code 1.2-3}.
-     * 
+     *
+     * <p>For example, for dependency {@code something >= 1.2-3}, it returns {@code 1.2-3}.
+     *
      * @return version part of RPM dependency
      */
     public RpmVersion getVersion() {
@@ -76,13 +76,12 @@ public class RpmDependency {
     }
 
     /**
-     * Determines whether the RPM dependency is a rich dependency, also known as
-     * boolean dependency.
-     * 
+     * Determines whether the RPM dependency is a rich dependency, also known as boolean dependency.
+     *
      * @return {@code true} iff RPM dependency is a rich (boolean) dependency
      * @see <a href=
-     *      "https://rpm-software-management.github.io/rpm/manual/boolean_dependencies.html">RPM
-     *      documentation about boolean dependencies</a>
+     *     "https://rpm-software-management.github.io/rpm/manual/boolean_dependencies.html">RPM
+     *     documentation about boolean dependencies</a>
      */
     public boolean isRich() {
         return isRich;

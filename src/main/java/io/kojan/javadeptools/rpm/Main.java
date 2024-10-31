@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 
 /**
  * A simple command-line tool for querying RPM packages.
- * 
+ *
  * @author Mikolaj Izdebski
  */
 public class Main {
@@ -57,7 +57,8 @@ public class Main {
 
     private void setAction(Consumer<RpmInfo> action) {
         if (actionName != null) {
-            throw new IllegalArgumentException("Action " + currentArg + " conflict with previously-set " + actionName);
+            throw new IllegalArgumentException(
+                    "Action " + currentArg + " conflict with previously-set " + actionName);
         }
         actionName = currentArg;
         this.action = action;
@@ -68,53 +69,53 @@ public class Main {
     }
 
     private void parseArgs(String[] args) {
-        for (argsIterator = Arrays.asList(args).iterator(); argsIterator.hasNext();) {
+        for (argsIterator = Arrays.asList(args).iterator(); argsIterator.hasNext(); ) {
             currentArg = argsIterator.next();
             switch (currentArg) {
-            case "-r":
-                root = parsePathArg();
-                break;
-            case "-p":
-                pack = parsePathArg();
-                break;
-            case "-f":
-                file = parsePathArg();
-                break;
-            case "-i":
-                setAction(this::infoAction);
-                break;
-            case "-l":
-                setAction(this::filesAction);
-                break;
-            case "--provides":
-                setDepsAction(RpmInfo::getProvides);
-                break;
-            case "--requires":
-                setDepsAction(RpmInfo::getRequires);
-                break;
-            case "--conflicts":
-                setDepsAction(RpmInfo::getConflicts);
-                break;
-            case "--obsoletes":
-                setDepsAction(RpmInfo::getObsoletes);
-                break;
-            case "--recommends":
-                setDepsAction(RpmInfo::getRecommends);
-                break;
-            case "--suggests":
-                setDepsAction(RpmInfo::getSuggests);
-                break;
-            case "--supplements":
-                setDepsAction(RpmInfo::getSupplements);
-                break;
-            case "--enhances":
-                setDepsAction(RpmInfo::getEnhances);
-                break;
-            case "--orderWithRequires":
-                setDepsAction(RpmInfo::getOrderWithRequires);
-                break;
-            default:
-                throw new IllegalArgumentException("Unknown option: " + currentArg);
+                case "-r":
+                    root = parsePathArg();
+                    break;
+                case "-p":
+                    pack = parsePathArg();
+                    break;
+                case "-f":
+                    file = parsePathArg();
+                    break;
+                case "-i":
+                    setAction(this::infoAction);
+                    break;
+                case "-l":
+                    setAction(this::filesAction);
+                    break;
+                case "--provides":
+                    setDepsAction(RpmInfo::getProvides);
+                    break;
+                case "--requires":
+                    setDepsAction(RpmInfo::getRequires);
+                    break;
+                case "--conflicts":
+                    setDepsAction(RpmInfo::getConflicts);
+                    break;
+                case "--obsoletes":
+                    setDepsAction(RpmInfo::getObsoletes);
+                    break;
+                case "--recommends":
+                    setDepsAction(RpmInfo::getRecommends);
+                    break;
+                case "--suggests":
+                    setDepsAction(RpmInfo::getSuggests);
+                    break;
+                case "--supplements":
+                    setDepsAction(RpmInfo::getSupplements);
+                    break;
+                case "--enhances":
+                    setDepsAction(RpmInfo::getEnhances);
+                    break;
+                case "--orderWithRequires":
+                    setDepsAction(RpmInfo::getOrderWithRequires);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unknown option: " + currentArg);
             }
         }
     }
@@ -128,7 +129,6 @@ public class Main {
             return "(absent)";
         }
         return opt.get().toString();
-
     }
 
     private String infoList(List<?> list) {
@@ -188,12 +188,11 @@ public class Main {
 
     /**
      * Invokes the CLI tool.
-     * 
+     *
      * @param args command-line arguments
      */
     public static void main(String[] args) {
         Main main = new Main(args);
         System.exit(main.run());
     }
-
 }

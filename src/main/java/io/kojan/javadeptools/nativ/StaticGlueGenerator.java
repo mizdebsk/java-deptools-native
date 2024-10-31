@@ -15,10 +15,9 @@
  */
 package io.kojan.javadeptools.nativ;
 
+import io.kojan.javadeptools.nativ.generator.NativeGlueGenerator;
 import java.io.IOException;
 import java.nio.file.Paths;
-
-import io.kojan.javadeptools.nativ.generator.NativeGlueGenerator;
 
 class StaticGlueGenerator {
     public static void main(String[] args) throws IOException {

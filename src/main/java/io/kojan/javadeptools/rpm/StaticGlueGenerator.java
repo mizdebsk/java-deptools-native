@@ -15,11 +15,10 @@
  */
 package io.kojan.javadeptools.rpm;
 
-import java.io.IOException;
-import java.nio.file.Paths;
-
 import io.kojan.javadeptools.nativ.generator.NativeGlueGenerator;
 import io.kojan.javadeptools.rpm.Rpm.RpmLib;
+import java.io.IOException;
+import java.nio.file.Paths;
 
 class StaticGlueGenerator {
     public static void main(String[] args) throws IOException {

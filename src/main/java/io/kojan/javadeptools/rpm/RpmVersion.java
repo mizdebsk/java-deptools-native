@@ -19,7 +19,7 @@ import static io.kojan.javadeptools.rpm.Rpm.*;
 
 /**
  * RPM compound version (EVR) that consists of epoch, version and release.
- * 
+ *
  * @author Mikolaj Izdebski
  */
 public class RpmVersion {
@@ -30,7 +30,7 @@ public class RpmVersion {
 
     /**
      * Constructs {@link RpmVersion} by parsing RPM EVR string.
-     * 
+     *
      * @param evr RPM EVR (epoch-version-release) string
      */
     public RpmVersion(String evr) {
@@ -44,7 +44,7 @@ public class RpmVersion {
 
     /**
      * Returns epoch part of RPM version.
-     * 
+     *
      * @return epoch part of RPM version
      */
     public Long getEpoch() {
@@ -53,7 +53,7 @@ public class RpmVersion {
 
     /**
      * Returns version part of RPM version.
-     * 
+     *
      * @return version part of RPM version
      */
     public String getVersion() {
@@ -62,7 +62,7 @@ public class RpmVersion {
 
     /**
      * Returns release part of RPM version.
-     * 
+     *
      * @return release part of RPM version
      */
     public String getRelease() {

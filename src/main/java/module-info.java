@@ -15,14 +15,13 @@
  */
 /**
  * Module for read-only access to <a href="https://rpm.org/">RPM</a> packages.
- * 
- * It provides functionality for listing installed RPM packages, reading details
- * about RPM package or reading RPM package file contents as an archive.
- * 
+ *
+ * <p>It provides functionality for listing installed RPM packages, reading details about RPM
+ * package or reading RPM package file contents as an archive.
+ *
  * @author Mikolaj Izdebski
  * @see <a href="https://rpm.org/">RPM home page</a>
- * @see <a href="https://rpm-software-management.github.io/rpm/">RPM
- *      documentation</a>
+ * @see <a href="https://rpm-software-management.github.io/rpm/">RPM documentation</a>
  */
 module io.kojan.javadeptools.rpm {
     requires transitive org.apache.commons.compress;

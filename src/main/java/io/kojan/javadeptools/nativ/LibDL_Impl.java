@@ -1,3 +1,18 @@
+/*-
+ * Copyright (c) 2024 Red Hat, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package io.kojan.javadeptools.nativ;
 
 import io.kojan.javadeptools.nativ.DynamicLinker.DynamicLibrary;
@@ -10,9 +25,7 @@ import java.lang.foreign.SymbolLookup;
 import java.lang.invoke.MethodHandle;
 import java.util.Arrays;
 
-/**
- * Native implementation of LibDL.
- */
+/** Native implementation of LibDL. */
 final class LibDL_Impl extends AbstractNativeProxy implements LibDL {
     public LibDL_Impl(SymbolLookup lookup) {
         super(lookup);
@@ -20,6 +33,7 @@ final class LibDL_Impl extends AbstractNativeProxy implements LibDL {
 
     /**
      * Method stub that invokes native method {@code dlopen}.
+     *
      * @param filename String
      * @param flags int
      * @return DynamicLibrary
@@ -27,10 +41,10 @@ final class LibDL_Impl extends AbstractNativeProxy implements LibDL {
     @Override
     public DynamicLibrary dlopen(String filename, int flags) {
         try (Arena arena = Arena.ofConfined()) {
-            return upConvertObject(DynamicLibrary::new, (MemorySegment)mh_dlopen.invokeExact(
-                    downConvertString(filename, arena),
-                    flags
-            ));
+            return upConvertObject(
+                    DynamicLibrary::new,
+                    (MemorySegment)
+                            mh_dlopen.invokeExact(downConvertString(filename, arena), flags));
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function dlopen", _t);
         }
@@ -40,6 +54,7 @@ final class LibDL_Impl extends AbstractNativeProxy implements LibDL {
 
     /**
      * Method stub that invokes native method {@code dlsym}.
+     *
      * @param handle DynamicLibrary
      * @param symbol String
      * @return DynamicSymbol
@@ -47,10 +62,11 @@ final class LibDL_Impl extends AbstractNativeProxy implements LibDL {
     @Override
     public DynamicSymbol dlsym(DynamicLibrary handle, String symbol) {
         try (Arena arena = Arena.ofConfined()) {
-            return upConvertObject(DynamicSymbol::new, (MemorySegment)mh_dlsym.invokeExact(
-                    downConvertObject(handle),
-                    downConvertString(symbol, arena)
-            ));
+            return upConvertObject(
+                    DynamicSymbol::new,
+                    (MemorySegment)
+                            mh_dlsym.invokeExact(
+                                    downConvertObject(handle), downConvertString(symbol, arena)));
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function dlsym", _t);
         }
@@ -60,15 +76,11 @@ final class LibDL_Impl extends AbstractNativeProxy implements LibDL {
 
     public static Iterable<FunctionDescriptor> getFunctionLayouts() {
         return Arrays.asList(
-                FunctionDescriptor.of(OBJ, OBJ, STR),
-                FunctionDescriptor.of(OBJ, STR, INT)
-        );
+                FunctionDescriptor.of(OBJ, OBJ, STR), FunctionDescriptor.of(OBJ, STR, INT));
     }
 }
 
-/**
- * Trampoline class that contains methods of LibDL as static methods.
- */
+/** Trampoline class that contains methods of LibDL as static methods. */
 class LibDL_Static {
     private static class Lazy {
         static final SymbolLookup LOOKUP = Native.jvmDefaultLookup();
@@ -77,6 +89,7 @@ class LibDL_Static {
 
     /**
      * Method stub that invokes native method {@code dlopen}.
+     *
      * @param filename String
      * @param flags int
      * @return DynamicLibrary
@@ -87,6 +100,7 @@ class LibDL_Static {
 
     /**
      * Method stub that invokes native method {@code dlsym}.
+     *
      * @param handle DynamicLibrary
      * @param symbol String
      * @return DynamicSymbol

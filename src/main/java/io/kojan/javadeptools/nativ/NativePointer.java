@@ -22,7 +22,7 @@ import java.util.function.Supplier;
 
 /**
  * Native pointer to a native data structure.
- * 
+ *
  * @author Mikolaj Izdebski
  */
 public class NativePointer extends NativeObject {

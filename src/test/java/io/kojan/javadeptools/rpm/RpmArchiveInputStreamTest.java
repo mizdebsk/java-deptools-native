@@ -20,7 +20,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.cpio.CpioArchiveEntry;
 import org.junit.jupiter.api.Test;
@@ -206,5 +205,4 @@ public class RpmArchiveInputStreamTest {
         assertNull(ais.getNextEntry());
         ais.close();
     }
-
 }

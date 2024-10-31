@@ -15,6 +15,9 @@
  */
 package io.kojan.javadeptools.nativ.generator;
 
+import io.kojan.javadeptools.nativ.AbstractNativeProxy;
+import io.kojan.javadeptools.nativ.Native;
+import io.kojan.javadeptools.nativ.NativeObject;
 import java.lang.foreign.Arena;
 import java.lang.foreign.FunctionDescriptor;
 import java.lang.foreign.MemorySegment;
@@ -32,10 +35,6 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
-import io.kojan.javadeptools.nativ.AbstractNativeProxy;
-import io.kojan.javadeptools.nativ.Native;
-import io.kojan.javadeptools.nativ.NativeObject;
-
 public class NativeGlueGenerator extends JavaCodeGenerator {
 
     /** Add Javadoc comments to generated methods and classes. */
@@ -44,11 +43,11 @@ public class NativeGlueGenerator extends JavaCodeGenerator {
     /** Return native type for given Java type */
     private Class<?> nativeType(Class<?> jType) {
         return switch (jType) {
-        case Class<?> cls when String.class.isAssignableFrom(cls) -> MemorySegment.class;
-        case Class<?> cls when NativeObject.class.isAssignableFrom(cls) -> MemorySegment.class;
-        case Class<?> cls when int.class.isAssignableFrom(cls) -> int.class;
-        case Class<?> cls when long.class.isAssignableFrom(cls) -> long.class;
-        default -> throw new IllegalStateException("data type is not supported: " + jType);
+            case Class<?> cls when String.class.isAssignableFrom(cls) -> MemorySegment.class;
+            case Class<?> cls when NativeObject.class.isAssignableFrom(cls) -> MemorySegment.class;
+            case Class<?> cls when int.class.isAssignableFrom(cls) -> int.class;
+            case Class<?> cls when long.class.isAssignableFrom(cls) -> long.class;
+            default -> throw new IllegalStateException("data type is not supported: " + jType);
         };
     }
 
@@ -84,8 +83,8 @@ public class NativeGlueGenerator extends JavaCodeGenerator {
     }
 
     /**
-     * Emit optional code for up-converting native type to Java type, if needed.
-     * Return true if up-converting was needed.
+     * Emit optional code for up-converting native type to Java type, if needed. Return true if
+     * up-converting was needed.
      */
     private boolean emitUpConvert(Class<?> jType) {
         if (String.class.isAssignableFrom(jType)) {
@@ -139,7 +138,7 @@ public class NativeGlueGenerator extends JavaCodeGenerator {
             pn("(", nativeType(retType), ")");
         }
         pa("mh_", method.getName(), ".invokeExact(");
-        for (var it = params.iterator(); it.hasNext();) {
+        for (var it = params.iterator(); it.hasNext(); ) {
             Parameter param = it.next();
             emitDownConvert(param.getType(), param.getName());
             pa(it.hasNext() ? "," : "");
@@ -168,10 +167,7 @@ public class NativeGlueGenerator extends JavaCodeGenerator {
         pa();
     }
 
-    /**
-     * Generate code for getFunctionLayouts method. Used by GraalVM native image
-     * generation.
-     */
+    /** Generate code for getFunctionLayouts method. Used by GraalVM native image generation. */
     private void emitLayoutsGetter(Collection<Method> methods) {
         Set<String> layouts = new TreeSet<>();
 
@@ -179,14 +175,23 @@ public class NativeGlueGenerator extends JavaCodeGenerator {
             List<Parameter> params = Arrays.asList(method.getParameters());
             Class<?> retType = method.getReturnType();
             boolean ret = !retType.equals(Void.TYPE);
-            layouts.add(ps(FunctionDescriptor.class, ".of", ret ? "" : "Void", "(", ret ? layout(retType) : "",
-                    !ret || params.isEmpty() ? "" : ", ",
-                    params.stream().map(param -> layout(param.getType())).collect(Collectors.joining(", ")), ")"));
+            layouts.add(
+                    ps(
+                            FunctionDescriptor.class,
+                            ".of",
+                            ret ? "" : "Void",
+                            "(",
+                            ret ? layout(retType) : "",
+                            !ret || params.isEmpty() ? "" : ", ",
+                            params.stream()
+                                    .map(param -> layout(param.getType()))
+                                    .collect(Collectors.joining(", ")),
+                            ")"));
         }
 
         pa("public static Iterable<", FunctionDescriptor.class, "> getFunctionLayouts() {");
         pa("return ", Arrays.class, ".asList(");
-        for (var it = layouts.iterator(); it.hasNext();) {
+        for (var it = layouts.iterator(); it.hasNext(); ) {
             pa(it.next(), it.hasNext() ? "," : "");
         }
         pa(");");
@@ -234,8 +239,16 @@ public class NativeGlueGenerator extends JavaCodeGenerator {
     }
 
     public void setDlopenLookup(String lib0, String... libs) {
-        lookup = ps(Native.class, ".dlopenLookup(\"", lib0, "\"",
-                Arrays.asList(libs).stream().map(lib -> ", \"" + lib + "\"").collect(Collectors.joining()), ")");
+        lookup =
+                ps(
+                        Native.class,
+                        ".dlopenLookup(\"",
+                        lib0,
+                        "\"",
+                        Arrays.asList(libs).stream()
+                                .map(lib -> ", \"" + lib + "\"")
+                                .collect(Collectors.joining()),
+                        ")");
     }
 
     /** Generate code for trampoline class with static methods. */
@@ -250,7 +263,12 @@ public class NativeGlueGenerator extends JavaCodeGenerator {
 
         pa("private static class Lazy {");
         pa("static final ", SymbolLookup.class, " LOOKUP = ", lookup, ";");
-        pa("static final ", iface.getSimpleName(), " LIB = new ", iface.getSimpleName(), "_Impl(LOOKUP);");
+        pa(
+                "static final ",
+                iface.getSimpleName(),
+                " LIB = new ",
+                iface.getSimpleName(),
+                "_Impl(LOOKUP);");
         pa("}");
 
         // The order of methods returned by reflection is not stable and can vary.

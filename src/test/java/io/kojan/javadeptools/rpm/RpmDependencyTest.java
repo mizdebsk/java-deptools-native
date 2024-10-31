@@ -20,7 +20,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Iterator;
-
 import org.junit.jupiter.api.Test;
 
 /**
@@ -47,10 +46,13 @@ public class RpmDependencyTest {
         assertFalse(dep1.isRich());
 
         RpmDependency dep2 = info.getRecommends().get(2);
-        assertEquals("baz >= 3333333333:444444444444444444444-xaxaxayyyy.5517~77+8", dep2.toString());
+        assertEquals(
+                "baz >= 3333333333:444444444444444444444-xaxaxayyyy.5517~77+8", dep2.toString());
         assertEquals("baz", dep2.getName());
         assertEquals(">=", dep2.getSense());
-        assertEquals("3333333333:444444444444444444444-xaxaxayyyy.5517~77+8", dep2.getVersion().toString());
+        assertEquals(
+                "3333333333:444444444444444444444-xaxaxayyyy.5517~77+8",
+                dep2.getVersion().toString());
         assertFalse(dep2.isRich());
 
         RpmDependency dep3 = info.getRecommends().get(3);

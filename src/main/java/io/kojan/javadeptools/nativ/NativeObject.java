@@ -19,7 +19,7 @@ import java.lang.foreign.MemorySegment;
 
 /**
  * Native data structure.
- * 
+ *
  * @author Mikolaj Izdebski
  */
 public abstract class NativeObject {

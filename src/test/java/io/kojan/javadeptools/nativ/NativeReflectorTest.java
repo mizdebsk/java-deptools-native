@@ -36,15 +36,24 @@ public class NativeReflectorTest {
     }
 
     static class Str extends NativeObject {}
+
     static interface LibC {
         Str strdup(String s);
+
         int strcmp(String s1, String s2);
+
         int strcmp(Str s1, String s2);
+
         int strcmp(String s1, Str s2);
+
         int strcmp(Str s1, Str s2);
+
         void strcat(Str s1, String s2);
+
         void strcat(Str s1, Str s2);
+
         Str calloc(int m, int n);
+
         void free(Str s);
     }
 
