@@ -25,6 +25,6 @@ import java.lang.reflect.Proxy;
 public class NativeReflector {
     public static <T> T dynamicGlue(Class<T> type, SymbolLookup lookup) {
         InvocationHandler ih = new NativeInvocationHandler(type, lookup);
-        return type.cast(Proxy.newProxyInstance(type.getClassLoader(), new Class<?>[] { type }, ih));
+        return type.cast(Proxy.newProxyInstance(type.getClassLoader(), new Class<?>[] {type}, ih));
     }
 }

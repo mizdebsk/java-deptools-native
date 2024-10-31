@@ -28,19 +28,21 @@ import java.util.function.Supplier;
 
 /**
  * Abstract base class for all generated native proxies.
- * 
+ *
  * @author Mikolaj Izdebski
  */
 public abstract class AbstractNativeProxy extends Native {
 
     protected static final ValueLayout VOID = null;
-    protected static final ValueLayout STR = ValueLayout.ADDRESS
-            .withTargetLayout(MemoryLayout.sequenceLayout(Long.MAX_VALUE, ValueLayout.JAVA_BYTE));
+    protected static final ValueLayout STR =
+            ValueLayout.ADDRESS.withTargetLayout(
+                    MemoryLayout.sequenceLayout(Long.MAX_VALUE, ValueLayout.JAVA_BYTE));
     protected static final ValueLayout OBJ = ValueLayout.ADDRESS;
     protected static final ValueLayout LONG = ValueLayout.JAVA_LONG;
     protected static final ValueLayout INT = ValueLayout.JAVA_INT;
-    protected static final ValueLayout BUFF = ValueLayout.ADDRESS
-            .withTargetLayout(MemoryLayout.sequenceLayout(Long.MAX_VALUE, ValueLayout.JAVA_BYTE));
+    protected static final ValueLayout BUFF =
+            ValueLayout.ADDRESS.withTargetLayout(
+                    MemoryLayout.sequenceLayout(Long.MAX_VALUE, ValueLayout.JAVA_BYTE));
 
     private final SymbolLookup lookup;
 
@@ -93,7 +95,8 @@ public abstract class AbstractNativeProxy extends Native {
         return optionalMethodAddress.get();
     }
 
-    protected MethodHandle makeMethodHandle(ValueLayout retLayout, String symbol, ValueLayout... paramLayouts) {
+    protected MethodHandle makeMethodHandle(
+            ValueLayout retLayout, String symbol, ValueLayout... paramLayouts) {
         MemorySegment methodAddress = lookup(symbol);
         FunctionDescriptor functionDescriptor;
         if (retLayout == null) {
@@ -102,6 +105,5 @@ public abstract class AbstractNativeProxy extends Native {
             functionDescriptor = FunctionDescriptor.of(retLayout, paramLayouts);
         }
         return LINKER.downcallHandle(methodAddress, functionDescriptor);
-
     }
 }

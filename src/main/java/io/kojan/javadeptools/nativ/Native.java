@@ -40,7 +40,8 @@ public class Native {
             for (String lib : libs) {
                 try {
                     return new DynamicLinker(lib);
-                } catch (RuntimeException e) {}
+                } catch (RuntimeException e) {
+                }
             }
             throw e0;
         }

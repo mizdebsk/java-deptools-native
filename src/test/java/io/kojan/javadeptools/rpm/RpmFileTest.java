@@ -20,7 +20,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Iterator;
-
 import org.junit.jupiter.api.Test;
 
 /**
@@ -32,7 +31,8 @@ public class RpmFileTest {
         Path path = Paths.get("src/test/resources/rpm/rpmfiles-1-1.noarch.rpm");
         RpmInfo info = new RpmPackage(path).getInfo();
         Iterator<RpmFile> it = info.getFiles().iterator();
-//        [/a/directory, /a/directory/conf1, /a/directory/conf2, /b/a, /b/a/se, /b/a/se/file.txt, /gh]
+        //        [/a/directory, /a/directory/conf1, /a/directory/conf2, /b/a, /b/a/se,
+        // /b/a/se/file.txt, /gh]
 
         RpmFile dir1 = it.next();
         assertEquals("/a/directory", dir1.getName());

@@ -17,15 +17,13 @@ package io.kojan.javadeptools.rpm;
 
 import static io.kojan.javadeptools.rpm.Rpm.*;
 
+import io.kojan.javadeptools.nativ.NativePointer;
 import java.io.IOException;
 import java.nio.file.Path;
 
-import io.kojan.javadeptools.nativ.NativePointer;
-
 /**
- * Representation of a RPM package file that is present in the local file
- * system.
- * 
+ * Representation of a RPM package file that is present in the local file system.
+ *
  * @author Mikolaj Izdebski
  */
 public class RpmPackage {
@@ -39,24 +37,29 @@ public class RpmPackage {
 
     /**
      * Read RPM package from disk.
-     * 
+     *
      * @param path path to a file to read as RPM package
-     * @throws IOException when given file is not a RPM valid package or when I/O
-     *                     error occurs reading package from disk
+     * @throws IOException when given file is not a RPM valid package or when I/O error occurs
+     *     reading package from disk
      */
     public RpmPackage(Path path) throws IOException {
         this.path = path;
         RpmTS ts = rpmtsCreate();
         RpmFD fd = Fopen(path.toString(), "r");
         try {
-            if (Ferror(fd) != 0)
-                throw error(path, Fstrerror(fd));
-            rpmtsSetVSFlags(ts, RPMVSF_NOHDRCHK | RPMVSF_NOSHA1HEADER | RPMVSF_NODSAHEADER | RPMVSF_NORSAHEADER
-                    | RPMVSF_NOMD5 | RPMVSF_NODSA | RPMVSF_NORSA);
+            if (Ferror(fd) != 0) throw error(path, Fstrerror(fd));
+            rpmtsSetVSFlags(
+                    ts,
+                    RPMVSF_NOHDRCHK
+                            | RPMVSF_NOSHA1HEADER
+                            | RPMVSF_NODSAHEADER
+                            | RPMVSF_NORSAHEADER
+                            | RPMVSF_NOMD5
+                            | RPMVSF_NODSA
+                            | RPMVSF_NORSA);
             NativePointer ph = new NativePointer();
             int rc = rpmReadPackageFile(ts, fd, null, ph);
-            if (rc == RPMRC_NOTFOUND)
-                throw error(path, "Not a RPM file");
+            if (rc == RPMRC_NOTFOUND) throw error(path, "Not a RPM file");
             if (rc != RPMRC_OK && rc != RPMRC_NOTTRUSTED && rc != RPMRC_NOKEY)
                 throw error(path, "Failed to parse RPM header");
             RpmHeader h = ph.dereference(RpmHeader::new);
@@ -74,7 +77,7 @@ public class RpmPackage {
 
     /**
      * Returns path to RPM package in the file system.
-     * 
+     *
      * @return path to RPM package
      */
     public Path getPath() {
@@ -83,7 +86,7 @@ public class RpmPackage {
 
     /**
      * Returns detailed information about RPM package, extracted from RPM header.
-     * 
+     *
      * @return {@link RpmInfo} for the RPM package
      */
     public RpmInfo getInfo() {

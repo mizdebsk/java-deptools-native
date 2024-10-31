@@ -93,7 +93,8 @@ class JavaCodeGenerator {
     protected void pa(Object... objects) {
         pn(objects);
         blank = true;
-        char lastCh = codeBuilder.length() > 0 ? codeBuilder.charAt(codeBuilder.length() - 1) : '\0';
+        char lastCh =
+                codeBuilder.length() > 0 ? codeBuilder.charAt(codeBuilder.length() - 1) : '\0';
         if (lastCh == '{') {
             indent(1);
         } else if (lastCh == '(') {
@@ -126,9 +127,8 @@ class JavaCodeGenerator {
     }
 
     /**
-     * Return formatted name of given Java type. Either fully-qualified class name
-     * (FQCN) or short name, depending on configuration. If using short name, then
-     * also add appropriate import.
+     * Return formatted name of given Java type. Either fully-qualified class name (FQCN) or short
+     * name, depending on configuration. If using short name, then also add appropriate import.
      */
     protected String javaType(Class<?> type) {
         if (fqcn) {
@@ -148,7 +148,8 @@ class JavaCodeGenerator {
     /** Generate and write code for the whole compilation unit. */
     public void write(Path outputFile) throws IOException {
         if (indent != 0) {
-            throw new IllegalStateException("Final indent at the end of compilation unit should be zero");
+            throw new IllegalStateException(
+                    "Final indent at the end of compilation unit should be zero");
         }
 
         try (Writer w = Files.newBufferedWriter(outputFile)) {

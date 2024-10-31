@@ -40,11 +40,11 @@ class NativeInvocationHandler implements InvocationHandler {
 
         static DownConverter forType(Class<?> type) {
             return switch (type) {
-            case Class<?> cls when String.class.isAssignableFrom(cls) ->
-                (obj, arena) -> arena.allocateFrom((String) obj);
-            case Class<?> cls when NativeObject.class.isAssignableFrom(cls) ->
-                (obj, arena) -> ((NativeObject) obj).getMemorySegment();
-            default -> (obj, arena) -> obj;
+                case Class<?> cls when String.class.isAssignableFrom(cls) ->
+                        (obj, arena) -> arena.allocateFrom((String) obj);
+                case Class<?> cls when NativeObject.class.isAssignableFrom(cls) ->
+                        (obj, arena) -> ((NativeObject) obj).getMemorySegment();
+                default -> (obj, arena) -> obj;
             };
         }
     }
@@ -54,10 +54,11 @@ class NativeInvocationHandler implements InvocationHandler {
 
         static UpConverter forType(Class<?> type) {
             return switch (type) {
-            case Class<?> cls when String.class.isAssignableFrom(cls) ->
-                ((UpConverter) ms -> ((MemorySegment) ms).getString(0));
-            case Class<?> cls when NativeObject.class.isAssignableFrom(cls) -> new NativeUpConverter(cls);
-            default -> ((UpConverter) obj -> obj);
+                case Class<?> cls when String.class.isAssignableFrom(cls) ->
+                        ((UpConverter) ms -> ((MemorySegment) ms).getString(0));
+                case Class<?> cls when NativeObject.class.isAssignableFrom(cls) ->
+                        new NativeUpConverter(cls);
+                default -> ((UpConverter) obj -> obj);
             };
         }
     }
@@ -79,7 +80,6 @@ class NativeInvocationHandler implements InvocationHandler {
             nativ.setMemorySegment((MemorySegment) obj);
             return nativ;
         }
-
     }
 
     private static class Stub {
@@ -107,19 +107,19 @@ class NativeInvocationHandler implements InvocationHandler {
             }
             return retConv.convert(ret);
         }
-
     }
 
     private Map<Method, Stub> stubs = new LinkedHashMap<>();
 
     private static MemoryLayout selectLayout(Class<?> type) {
         return switch (type) {
-        case Class<?> cls when String.class.isAssignableFrom(cls) ->
-            ValueLayout.ADDRESS.withTargetLayout(MemoryLayout.sequenceLayout(Long.MAX_VALUE, ValueLayout.JAVA_BYTE));
-        case Class<?> cls when NativeObject.class.isAssignableFrom(cls) -> ValueLayout.ADDRESS;
-        case Class<?> cls when long.class.isAssignableFrom(cls) -> ValueLayout.JAVA_LONG;
-        case Class<?> cls when int.class.isAssignableFrom(cls) -> ValueLayout.JAVA_INT;
-        default -> throw new IllegalStateException("data type is not supported: " + type);
+            case Class<?> cls when String.class.isAssignableFrom(cls) ->
+                    ValueLayout.ADDRESS.withTargetLayout(
+                            MemoryLayout.sequenceLayout(Long.MAX_VALUE, ValueLayout.JAVA_BYTE));
+            case Class<?> cls when NativeObject.class.isAssignableFrom(cls) -> ValueLayout.ADDRESS;
+            case Class<?> cls when long.class.isAssignableFrom(cls) -> ValueLayout.JAVA_LONG;
+            case Class<?> cls when int.class.isAssignableFrom(cls) -> ValueLayout.JAVA_INT;
+            default -> throw new IllegalStateException("data type is not supported: " + type);
         };
     }
 
@@ -142,10 +142,15 @@ class NativeInvocationHandler implements InvocationHandler {
             }
             MethodHandle mh;
             if (method.getReturnType().equals(Void.TYPE)) {
-                mh = linker.downcallHandle(methodAddress.get(), FunctionDescriptor.ofVoid(argLayouts));
+                mh =
+                        linker.downcallHandle(
+                                methodAddress.get(), FunctionDescriptor.ofVoid(argLayouts));
             } else {
-                mh = linker.downcallHandle(methodAddress.get(),
-                        FunctionDescriptor.of(selectLayout(method.getReturnType()), argLayouts));
+                mh =
+                        linker.downcallHandle(
+                                methodAddress.get(),
+                                FunctionDescriptor.of(
+                                        selectLayout(method.getReturnType()), argLayouts));
             }
 
             UpConverter retConv = UpConverter.forType(method.getReturnType());
@@ -167,5 +172,4 @@ class NativeInvocationHandler implements InvocationHandler {
             return stub.invoke(args, arena);
         }
     }
-
 }

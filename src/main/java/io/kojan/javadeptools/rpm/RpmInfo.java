@@ -17,17 +17,16 @@ package io.kojan.javadeptools.rpm;
 
 import static io.kojan.javadeptools.rpm.Rpm.*;
 
+import io.kojan.javadeptools.rpm.Rpm.RpmFI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import io.kojan.javadeptools.rpm.Rpm.RpmFI;
-
 /**
  * Information about RPM package, based on data from RPM header.
- * 
+ *
  * @author Mikolaj Izdebski
  */
 public class RpmInfo {
@@ -109,8 +108,7 @@ public class RpmInfo {
 
         StringBuilder sb = new StringBuilder();
         sb.append(name).append('-');
-        if (epoch.isPresent())
-            sb.append(epoch.get() + ":");
+        if (epoch.isPresent()) sb.append(epoch.get() + ":");
         sb.append(version).append('-').append(release);
         sb.append('.').append(isSourcePackage() ? "src" : arch);
         nevra = sb.toString();
@@ -142,7 +140,7 @@ public class RpmInfo {
 
     /**
      * Returns license of RPM package.
-     * 
+     *
      * @return license of RPM package
      */
     public String getLicense() {
@@ -151,7 +149,7 @@ public class RpmInfo {
 
     /**
      * Returns source RPM from which given RPM package was built.
-     * 
+     *
      * @return source RPM of RPM package
      */
     public String getSourceRPM() {
@@ -159,9 +157,9 @@ public class RpmInfo {
     }
 
     /**
-     * Returns name part of the source RPM from which given RPM package was built.
-     * For source packages, return name of the source package itself.
-     * 
+     * Returns name part of the source RPM from which given RPM package was built. For source
+     * packages, return name of the source package itself.
+     *
      * @return source RPM name of RPM package
      */
     public String getSourceName() {
@@ -177,7 +175,7 @@ public class RpmInfo {
 
     /**
      * Returns exclusive architectures of RPM package.
-     * 
+     *
      * @return list of exclusive architectures of RPM package
      */
     public List<String> getExclusiveArch() {
@@ -186,7 +184,7 @@ public class RpmInfo {
 
     /**
      * Returns build architectures of RPM package.
-     * 
+     *
      * @return list of build architectures of RPM package
      */
     public List<String> getBuildArchs() {
@@ -195,7 +193,7 @@ public class RpmInfo {
 
     /**
      * Returns name of RPM package.
-     * 
+     *
      * @return name of RPM package
      */
     public String getName() {
@@ -204,7 +202,7 @@ public class RpmInfo {
 
     /**
      * Returns epoch of RPM package.
-     * 
+     *
      * @return epoch of RPM package
      */
     public Optional<Long> getEpoch() {
@@ -213,7 +211,7 @@ public class RpmInfo {
 
     /**
      * Returns version of RPM package.
-     * 
+     *
      * @return version of RPM package
      */
     public String getVersion() {
@@ -222,7 +220,7 @@ public class RpmInfo {
 
     /**
      * Returns release of RPM package.
-     * 
+     *
      * @return release of RPM package
      */
     public String getRelease() {
@@ -231,7 +229,7 @@ public class RpmInfo {
 
     /**
      * Returns architecture of RPM package.
-     * 
+     *
      * @return architecture of RPM package
      */
     public String getArch() {
@@ -240,7 +238,7 @@ public class RpmInfo {
 
     /**
      * Determines whether RPM package is a source package (SRPM).
-     * 
+     *
      * @return {@code true} iff the package is a source package
      */
     public boolean isSourcePackage() {
@@ -249,7 +247,7 @@ public class RpmInfo {
 
     /**
      * Returns list of Provides of RPM package.
-     * 
+     *
      * @return list of Provides of RPM package
      */
     public List<RpmDependency> getProvides() {
@@ -258,7 +256,7 @@ public class RpmInfo {
 
     /**
      * Returns list of Requires of RPM package.
-     * 
+     *
      * @return list of Requires of RPM package
      */
     public List<RpmDependency> getRequires() {
@@ -267,7 +265,7 @@ public class RpmInfo {
 
     /**
      * Returns list of Conflicts of RPM package.
-     * 
+     *
      * @return list of Conflicts of RPM package
      */
     public List<RpmDependency> getConflicts() {
@@ -276,7 +274,7 @@ public class RpmInfo {
 
     /**
      * Returns list of Obsoletes of RPM package.
-     * 
+     *
      * @return list of Obsoletes of RPM package
      */
     public List<RpmDependency> getObsoletes() {
@@ -285,7 +283,7 @@ public class RpmInfo {
 
     /**
      * Returns list of Recommends of RPM package.
-     * 
+     *
      * @return list of Recommends of RPM package
      */
     public List<RpmDependency> getRecommends() {
@@ -294,7 +292,7 @@ public class RpmInfo {
 
     /**
      * Returns list of Suggests of RPM package.
-     * 
+     *
      * @return list of Suggests of RPM package
      */
     public List<RpmDependency> getSuggests() {
@@ -303,7 +301,7 @@ public class RpmInfo {
 
     /**
      * Returns list of Supplements of RPM package.
-     * 
+     *
      * @return list of Supplements of RPM package
      */
     public List<RpmDependency> getSupplements() {
@@ -312,7 +310,7 @@ public class RpmInfo {
 
     /**
      * Returns list of Enhances of RPM package.
-     * 
+     *
      * @return list of Enhances of RPM package
      */
     public List<RpmDependency> getEnhances() {
@@ -321,7 +319,7 @@ public class RpmInfo {
 
     /**
      * Returns list of OrderWithRequires of RPM package.
-     * 
+     *
      * @return list of OrderWithRequires of RPM package
      */
     public List<RpmDependency> getOrderWithRequires() {
@@ -330,7 +328,7 @@ public class RpmInfo {
 
     /**
      * Returns list of files of RPM package.
-     * 
+     *
      * @return list of files of RPM package
      */
     public List<RpmFile> getFiles() {

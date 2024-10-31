@@ -19,7 +19,7 @@ import static io.kojan.javadeptools.rpm.Rpm.*;
 
 /**
  * RPM file.
- * 
+ *
  * @author Mikolaj Izdebski
  */
 public class RpmFile {
@@ -39,7 +39,7 @@ public class RpmFile {
 
     /**
      * Returns the name of RPM file.
-     * 
+     *
      * @return name of RPM file
      */
     public String getName() {
@@ -48,9 +48,9 @@ public class RpmFile {
 
     /**
      * Returns the base name of RPM file.
-     * <p>
-     * For example, for file {@code /foo/bar/baz.txt}, it returns {@code baz.txt}.
-     * 
+     *
+     * <p>For example, for file {@code /foo/bar/baz.txt}, it returns {@code baz.txt}.
+     *
      * @return base name of RPM file
      */
     public String getBaseName() {
@@ -59,9 +59,9 @@ public class RpmFile {
 
     /**
      * Returns the directory name of RPM file.
-     * <p>
-     * For example, for file {@code /foo/bar/baz.txt}, it returns {@code /foo/bar}.
-     * 
+     *
+     * <p>For example, for file {@code /foo/bar/baz.txt}, it returns {@code /foo/bar}.
+     *
      * @return directory name of RPM file
      */
     public String getDirectoryName() {
@@ -70,7 +70,7 @@ public class RpmFile {
 
     /**
      * Returns size of RPM file.
-     * 
+     *
      * @return size of RPM file
      */
     public long getSize() {
@@ -79,7 +79,7 @@ public class RpmFile {
 
     /**
      * Returns mode of RPM file.
-     * 
+     *
      * @return mode of RPM file
      */
     public int getMode() {

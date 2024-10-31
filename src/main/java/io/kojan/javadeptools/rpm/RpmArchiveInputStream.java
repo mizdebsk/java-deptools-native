@@ -17,20 +17,18 @@ package io.kojan.javadeptools.rpm;
 
 import static io.kojan.javadeptools.rpm.Rpm.*;
 
+import io.kojan.javadeptools.nativ.NativePointer;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.file.Path;
-
 import org.apache.commons.compress.archivers.ArchiveInputStream;
 import org.apache.commons.compress.archivers.cpio.CpioArchiveEntry;
 import org.apache.commons.compress.archivers.cpio.CpioConstants;
 
-import io.kojan.javadeptools.nativ.NativePointer;
-
 /**
  * A class for reading RPM package as an archive.
- * 
+ *
  * @author Mikolaj Izdebski
  */
 public class RpmArchiveInputStream extends ArchiveInputStream<CpioArchiveEntry> {
@@ -46,24 +44,29 @@ public class RpmArchiveInputStream extends ArchiveInputStream<CpioArchiveEntry> 
 
     /**
      * Opens RPM package from disk as {@link ArchiveInputStream}
-     * 
+     *
      * @param path path to a file to read as RPM package
-     * @throws IOException when given file is not a valid RPM package or when I/O
-     *                     error occurs reading package from disk
+     * @throws IOException when given file is not a valid RPM package or when I/O error occurs
+     *     reading package from disk
      */
     public RpmArchiveInputStream(Path path) throws IOException {
         boolean ok = false;
         try {
             ts = rpmtsCreate();
             fd = Fopen(path.toString(), "r");
-            if (Ferror(fd) != 0)
-                throw error(path, Fstrerror(fd));
-            rpmtsSetVSFlags(ts, RPMVSF_NOHDRCHK | RPMVSF_NOSHA1HEADER | RPMVSF_NODSAHEADER | RPMVSF_NORSAHEADER
-                    | RPMVSF_NOMD5 | RPMVSF_NODSA | RPMVSF_NORSA);
+            if (Ferror(fd) != 0) throw error(path, Fstrerror(fd));
+            rpmtsSetVSFlags(
+                    ts,
+                    RPMVSF_NOHDRCHK
+                            | RPMVSF_NOSHA1HEADER
+                            | RPMVSF_NODSAHEADER
+                            | RPMVSF_NORSAHEADER
+                            | RPMVSF_NOMD5
+                            | RPMVSF_NODSA
+                            | RPMVSF_NORSA);
             NativePointer ph = new NativePointer();
             int rc = rpmReadPackageFile(ts, fd, null, ph);
-            if (rc == RPMRC_NOTFOUND)
-                throw error(path, "Not a RPM file");
+            if (rc == RPMRC_NOTFOUND) throw error(path, "Not a RPM file");
             if (rc != RPMRC_OK && rc != RPMRC_NOTTRUSTED && rc != RPMRC_NOKEY)
                 throw error(path, "Failed to parse RPM header");
             h = ph.dereference(RpmHeader::new);
@@ -90,10 +93,10 @@ public class RpmArchiveInputStream extends ArchiveInputStream<CpioArchiveEntry> 
 
     /**
      * Opens RPM package from disk as {@link ArchiveInputStream}
-     * 
+     *
      * @param rpm instance of RPM package to read contents of
-     * @throws IOException when given file is not a valid RPM package or when I/O
-     *                     error occurs reading package from disk
+     * @throws IOException when given file is not a valid RPM package or when I/O error occurs
+     *     reading package from disk
      */
     public RpmArchiveInputStream(RpmPackage rpm) throws IOException {
         this(rpm.getPath());

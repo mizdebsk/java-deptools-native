@@ -15,10 +15,9 @@
  */
 package io.kojan.javadeptools.rpm;
 
-import java.nio.Buffer;
-
 import io.kojan.javadeptools.nativ.NativeObject;
 import io.kojan.javadeptools.nativ.NativePointer;
+import java.nio.Buffer;
 
 /**
  * @author Mikolaj Izdebski
@@ -70,77 +69,146 @@ final class Rpm extends RpmLib_Static {
     static final int RPMFI_ITER_READ_ARCHIVE = 3;
 
     static class RpmDS extends NativeObject {}
+
     static class RpmEVR extends NativeObject {}
+
     static class RpmFD extends NativeObject {}
+
     static class RpmHeader extends NativeObject {}
+
     static class RpmMI extends NativeObject {}
+
     static class RpmTD extends NativeObject {}
+
     static class RpmTS extends NativeObject {}
+
     static class RpmStrPool extends NativeObject {}
+
     static class RpmFiles extends NativeObject {}
+
     static class RpmFI extends NativeObject {}
 
     static interface RpmLib {
         int rpmReadConfigFiles(String file, String target);
+
         RpmTS rpmtsCreate();
+
         void rpmtsFree(RpmTS ts);
+
         int rpmtsSetRootDir(RpmTS ts, String rootDir);
+
         RpmMI rpmtsInitIterator(RpmTS ts, int rpmtag, String keyp, long keylen);
+
         void rpmtsSetVSFlags(RpmTS ts, int vsflags);
+
         RpmHeader rpmdbNextIterator(RpmMI mi);
+
         void rpmdbFreeIterator(RpmMI mi);
+
         int rpmReadPackageFile(RpmTS ts, RpmFD fd, String fn, NativePointer hdrp);
+
         void headerFree(RpmHeader h);
+
         int headerGet(RpmHeader h, int tag, RpmTD td, int flags);
+
         String headerGetString(RpmHeader h, int tag);
+
         long headerGetNumber(RpmHeader h, int tag);
+
         RpmTD rpmtdNew();
+
         int rpmtdCount(RpmTD td);
+
         int rpmtdNext(RpmTD td);
+
         String rpmtdGetString(RpmTD td);
+
         long rpmtdGetNumber(RpmTD td);
+
         void rpmtdFree(RpmTD td);
+
         RpmDS rpmdsNew(RpmHeader h, int tagN, int flags);
+
         void rpmdsFree(RpmDS ds);
+
         int rpmdsNext(RpmDS ds);
+
         String rpmdsDNEVR(RpmDS ds);
+
         String rpmdsN(RpmDS ds);
+
         String rpmdsEVR(RpmDS ds);
+
         int rpmdsFlags(RpmDS ds);
+
         int rpmdsIsRich(RpmDS ds);
+
         RpmStrPool rpmstrPoolCreate();
+
         void rpmstrPoolFree(RpmStrPool pool);
+
         RpmFiles rpmfilesNew(RpmStrPool pool, RpmHeader h, int tagN, int flags);
+
         void rpmfilesFree(RpmFiles fi);
+
         RpmFI rpmfilesIter(RpmFiles files, int itype);
+
         void rpmfiFree(RpmFI fi);
+
         int rpmfiNext(RpmFI fi);
+
         String rpmfiBN(RpmFI fi);
+
         String rpmfiDN(RpmFI fi);
+
         int rpmfiFInode(RpmFI fi);
+
         int rpmfiFMode(RpmFI fi);
+
         int rpmfiFNlink(RpmFI fi);
+
         int rpmfiFMtime(RpmFI fi);
+
         long rpmfiFSize(RpmFI fi);
+
         int rpmfiFRdev(RpmFI fi);
+
         String rpmfiFLink(RpmFI fi);
+
         RpmFI rpmfiNewArchiveReader(RpmFD fd, RpmFiles files, int itype);
+
         void rpmfiArchiveClose(RpmFI fi);
+
         int rpmfiArchiveHasContent(RpmFI fi);
+
         long rpmfiArchiveRead(RpmFI fi, Buffer buf, long size);
+
         RpmFD Fopen(String path, String mode);
+
         RpmFD Fdopen(RpmFD ofd, String mode);
+
         void Fclose(RpmFD fd);
+
         long Ftell(RpmFD fd);
+
         int Ferror(RpmFD fd);
+
         String Fstrerror(RpmFD fd);
+
         RpmEVR rpmverParse(String evr);
+
         void rpmverFree(RpmEVR rv);
+
         long rpmverEVal(RpmEVR rv);
+
         String rpmverE(RpmEVR rv);
+
         String rpmverV(RpmEVR rv);
+
         String rpmverR(RpmEVR rv);
+
         int gnu_dev_major(int dev);
+
         int gnu_dev_minor(int dev);
     }
 }

@@ -25,10 +25,12 @@ import java.util.Optional;
 public class DynamicLinker extends LibDL_Static implements SymbolLookup {
 
     public static class DynamicLibrary extends NativeObject {}
+
     public static class DynamicSymbol extends NativeObject {}
 
     public static interface LibDL {
         DynamicLibrary dlopen(String filename, int flags);
+
         DynamicSymbol dlsym(DynamicLibrary handle, String symbol);
     }
 

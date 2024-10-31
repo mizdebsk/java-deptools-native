@@ -1,3 +1,18 @@
+/*-
+ * Copyright (c) 2024 Red Hat, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package io.kojan.javadeptools.rpm;
 
 import io.kojan.javadeptools.nativ.AbstractNativeProxy;
@@ -22,9 +37,7 @@ import java.lang.invoke.MethodHandle;
 import java.nio.Buffer;
 import java.util.Arrays;
 
-/**
- * Native implementation of RpmLib.
- */
+/** Native implementation of RpmLib. */
 final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
     public RpmLib_Impl(SymbolLookup lookup) {
         super(lookup);
@@ -32,14 +45,13 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
 
     /**
      * Method stub that invokes native method {@code Fclose}.
+     *
      * @param fd RpmFD
      */
     @Override
     public void Fclose(RpmFD fd) {
         try {
-            mh_Fclose.invokeExact(
-                    downConvertObject(fd)
-            );
+            mh_Fclose.invokeExact(downConvertObject(fd));
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function Fclose", _t);
         }
@@ -49,6 +61,7 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
 
     /**
      * Method stub that invokes native method {@code Fdopen}.
+     *
      * @param ofd RpmFD
      * @param mode String
      * @return RpmFD
@@ -56,10 +69,11 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
     @Override
     public RpmFD Fdopen(RpmFD ofd, String mode) {
         try (Arena arena = Arena.ofConfined()) {
-            return upConvertObject(RpmFD::new, (MemorySegment)mh_Fdopen.invokeExact(
-                    downConvertObject(ofd),
-                    downConvertString(mode, arena)
-            ));
+            return upConvertObject(
+                    RpmFD::new,
+                    (MemorySegment)
+                            mh_Fdopen.invokeExact(
+                                    downConvertObject(ofd), downConvertString(mode, arena)));
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function Fdopen", _t);
         }
@@ -69,15 +83,14 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
 
     /**
      * Method stub that invokes native method {@code Ferror}.
+     *
      * @param fd RpmFD
      * @return int
      */
     @Override
     public int Ferror(RpmFD fd) {
         try {
-            return (int)mh_Ferror.invokeExact(
-                    downConvertObject(fd)
-            );
+            return (int) mh_Ferror.invokeExact(downConvertObject(fd));
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function Ferror", _t);
         }
@@ -87,6 +100,7 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
 
     /**
      * Method stub that invokes native method {@code Fopen}.
+     *
      * @param path String
      * @param mode String
      * @return RpmFD
@@ -94,10 +108,12 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
     @Override
     public RpmFD Fopen(String path, String mode) {
         try (Arena arena = Arena.ofConfined()) {
-            return upConvertObject(RpmFD::new, (MemorySegment)mh_Fopen.invokeExact(
-                    downConvertString(path, arena),
-                    downConvertString(mode, arena)
-            ));
+            return upConvertObject(
+                    RpmFD::new,
+                    (MemorySegment)
+                            mh_Fopen.invokeExact(
+                                    downConvertString(path, arena),
+                                    downConvertString(mode, arena)));
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function Fopen", _t);
         }
@@ -107,15 +123,14 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
 
     /**
      * Method stub that invokes native method {@code Fstrerror}.
+     *
      * @param fd RpmFD
      * @return String
      */
     @Override
     public String Fstrerror(RpmFD fd) {
         try {
-            return upConvertString((MemorySegment)mh_Fstrerror.invokeExact(
-                    downConvertObject(fd)
-            ));
+            return upConvertString((MemorySegment) mh_Fstrerror.invokeExact(downConvertObject(fd)));
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function Fstrerror", _t);
         }
@@ -125,15 +140,14 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
 
     /**
      * Method stub that invokes native method {@code Ftell}.
+     *
      * @param fd RpmFD
      * @return long
      */
     @Override
     public long Ftell(RpmFD fd) {
         try {
-            return (long)mh_Ftell.invokeExact(
-                    downConvertObject(fd)
-            );
+            return (long) mh_Ftell.invokeExact(downConvertObject(fd));
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function Ftell", _t);
         }
@@ -143,15 +157,14 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
 
     /**
      * Method stub that invokes native method {@code gnu_dev_major}.
+     *
      * @param dev int
      * @return int
      */
     @Override
     public int gnu_dev_major(int dev) {
         try {
-            return (int)mh_gnu_dev_major.invokeExact(
-                    dev
-            );
+            return (int) mh_gnu_dev_major.invokeExact(dev);
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function gnu_dev_major", _t);
         }
@@ -161,15 +174,14 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
 
     /**
      * Method stub that invokes native method {@code gnu_dev_minor}.
+     *
      * @param dev int
      * @return int
      */
     @Override
     public int gnu_dev_minor(int dev) {
         try {
-            return (int)mh_gnu_dev_minor.invokeExact(
-                    dev
-            );
+            return (int) mh_gnu_dev_minor.invokeExact(dev);
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function gnu_dev_minor", _t);
         }
@@ -179,14 +191,13 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
 
     /**
      * Method stub that invokes native method {@code headerFree}.
+     *
      * @param h RpmHeader
      */
     @Override
     public void headerFree(RpmHeader h) {
         try {
-            mh_headerFree.invokeExact(
-                    downConvertObject(h)
-            );
+            mh_headerFree.invokeExact(downConvertObject(h));
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function headerFree", _t);
         }
@@ -196,6 +207,7 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
 
     /**
      * Method stub that invokes native method {@code headerGet}.
+     *
      * @param h RpmHeader
      * @param tag int
      * @param td RpmTD
@@ -205,21 +217,20 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
     @Override
     public int headerGet(RpmHeader h, int tag, RpmTD td, int flags) {
         try {
-            return (int)mh_headerGet.invokeExact(
-                    downConvertObject(h),
-                    tag,
-                    downConvertObject(td),
-                    flags
-            );
+            return (int)
+                    mh_headerGet.invokeExact(
+                            downConvertObject(h), tag, downConvertObject(td), flags);
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function headerGet", _t);
         }
     }
 
-    private final MethodHandle mh_headerGet = makeMethodHandle(INT, "headerGet", OBJ, INT, OBJ, INT);
+    private final MethodHandle mh_headerGet =
+            makeMethodHandle(INT, "headerGet", OBJ, INT, OBJ, INT);
 
     /**
      * Method stub that invokes native method {@code headerGetNumber}.
+     *
      * @param h RpmHeader
      * @param tag int
      * @return long
@@ -227,19 +238,18 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
     @Override
     public long headerGetNumber(RpmHeader h, int tag) {
         try {
-            return (long)mh_headerGetNumber.invokeExact(
-                    downConvertObject(h),
-                    tag
-            );
+            return (long) mh_headerGetNumber.invokeExact(downConvertObject(h), tag);
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function headerGetNumber", _t);
         }
     }
 
-    private final MethodHandle mh_headerGetNumber = makeMethodHandle(LONG, "headerGetNumber", OBJ, INT);
+    private final MethodHandle mh_headerGetNumber =
+            makeMethodHandle(LONG, "headerGetNumber", OBJ, INT);
 
     /**
      * Method stub that invokes native method {@code headerGetString}.
+     *
      * @param h RpmHeader
      * @param tag int
      * @return String
@@ -247,19 +257,19 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
     @Override
     public String headerGetString(RpmHeader h, int tag) {
         try {
-            return upConvertString((MemorySegment)mh_headerGetString.invokeExact(
-                    downConvertObject(h),
-                    tag
-            ));
+            return upConvertString(
+                    (MemorySegment) mh_headerGetString.invokeExact(downConvertObject(h), tag));
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function headerGetString", _t);
         }
     }
 
-    private final MethodHandle mh_headerGetString = makeMethodHandle(STR, "headerGetString", OBJ, INT);
+    private final MethodHandle mh_headerGetString =
+            makeMethodHandle(STR, "headerGetString", OBJ, INT);
 
     /**
      * Method stub that invokes native method {@code rpmReadConfigFiles}.
+     *
      * @param file String
      * @param target String
      * @return int
@@ -267,19 +277,20 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
     @Override
     public int rpmReadConfigFiles(String file, String target) {
         try (Arena arena = Arena.ofConfined()) {
-            return (int)mh_rpmReadConfigFiles.invokeExact(
-                    downConvertString(file, arena),
-                    downConvertString(target, arena)
-            );
+            return (int)
+                    mh_rpmReadConfigFiles.invokeExact(
+                            downConvertString(file, arena), downConvertString(target, arena));
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function rpmReadConfigFiles", _t);
         }
     }
 
-    private final MethodHandle mh_rpmReadConfigFiles = makeMethodHandle(INT, "rpmReadConfigFiles", STR, STR);
+    private final MethodHandle mh_rpmReadConfigFiles =
+            makeMethodHandle(INT, "rpmReadConfigFiles", STR, STR);
 
     /**
      * Method stub that invokes native method {@code rpmReadPackageFile}.
+     *
      * @param ts RpmTS
      * @param fd RpmFD
      * @param fn String
@@ -289,65 +300,68 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
     @Override
     public int rpmReadPackageFile(RpmTS ts, RpmFD fd, String fn, NativePointer hdrp) {
         try (Arena arena = Arena.ofConfined()) {
-            return (int)mh_rpmReadPackageFile.invokeExact(
-                    downConvertObject(ts),
-                    downConvertObject(fd),
-                    downConvertString(fn, arena),
-                    downConvertObject(hdrp)
-            );
+            return (int)
+                    mh_rpmReadPackageFile.invokeExact(
+                            downConvertObject(ts),
+                            downConvertObject(fd),
+                            downConvertString(fn, arena),
+                            downConvertObject(hdrp));
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function rpmReadPackageFile", _t);
         }
     }
 
-    private final MethodHandle mh_rpmReadPackageFile = makeMethodHandle(INT, "rpmReadPackageFile", OBJ, OBJ, STR, OBJ);
+    private final MethodHandle mh_rpmReadPackageFile =
+            makeMethodHandle(INT, "rpmReadPackageFile", OBJ, OBJ, STR, OBJ);
 
     /**
      * Method stub that invokes native method {@code rpmdbFreeIterator}.
+     *
      * @param mi RpmMI
      */
     @Override
     public void rpmdbFreeIterator(RpmMI mi) {
         try {
-            mh_rpmdbFreeIterator.invokeExact(
-                    downConvertObject(mi)
-            );
+            mh_rpmdbFreeIterator.invokeExact(downConvertObject(mi));
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function rpmdbFreeIterator", _t);
         }
     }
 
-    private final MethodHandle mh_rpmdbFreeIterator = makeMethodHandle(VOID, "rpmdbFreeIterator", OBJ);
+    private final MethodHandle mh_rpmdbFreeIterator =
+            makeMethodHandle(VOID, "rpmdbFreeIterator", OBJ);
 
     /**
      * Method stub that invokes native method {@code rpmdbNextIterator}.
+     *
      * @param mi RpmMI
      * @return RpmHeader
      */
     @Override
     public RpmHeader rpmdbNextIterator(RpmMI mi) {
         try {
-            return upConvertObject(RpmHeader::new, (MemorySegment)mh_rpmdbNextIterator.invokeExact(
-                    downConvertObject(mi)
-            ));
+            return upConvertObject(
+                    RpmHeader::new,
+                    (MemorySegment) mh_rpmdbNextIterator.invokeExact(downConvertObject(mi)));
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function rpmdbNextIterator", _t);
         }
     }
 
-    private final MethodHandle mh_rpmdbNextIterator = makeMethodHandle(OBJ, "rpmdbNextIterator", OBJ);
+    private final MethodHandle mh_rpmdbNextIterator =
+            makeMethodHandle(OBJ, "rpmdbNextIterator", OBJ);
 
     /**
      * Method stub that invokes native method {@code rpmdsDNEVR}.
+     *
      * @param ds RpmDS
      * @return String
      */
     @Override
     public String rpmdsDNEVR(RpmDS ds) {
         try {
-            return upConvertString((MemorySegment)mh_rpmdsDNEVR.invokeExact(
-                    downConvertObject(ds)
-            ));
+            return upConvertString(
+                    (MemorySegment) mh_rpmdsDNEVR.invokeExact(downConvertObject(ds)));
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function rpmdsDNEVR", _t);
         }
@@ -357,15 +371,14 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
 
     /**
      * Method stub that invokes native method {@code rpmdsEVR}.
+     *
      * @param ds RpmDS
      * @return String
      */
     @Override
     public String rpmdsEVR(RpmDS ds) {
         try {
-            return upConvertString((MemorySegment)mh_rpmdsEVR.invokeExact(
-                    downConvertObject(ds)
-            ));
+            return upConvertString((MemorySegment) mh_rpmdsEVR.invokeExact(downConvertObject(ds)));
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function rpmdsEVR", _t);
         }
@@ -375,15 +388,14 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
 
     /**
      * Method stub that invokes native method {@code rpmdsFlags}.
+     *
      * @param ds RpmDS
      * @return int
      */
     @Override
     public int rpmdsFlags(RpmDS ds) {
         try {
-            return (int)mh_rpmdsFlags.invokeExact(
-                    downConvertObject(ds)
-            );
+            return (int) mh_rpmdsFlags.invokeExact(downConvertObject(ds));
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function rpmdsFlags", _t);
         }
@@ -393,14 +405,13 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
 
     /**
      * Method stub that invokes native method {@code rpmdsFree}.
+     *
      * @param ds RpmDS
      */
     @Override
     public void rpmdsFree(RpmDS ds) {
         try {
-            mh_rpmdsFree.invokeExact(
-                    downConvertObject(ds)
-            );
+            mh_rpmdsFree.invokeExact(downConvertObject(ds));
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function rpmdsFree", _t);
         }
@@ -410,15 +421,14 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
 
     /**
      * Method stub that invokes native method {@code rpmdsIsRich}.
+     *
      * @param ds RpmDS
      * @return int
      */
     @Override
     public int rpmdsIsRich(RpmDS ds) {
         try {
-            return (int)mh_rpmdsIsRich.invokeExact(
-                    downConvertObject(ds)
-            );
+            return (int) mh_rpmdsIsRich.invokeExact(downConvertObject(ds));
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function rpmdsIsRich", _t);
         }
@@ -428,15 +438,14 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
 
     /**
      * Method stub that invokes native method {@code rpmdsN}.
+     *
      * @param ds RpmDS
      * @return String
      */
     @Override
     public String rpmdsN(RpmDS ds) {
         try {
-            return upConvertString((MemorySegment)mh_rpmdsN.invokeExact(
-                    downConvertObject(ds)
-            ));
+            return upConvertString((MemorySegment) mh_rpmdsN.invokeExact(downConvertObject(ds)));
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function rpmdsN", _t);
         }
@@ -446,6 +455,7 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
 
     /**
      * Method stub that invokes native method {@code rpmdsNew}.
+     *
      * @param h RpmHeader
      * @param tagN int
      * @param flags int
@@ -454,11 +464,9 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
     @Override
     public RpmDS rpmdsNew(RpmHeader h, int tagN, int flags) {
         try {
-            return upConvertObject(RpmDS::new, (MemorySegment)mh_rpmdsNew.invokeExact(
-                    downConvertObject(h),
-                    tagN,
-                    flags
-            ));
+            return upConvertObject(
+                    RpmDS::new,
+                    (MemorySegment) mh_rpmdsNew.invokeExact(downConvertObject(h), tagN, flags));
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function rpmdsNew", _t);
         }
@@ -468,15 +476,14 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
 
     /**
      * Method stub that invokes native method {@code rpmdsNext}.
+     *
      * @param ds RpmDS
      * @return int
      */
     @Override
     public int rpmdsNext(RpmDS ds) {
         try {
-            return (int)mh_rpmdsNext.invokeExact(
-                    downConvertObject(ds)
-            );
+            return (int) mh_rpmdsNext.invokeExact(downConvertObject(ds));
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function rpmdsNext", _t);
         }
@@ -486,41 +493,43 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
 
     /**
      * Method stub that invokes native method {@code rpmfiArchiveClose}.
+     *
      * @param fi RpmFI
      */
     @Override
     public void rpmfiArchiveClose(RpmFI fi) {
         try {
-            mh_rpmfiArchiveClose.invokeExact(
-                    downConvertObject(fi)
-            );
+            mh_rpmfiArchiveClose.invokeExact(downConvertObject(fi));
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function rpmfiArchiveClose", _t);
         }
     }
 
-    private final MethodHandle mh_rpmfiArchiveClose = makeMethodHandle(VOID, "rpmfiArchiveClose", OBJ);
+    private final MethodHandle mh_rpmfiArchiveClose =
+            makeMethodHandle(VOID, "rpmfiArchiveClose", OBJ);
 
     /**
      * Method stub that invokes native method {@code rpmfiArchiveHasContent}.
+     *
      * @param fi RpmFI
      * @return int
      */
     @Override
     public int rpmfiArchiveHasContent(RpmFI fi) {
         try {
-            return (int)mh_rpmfiArchiveHasContent.invokeExact(
-                    downConvertObject(fi)
-            );
+            return (int) mh_rpmfiArchiveHasContent.invokeExact(downConvertObject(fi));
         } catch (Throwable _t) {
-            throw new RuntimeException("Failed to invoke native function rpmfiArchiveHasContent", _t);
+            throw new RuntimeException(
+                    "Failed to invoke native function rpmfiArchiveHasContent", _t);
         }
     }
 
-    private final MethodHandle mh_rpmfiArchiveHasContent = makeMethodHandle(INT, "rpmfiArchiveHasContent", OBJ);
+    private final MethodHandle mh_rpmfiArchiveHasContent =
+            makeMethodHandle(INT, "rpmfiArchiveHasContent", OBJ);
 
     /**
      * Method stub that invokes native method {@code rpmfiArchiveRead}.
+     *
      * @param fi RpmFI
      * @param buf Buffer
      * @param size long
@@ -529,29 +538,27 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
     @Override
     public long rpmfiArchiveRead(RpmFI fi, Buffer buf, long size) {
         try {
-            return (long)mh_rpmfiArchiveRead.invokeExact(
-                    downConvertObject(fi),
-                    downConvertBuffer(buf),
-                    size
-            );
+            return (long)
+                    mh_rpmfiArchiveRead.invokeExact(
+                            downConvertObject(fi), downConvertBuffer(buf), size);
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function rpmfiArchiveRead", _t);
         }
     }
 
-    private final MethodHandle mh_rpmfiArchiveRead = makeMethodHandle(LONG, "rpmfiArchiveRead", OBJ, BUFF, LONG);
+    private final MethodHandle mh_rpmfiArchiveRead =
+            makeMethodHandle(LONG, "rpmfiArchiveRead", OBJ, BUFF, LONG);
 
     /**
      * Method stub that invokes native method {@code rpmfiBN}.
+     *
      * @param fi RpmFI
      * @return String
      */
     @Override
     public String rpmfiBN(RpmFI fi) {
         try {
-            return upConvertString((MemorySegment)mh_rpmfiBN.invokeExact(
-                    downConvertObject(fi)
-            ));
+            return upConvertString((MemorySegment) mh_rpmfiBN.invokeExact(downConvertObject(fi)));
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function rpmfiBN", _t);
         }
@@ -561,15 +568,14 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
 
     /**
      * Method stub that invokes native method {@code rpmfiDN}.
+     *
      * @param fi RpmFI
      * @return String
      */
     @Override
     public String rpmfiDN(RpmFI fi) {
         try {
-            return upConvertString((MemorySegment)mh_rpmfiDN.invokeExact(
-                    downConvertObject(fi)
-            ));
+            return upConvertString((MemorySegment) mh_rpmfiDN.invokeExact(downConvertObject(fi)));
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function rpmfiDN", _t);
         }
@@ -579,15 +585,14 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
 
     /**
      * Method stub that invokes native method {@code rpmfiFInode}.
+     *
      * @param fi RpmFI
      * @return int
      */
     @Override
     public int rpmfiFInode(RpmFI fi) {
         try {
-            return (int)mh_rpmfiFInode.invokeExact(
-                    downConvertObject(fi)
-            );
+            return (int) mh_rpmfiFInode.invokeExact(downConvertObject(fi));
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function rpmfiFInode", _t);
         }
@@ -597,15 +602,15 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
 
     /**
      * Method stub that invokes native method {@code rpmfiFLink}.
+     *
      * @param fi RpmFI
      * @return String
      */
     @Override
     public String rpmfiFLink(RpmFI fi) {
         try {
-            return upConvertString((MemorySegment)mh_rpmfiFLink.invokeExact(
-                    downConvertObject(fi)
-            ));
+            return upConvertString(
+                    (MemorySegment) mh_rpmfiFLink.invokeExact(downConvertObject(fi)));
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function rpmfiFLink", _t);
         }
@@ -615,15 +620,14 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
 
     /**
      * Method stub that invokes native method {@code rpmfiFMode}.
+     *
      * @param fi RpmFI
      * @return int
      */
     @Override
     public int rpmfiFMode(RpmFI fi) {
         try {
-            return (int)mh_rpmfiFMode.invokeExact(
-                    downConvertObject(fi)
-            );
+            return (int) mh_rpmfiFMode.invokeExact(downConvertObject(fi));
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function rpmfiFMode", _t);
         }
@@ -633,15 +637,14 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
 
     /**
      * Method stub that invokes native method {@code rpmfiFMtime}.
+     *
      * @param fi RpmFI
      * @return int
      */
     @Override
     public int rpmfiFMtime(RpmFI fi) {
         try {
-            return (int)mh_rpmfiFMtime.invokeExact(
-                    downConvertObject(fi)
-            );
+            return (int) mh_rpmfiFMtime.invokeExact(downConvertObject(fi));
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function rpmfiFMtime", _t);
         }
@@ -651,15 +654,14 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
 
     /**
      * Method stub that invokes native method {@code rpmfiFNlink}.
+     *
      * @param fi RpmFI
      * @return int
      */
     @Override
     public int rpmfiFNlink(RpmFI fi) {
         try {
-            return (int)mh_rpmfiFNlink.invokeExact(
-                    downConvertObject(fi)
-            );
+            return (int) mh_rpmfiFNlink.invokeExact(downConvertObject(fi));
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function rpmfiFNlink", _t);
         }
@@ -669,15 +671,14 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
 
     /**
      * Method stub that invokes native method {@code rpmfiFRdev}.
+     *
      * @param fi RpmFI
      * @return int
      */
     @Override
     public int rpmfiFRdev(RpmFI fi) {
         try {
-            return (int)mh_rpmfiFRdev.invokeExact(
-                    downConvertObject(fi)
-            );
+            return (int) mh_rpmfiFRdev.invokeExact(downConvertObject(fi));
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function rpmfiFRdev", _t);
         }
@@ -687,15 +688,14 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
 
     /**
      * Method stub that invokes native method {@code rpmfiFSize}.
+     *
      * @param fi RpmFI
      * @return long
      */
     @Override
     public long rpmfiFSize(RpmFI fi) {
         try {
-            return (long)mh_rpmfiFSize.invokeExact(
-                    downConvertObject(fi)
-            );
+            return (long) mh_rpmfiFSize.invokeExact(downConvertObject(fi));
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function rpmfiFSize", _t);
         }
@@ -705,14 +705,13 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
 
     /**
      * Method stub that invokes native method {@code rpmfiFree}.
+     *
      * @param fi RpmFI
      */
     @Override
     public void rpmfiFree(RpmFI fi) {
         try {
-            mh_rpmfiFree.invokeExact(
-                    downConvertObject(fi)
-            );
+            mh_rpmfiFree.invokeExact(downConvertObject(fi));
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function rpmfiFree", _t);
         }
@@ -722,6 +721,7 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
 
     /**
      * Method stub that invokes native method {@code rpmfiNewArchiveReader}.
+     *
      * @param fd RpmFD
      * @param files RpmFiles
      * @param itype int
@@ -730,29 +730,30 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
     @Override
     public RpmFI rpmfiNewArchiveReader(RpmFD fd, RpmFiles files, int itype) {
         try {
-            return upConvertObject(RpmFI::new, (MemorySegment)mh_rpmfiNewArchiveReader.invokeExact(
-                    downConvertObject(fd),
-                    downConvertObject(files),
-                    itype
-            ));
+            return upConvertObject(
+                    RpmFI::new,
+                    (MemorySegment)
+                            mh_rpmfiNewArchiveReader.invokeExact(
+                                    downConvertObject(fd), downConvertObject(files), itype));
         } catch (Throwable _t) {
-            throw new RuntimeException("Failed to invoke native function rpmfiNewArchiveReader", _t);
+            throw new RuntimeException(
+                    "Failed to invoke native function rpmfiNewArchiveReader", _t);
         }
     }
 
-    private final MethodHandle mh_rpmfiNewArchiveReader = makeMethodHandle(OBJ, "rpmfiNewArchiveReader", OBJ, OBJ, INT);
+    private final MethodHandle mh_rpmfiNewArchiveReader =
+            makeMethodHandle(OBJ, "rpmfiNewArchiveReader", OBJ, OBJ, INT);
 
     /**
      * Method stub that invokes native method {@code rpmfiNext}.
+     *
      * @param fi RpmFI
      * @return int
      */
     @Override
     public int rpmfiNext(RpmFI fi) {
         try {
-            return (int)mh_rpmfiNext.invokeExact(
-                    downConvertObject(fi)
-            );
+            return (int) mh_rpmfiNext.invokeExact(downConvertObject(fi));
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function rpmfiNext", _t);
         }
@@ -762,14 +763,13 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
 
     /**
      * Method stub that invokes native method {@code rpmfilesFree}.
+     *
      * @param fi RpmFiles
      */
     @Override
     public void rpmfilesFree(RpmFiles fi) {
         try {
-            mh_rpmfilesFree.invokeExact(
-                    downConvertObject(fi)
-            );
+            mh_rpmfilesFree.invokeExact(downConvertObject(fi));
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function rpmfilesFree", _t);
         }
@@ -779,6 +779,7 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
 
     /**
      * Method stub that invokes native method {@code rpmfilesIter}.
+     *
      * @param files RpmFiles
      * @param itype int
      * @return RpmFI
@@ -786,10 +787,9 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
     @Override
     public RpmFI rpmfilesIter(RpmFiles files, int itype) {
         try {
-            return upConvertObject(RpmFI::new, (MemorySegment)mh_rpmfilesIter.invokeExact(
-                    downConvertObject(files),
-                    itype
-            ));
+            return upConvertObject(
+                    RpmFI::new,
+                    (MemorySegment) mh_rpmfilesIter.invokeExact(downConvertObject(files), itype));
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function rpmfilesIter", _t);
         }
@@ -799,6 +799,7 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
 
     /**
      * Method stub that invokes native method {@code rpmfilesNew}.
+     *
      * @param pool RpmStrPool
      * @param h RpmHeader
      * @param tagN int
@@ -808,28 +809,29 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
     @Override
     public RpmFiles rpmfilesNew(RpmStrPool pool, RpmHeader h, int tagN, int flags) {
         try {
-            return upConvertObject(RpmFiles::new, (MemorySegment)mh_rpmfilesNew.invokeExact(
-                    downConvertObject(pool),
-                    downConvertObject(h),
-                    tagN,
-                    flags
-            ));
+            return upConvertObject(
+                    RpmFiles::new,
+                    (MemorySegment)
+                            mh_rpmfilesNew.invokeExact(
+                                    downConvertObject(pool), downConvertObject(h), tagN, flags));
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function rpmfilesNew", _t);
         }
     }
 
-    private final MethodHandle mh_rpmfilesNew = makeMethodHandle(OBJ, "rpmfilesNew", OBJ, OBJ, INT, INT);
+    private final MethodHandle mh_rpmfilesNew =
+            makeMethodHandle(OBJ, "rpmfilesNew", OBJ, OBJ, INT, INT);
 
     /**
      * Method stub that invokes native method {@code rpmstrPoolCreate}.
+     *
      * @return RpmStrPool
      */
     @Override
     public RpmStrPool rpmstrPoolCreate() {
         try {
-            return upConvertObject(RpmStrPool::new, (MemorySegment)mh_rpmstrPoolCreate.invokeExact(
-            ));
+            return upConvertObject(
+                    RpmStrPool::new, (MemorySegment) mh_rpmstrPoolCreate.invokeExact());
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function rpmstrPoolCreate", _t);
         }
@@ -839,14 +841,13 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
 
     /**
      * Method stub that invokes native method {@code rpmstrPoolFree}.
+     *
      * @param pool RpmStrPool
      */
     @Override
     public void rpmstrPoolFree(RpmStrPool pool) {
         try {
-            mh_rpmstrPoolFree.invokeExact(
-                    downConvertObject(pool)
-            );
+            mh_rpmstrPoolFree.invokeExact(downConvertObject(pool));
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function rpmstrPoolFree", _t);
         }
@@ -856,15 +857,14 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
 
     /**
      * Method stub that invokes native method {@code rpmtdCount}.
+     *
      * @param td RpmTD
      * @return int
      */
     @Override
     public int rpmtdCount(RpmTD td) {
         try {
-            return (int)mh_rpmtdCount.invokeExact(
-                    downConvertObject(td)
-            );
+            return (int) mh_rpmtdCount.invokeExact(downConvertObject(td));
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function rpmtdCount", _t);
         }
@@ -874,14 +874,13 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
 
     /**
      * Method stub that invokes native method {@code rpmtdFree}.
+     *
      * @param td RpmTD
      */
     @Override
     public void rpmtdFree(RpmTD td) {
         try {
-            mh_rpmtdFree.invokeExact(
-                    downConvertObject(td)
-            );
+            mh_rpmtdFree.invokeExact(downConvertObject(td));
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function rpmtdFree", _t);
         }
@@ -891,15 +890,14 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
 
     /**
      * Method stub that invokes native method {@code rpmtdGetNumber}.
+     *
      * @param td RpmTD
      * @return long
      */
     @Override
     public long rpmtdGetNumber(RpmTD td) {
         try {
-            return (long)mh_rpmtdGetNumber.invokeExact(
-                    downConvertObject(td)
-            );
+            return (long) mh_rpmtdGetNumber.invokeExact(downConvertObject(td));
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function rpmtdGetNumber", _t);
         }
@@ -909,15 +907,15 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
 
     /**
      * Method stub that invokes native method {@code rpmtdGetString}.
+     *
      * @param td RpmTD
      * @return String
      */
     @Override
     public String rpmtdGetString(RpmTD td) {
         try {
-            return upConvertString((MemorySegment)mh_rpmtdGetString.invokeExact(
-                    downConvertObject(td)
-            ));
+            return upConvertString(
+                    (MemorySegment) mh_rpmtdGetString.invokeExact(downConvertObject(td)));
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function rpmtdGetString", _t);
         }
@@ -927,13 +925,13 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
 
     /**
      * Method stub that invokes native method {@code rpmtdNew}.
+     *
      * @return RpmTD
      */
     @Override
     public RpmTD rpmtdNew() {
         try {
-            return upConvertObject(RpmTD::new, (MemorySegment)mh_rpmtdNew.invokeExact(
-            ));
+            return upConvertObject(RpmTD::new, (MemorySegment) mh_rpmtdNew.invokeExact());
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function rpmtdNew", _t);
         }
@@ -943,15 +941,14 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
 
     /**
      * Method stub that invokes native method {@code rpmtdNext}.
+     *
      * @param td RpmTD
      * @return int
      */
     @Override
     public int rpmtdNext(RpmTD td) {
         try {
-            return (int)mh_rpmtdNext.invokeExact(
-                    downConvertObject(td)
-            );
+            return (int) mh_rpmtdNext.invokeExact(downConvertObject(td));
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function rpmtdNext", _t);
         }
@@ -961,13 +958,13 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
 
     /**
      * Method stub that invokes native method {@code rpmtsCreate}.
+     *
      * @return RpmTS
      */
     @Override
     public RpmTS rpmtsCreate() {
         try {
-            return upConvertObject(RpmTS::new, (MemorySegment)mh_rpmtsCreate.invokeExact(
-            ));
+            return upConvertObject(RpmTS::new, (MemorySegment) mh_rpmtsCreate.invokeExact());
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function rpmtsCreate", _t);
         }
@@ -977,14 +974,13 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
 
     /**
      * Method stub that invokes native method {@code rpmtsFree}.
+     *
      * @param ts RpmTS
      */
     @Override
     public void rpmtsFree(RpmTS ts) {
         try {
-            mh_rpmtsFree.invokeExact(
-                    downConvertObject(ts)
-            );
+            mh_rpmtsFree.invokeExact(downConvertObject(ts));
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function rpmtsFree", _t);
         }
@@ -994,6 +990,7 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
 
     /**
      * Method stub that invokes native method {@code rpmtsInitIterator}.
+     *
      * @param ts RpmTS
      * @param rpmtag int
      * @param keyp String
@@ -1003,21 +1000,25 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
     @Override
     public RpmMI rpmtsInitIterator(RpmTS ts, int rpmtag, String keyp, long keylen) {
         try (Arena arena = Arena.ofConfined()) {
-            return upConvertObject(RpmMI::new, (MemorySegment)mh_rpmtsInitIterator.invokeExact(
-                    downConvertObject(ts),
-                    rpmtag,
-                    downConvertString(keyp, arena),
-                    keylen
-            ));
+            return upConvertObject(
+                    RpmMI::new,
+                    (MemorySegment)
+                            mh_rpmtsInitIterator.invokeExact(
+                                    downConvertObject(ts),
+                                    rpmtag,
+                                    downConvertString(keyp, arena),
+                                    keylen));
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function rpmtsInitIterator", _t);
         }
     }
 
-    private final MethodHandle mh_rpmtsInitIterator = makeMethodHandle(OBJ, "rpmtsInitIterator", OBJ, INT, STR, LONG);
+    private final MethodHandle mh_rpmtsInitIterator =
+            makeMethodHandle(OBJ, "rpmtsInitIterator", OBJ, INT, STR, LONG);
 
     /**
      * Method stub that invokes native method {@code rpmtsSetRootDir}.
+     *
      * @param ts RpmTS
      * @param rootDir String
      * @return int
@@ -1025,47 +1026,45 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
     @Override
     public int rpmtsSetRootDir(RpmTS ts, String rootDir) {
         try (Arena arena = Arena.ofConfined()) {
-            return (int)mh_rpmtsSetRootDir.invokeExact(
-                    downConvertObject(ts),
-                    downConvertString(rootDir, arena)
-            );
+            return (int)
+                    mh_rpmtsSetRootDir.invokeExact(
+                            downConvertObject(ts), downConvertString(rootDir, arena));
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function rpmtsSetRootDir", _t);
         }
     }
 
-    private final MethodHandle mh_rpmtsSetRootDir = makeMethodHandle(INT, "rpmtsSetRootDir", OBJ, STR);
+    private final MethodHandle mh_rpmtsSetRootDir =
+            makeMethodHandle(INT, "rpmtsSetRootDir", OBJ, STR);
 
     /**
      * Method stub that invokes native method {@code rpmtsSetVSFlags}.
+     *
      * @param ts RpmTS
      * @param vsflags int
      */
     @Override
     public void rpmtsSetVSFlags(RpmTS ts, int vsflags) {
         try {
-            mh_rpmtsSetVSFlags.invokeExact(
-                    downConvertObject(ts),
-                    vsflags
-            );
+            mh_rpmtsSetVSFlags.invokeExact(downConvertObject(ts), vsflags);
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function rpmtsSetVSFlags", _t);
         }
     }
 
-    private final MethodHandle mh_rpmtsSetVSFlags = makeMethodHandle(VOID, "rpmtsSetVSFlags", OBJ, INT);
+    private final MethodHandle mh_rpmtsSetVSFlags =
+            makeMethodHandle(VOID, "rpmtsSetVSFlags", OBJ, INT);
 
     /**
      * Method stub that invokes native method {@code rpmverE}.
+     *
      * @param rv RpmEVR
      * @return String
      */
     @Override
     public String rpmverE(RpmEVR rv) {
         try {
-            return upConvertString((MemorySegment)mh_rpmverE.invokeExact(
-                    downConvertObject(rv)
-            ));
+            return upConvertString((MemorySegment) mh_rpmverE.invokeExact(downConvertObject(rv)));
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function rpmverE", _t);
         }
@@ -1075,15 +1074,14 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
 
     /**
      * Method stub that invokes native method {@code rpmverEVal}.
+     *
      * @param rv RpmEVR
      * @return long
      */
     @Override
     public long rpmverEVal(RpmEVR rv) {
         try {
-            return (long)mh_rpmverEVal.invokeExact(
-                    downConvertObject(rv)
-            );
+            return (long) mh_rpmverEVal.invokeExact(downConvertObject(rv));
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function rpmverEVal", _t);
         }
@@ -1093,14 +1091,13 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
 
     /**
      * Method stub that invokes native method {@code rpmverFree}.
+     *
      * @param rv RpmEVR
      */
     @Override
     public void rpmverFree(RpmEVR rv) {
         try {
-            mh_rpmverFree.invokeExact(
-                    downConvertObject(rv)
-            );
+            mh_rpmverFree.invokeExact(downConvertObject(rv));
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function rpmverFree", _t);
         }
@@ -1110,15 +1107,16 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
 
     /**
      * Method stub that invokes native method {@code rpmverParse}.
+     *
      * @param evr String
      * @return RpmEVR
      */
     @Override
     public RpmEVR rpmverParse(String evr) {
         try (Arena arena = Arena.ofConfined()) {
-            return upConvertObject(RpmEVR::new, (MemorySegment)mh_rpmverParse.invokeExact(
-                    downConvertString(evr, arena)
-            ));
+            return upConvertObject(
+                    RpmEVR::new,
+                    (MemorySegment) mh_rpmverParse.invokeExact(downConvertString(evr, arena)));
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function rpmverParse", _t);
         }
@@ -1128,15 +1126,14 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
 
     /**
      * Method stub that invokes native method {@code rpmverR}.
+     *
      * @param rv RpmEVR
      * @return String
      */
     @Override
     public String rpmverR(RpmEVR rv) {
         try {
-            return upConvertString((MemorySegment)mh_rpmverR.invokeExact(
-                    downConvertObject(rv)
-            ));
+            return upConvertString((MemorySegment) mh_rpmverR.invokeExact(downConvertObject(rv)));
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function rpmverR", _t);
         }
@@ -1146,15 +1143,14 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
 
     /**
      * Method stub that invokes native method {@code rpmverV}.
+     *
      * @param rv RpmEVR
      * @return String
      */
     @Override
     public String rpmverV(RpmEVR rv) {
         try {
-            return upConvertString((MemorySegment)mh_rpmverV.invokeExact(
-                    downConvertObject(rv)
-            ));
+            return upConvertString((MemorySegment) mh_rpmverV.invokeExact(downConvertObject(rv)));
         } catch (Throwable _t) {
             throw new RuntimeException("Failed to invoke native function rpmverV", _t);
         }
@@ -1186,14 +1182,11 @@ final class RpmLib_Impl extends AbstractNativeProxy implements RpmLib {
                 FunctionDescriptor.of(STR, OBJ),
                 FunctionDescriptor.of(STR, OBJ, INT),
                 FunctionDescriptor.ofVoid(OBJ),
-                FunctionDescriptor.ofVoid(OBJ, INT)
-        );
+                FunctionDescriptor.ofVoid(OBJ, INT));
     }
 }
 
-/**
- * Trampoline class that contains methods of RpmLib as static methods.
- */
+/** Trampoline class that contains methods of RpmLib as static methods. */
 class RpmLib_Static {
     private static class Lazy {
         static final SymbolLookup LOOKUP = Native.dlopenLookup("librpm.so.10", "librpm.so.9");
@@ -1202,6 +1195,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code Fclose}.
+     *
      * @param fd RpmFD
      */
     public static final void Fclose(RpmFD fd) {
@@ -1210,6 +1204,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code Fdopen}.
+     *
      * @param ofd RpmFD
      * @param mode String
      * @return RpmFD
@@ -1220,6 +1215,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code Ferror}.
+     *
      * @param fd RpmFD
      * @return int
      */
@@ -1229,6 +1225,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code Fopen}.
+     *
      * @param path String
      * @param mode String
      * @return RpmFD
@@ -1239,6 +1236,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code Fstrerror}.
+     *
      * @param fd RpmFD
      * @return String
      */
@@ -1248,6 +1246,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code Ftell}.
+     *
      * @param fd RpmFD
      * @return long
      */
@@ -1257,6 +1256,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code gnu_dev_major}.
+     *
      * @param dev int
      * @return int
      */
@@ -1266,6 +1266,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code gnu_dev_minor}.
+     *
      * @param dev int
      * @return int
      */
@@ -1275,6 +1276,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code headerFree}.
+     *
      * @param h RpmHeader
      */
     public static final void headerFree(RpmHeader h) {
@@ -1283,6 +1285,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code headerGet}.
+     *
      * @param h RpmHeader
      * @param tag int
      * @param td RpmTD
@@ -1295,6 +1298,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code headerGetNumber}.
+     *
      * @param h RpmHeader
      * @param tag int
      * @return long
@@ -1305,6 +1309,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code headerGetString}.
+     *
      * @param h RpmHeader
      * @param tag int
      * @return String
@@ -1315,6 +1320,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code rpmReadConfigFiles}.
+     *
      * @param file String
      * @param target String
      * @return int
@@ -1325,6 +1331,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code rpmReadPackageFile}.
+     *
      * @param ts RpmTS
      * @param fd RpmFD
      * @param fn String
@@ -1337,6 +1344,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code rpmdbFreeIterator}.
+     *
      * @param mi RpmMI
      */
     public static final void rpmdbFreeIterator(RpmMI mi) {
@@ -1345,6 +1353,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code rpmdbNextIterator}.
+     *
      * @param mi RpmMI
      * @return RpmHeader
      */
@@ -1354,6 +1363,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code rpmdsDNEVR}.
+     *
      * @param ds RpmDS
      * @return String
      */
@@ -1363,6 +1373,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code rpmdsEVR}.
+     *
      * @param ds RpmDS
      * @return String
      */
@@ -1372,6 +1383,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code rpmdsFlags}.
+     *
      * @param ds RpmDS
      * @return int
      */
@@ -1381,6 +1393,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code rpmdsFree}.
+     *
      * @param ds RpmDS
      */
     public static final void rpmdsFree(RpmDS ds) {
@@ -1389,6 +1402,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code rpmdsIsRich}.
+     *
      * @param ds RpmDS
      * @return int
      */
@@ -1398,6 +1412,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code rpmdsN}.
+     *
      * @param ds RpmDS
      * @return String
      */
@@ -1407,6 +1422,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code rpmdsNew}.
+     *
      * @param h RpmHeader
      * @param tagN int
      * @param flags int
@@ -1418,6 +1434,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code rpmdsNext}.
+     *
      * @param ds RpmDS
      * @return int
      */
@@ -1427,6 +1444,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code rpmfiArchiveClose}.
+     *
      * @param fi RpmFI
      */
     public static final void rpmfiArchiveClose(RpmFI fi) {
@@ -1435,6 +1453,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code rpmfiArchiveHasContent}.
+     *
      * @param fi RpmFI
      * @return int
      */
@@ -1444,6 +1463,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code rpmfiArchiveRead}.
+     *
      * @param fi RpmFI
      * @param buf Buffer
      * @param size long
@@ -1455,6 +1475,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code rpmfiBN}.
+     *
      * @param fi RpmFI
      * @return String
      */
@@ -1464,6 +1485,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code rpmfiDN}.
+     *
      * @param fi RpmFI
      * @return String
      */
@@ -1473,6 +1495,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code rpmfiFInode}.
+     *
      * @param fi RpmFI
      * @return int
      */
@@ -1482,6 +1505,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code rpmfiFLink}.
+     *
      * @param fi RpmFI
      * @return String
      */
@@ -1491,6 +1515,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code rpmfiFMode}.
+     *
      * @param fi RpmFI
      * @return int
      */
@@ -1500,6 +1525,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code rpmfiFMtime}.
+     *
      * @param fi RpmFI
      * @return int
      */
@@ -1509,6 +1535,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code rpmfiFNlink}.
+     *
      * @param fi RpmFI
      * @return int
      */
@@ -1518,6 +1545,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code rpmfiFRdev}.
+     *
      * @param fi RpmFI
      * @return int
      */
@@ -1527,6 +1555,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code rpmfiFSize}.
+     *
      * @param fi RpmFI
      * @return long
      */
@@ -1536,6 +1565,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code rpmfiFree}.
+     *
      * @param fi RpmFI
      */
     public static final void rpmfiFree(RpmFI fi) {
@@ -1544,6 +1574,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code rpmfiNewArchiveReader}.
+     *
      * @param fd RpmFD
      * @param files RpmFiles
      * @param itype int
@@ -1555,6 +1586,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code rpmfiNext}.
+     *
      * @param fi RpmFI
      * @return int
      */
@@ -1564,6 +1596,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code rpmfilesFree}.
+     *
      * @param fi RpmFiles
      */
     public static final void rpmfilesFree(RpmFiles fi) {
@@ -1572,6 +1605,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code rpmfilesIter}.
+     *
      * @param files RpmFiles
      * @param itype int
      * @return RpmFI
@@ -1582,6 +1616,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code rpmfilesNew}.
+     *
      * @param pool RpmStrPool
      * @param h RpmHeader
      * @param tagN int
@@ -1594,6 +1629,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code rpmstrPoolCreate}.
+     *
      * @return RpmStrPool
      */
     public static final RpmStrPool rpmstrPoolCreate() {
@@ -1602,6 +1638,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code rpmstrPoolFree}.
+     *
      * @param pool RpmStrPool
      */
     public static final void rpmstrPoolFree(RpmStrPool pool) {
@@ -1610,6 +1647,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code rpmtdCount}.
+     *
      * @param td RpmTD
      * @return int
      */
@@ -1619,6 +1657,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code rpmtdFree}.
+     *
      * @param td RpmTD
      */
     public static final void rpmtdFree(RpmTD td) {
@@ -1627,6 +1666,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code rpmtdGetNumber}.
+     *
      * @param td RpmTD
      * @return long
      */
@@ -1636,6 +1676,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code rpmtdGetString}.
+     *
      * @param td RpmTD
      * @return String
      */
@@ -1645,6 +1686,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code rpmtdNew}.
+     *
      * @return RpmTD
      */
     public static final RpmTD rpmtdNew() {
@@ -1653,6 +1695,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code rpmtdNext}.
+     *
      * @param td RpmTD
      * @return int
      */
@@ -1662,6 +1705,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code rpmtsCreate}.
+     *
      * @return RpmTS
      */
     public static final RpmTS rpmtsCreate() {
@@ -1670,6 +1714,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code rpmtsFree}.
+     *
      * @param ts RpmTS
      */
     public static final void rpmtsFree(RpmTS ts) {
@@ -1678,6 +1723,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code rpmtsInitIterator}.
+     *
      * @param ts RpmTS
      * @param rpmtag int
      * @param keyp String
@@ -1690,6 +1736,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code rpmtsSetRootDir}.
+     *
      * @param ts RpmTS
      * @param rootDir String
      * @return int
@@ -1700,6 +1747,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code rpmtsSetVSFlags}.
+     *
      * @param ts RpmTS
      * @param vsflags int
      */
@@ -1709,6 +1757,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code rpmverE}.
+     *
      * @param rv RpmEVR
      * @return String
      */
@@ -1718,6 +1767,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code rpmverEVal}.
+     *
      * @param rv RpmEVR
      * @return long
      */
@@ -1727,6 +1777,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code rpmverFree}.
+     *
      * @param rv RpmEVR
      */
     public static final void rpmverFree(RpmEVR rv) {
@@ -1735,6 +1786,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code rpmverParse}.
+     *
      * @param evr String
      * @return RpmEVR
      */
@@ -1744,6 +1796,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code rpmverR}.
+     *
      * @param rv RpmEVR
      * @return String
      */
@@ -1753,6 +1806,7 @@ class RpmLib_Static {
 
     /**
      * Method stub that invokes native method {@code rpmverV}.
+     *
      * @param rv RpmEVR
      * @return String
      */
