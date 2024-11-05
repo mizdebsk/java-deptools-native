@@ -23,7 +23,13 @@
   </parent>
   <artifactId>java-deptools-native</artifactId>
   <version>1.3.0-SNAPSHOT</version>
-  <name>java-deptools</name>
+  <name>Java Deptools Native</name>
+  <description>A library for inspecting RPM package files</description>
+  <url>https://github.com/mizdebsk/java-deptools-native</url>
+  <inceptionYear>2012</inceptionYear>
+  <scm>
+    <url>https://github.com/mizdebsk/java-deptools-native.git</url>
+  </scm>
   <properties>
     <kojan.javaRelease>22</kojan.javaRelease>
   </properties>
