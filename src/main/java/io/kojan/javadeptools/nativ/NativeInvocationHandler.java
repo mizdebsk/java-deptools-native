@@ -43,8 +43,8 @@ class NativeInvocationHandler implements InvocationHandler {
                 case Class<?> cls when String.class.isAssignableFrom(cls) ->
                         (obj, arena) -> arena.allocateFrom((String) obj);
                 case Class<?> cls when NativeObject.class.isAssignableFrom(cls) ->
-                        (obj, arena) -> ((NativeObject) obj).getMemorySegment();
-                default -> (obj, arena) -> obj;
+                        (obj, _) -> ((NativeObject) obj).getMemorySegment();
+                default -> (obj, _) -> obj;
             };
         }
     }

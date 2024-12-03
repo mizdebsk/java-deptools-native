@@ -65,7 +65,7 @@ public class RpmArchiveInputStreamTest {
     public void testInvalidRPM() throws Exception {
         Path path = getResource("invalid.rpm");
 
-        try (var ais = new RpmArchiveInputStream(path)) {
+        try (var _ = new RpmArchiveInputStream(path)) {
             fail("Expected IOException to be thrown");
         } catch (IOException e) {
             assertTrue(e.getMessage().startsWith("Unable to open "));
@@ -77,7 +77,7 @@ public class RpmArchiveInputStreamTest {
     public void testNonexistentRPM() throws Exception {
         Path path = Paths.get("/some/non-existent/path");
 
-        try (var ais = new RpmArchiveInputStream(path)) {
+        try (var _ = new RpmArchiveInputStream(path)) {
             fail("Expected IOException to be thrown");
         } catch (IOException e) {
             assertTrue(e.getMessage().startsWith("Unable to open "));
