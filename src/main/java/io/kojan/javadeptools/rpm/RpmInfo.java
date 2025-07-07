@@ -166,11 +166,13 @@ public class RpmInfo {
         if (isSourcePackage()) {
             return getName();
         }
-        if (sourceRPM == null) {
-            return null;
+        if (sourceRPM != null) {
+            int j = sourceRPM.lastIndexOf('-', sourceRPM.lastIndexOf('-') - 1);
+            if (j > 0) {
+                return sourceRPM.substring(0, j);
+            }
         }
-        String nameVersion = sourceRPM.substring(0, sourceRPM.lastIndexOf('-'));
-        return nameVersion.substring(0, nameVersion.lastIndexOf('-'));
+        return null;
     }
 
     /**
